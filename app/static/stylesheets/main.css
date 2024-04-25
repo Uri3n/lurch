@@ -1,0 +1,222 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    font-family: 'Cascadia Mono', Consolas, monospace, 'Cascadia Code', Arial !important;
+    -webkit-user-select: none;
+    scrollbar-width:none;
+}
+
+head{
+    display:none;
+}
+
+body {
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    overflow: hidden;
+    width:100vw;
+    height:100vh;
+}
+
+
+
+#object-container {
+    display: flex;
+    flex-direction: row;
+    width: 95vw;
+    height: 40vh;
+    margin-top: 2vh;
+    margin-bottom: 3vh;
+    justify-self: center;
+    align-self: center;
+    justify-content: center;
+    align-items: center;
+}
+
+#object-menu {
+    display: flex;
+    flex-direction:row;
+    align-items:flex-start;
+    justify-content:flex-start;
+    width: 79.8%;
+    height: 100%;
+    overflow:hidden;
+}
+
+#object-menu .panel {
+    width:70% !important;
+    height:100% !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+#object-menu .panel * {
+    display:flex !important;
+    justify-content:left !important;
+    width:100% !important;
+    height:fit-content !important;
+}
+
+#object-menu .panel .panel-tabs{
+    max-width:fit-content !important;
+    align-self:center;
+    justify-self:center;
+}
+
+#object-menu .panel .panel-tabs * {
+    color: rgb(58, 189, 255);
+}
+
+.panel-block-container {
+    overflow:scroll !important;
+    scrollbar-width:none !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    align-items: center;
+}
+
+#object-icon-container{
+    display:flex;
+    height:100%;
+    width:29.8%;
+
+    border-left: 2px solid rgba(50, 50, 50, 0.7);
+}
+
+#notification-center{
+    display:flex;
+    align-items:center;
+    flex-direction:column;
+    
+    overflow:scroll;
+    scrollbar-width:none;
+
+    width:20%;
+    margin-left:1.2%;
+    height:100%;
+}
+
+#notification-center .notification {
+    margin-bottom: 8px !important;
+    width: 95% !important;
+}
+
+#terminal-container{
+    width:95vw;
+    height:55vh;
+    justify-content:left;
+    flex-direction:column;
+}
+
+#terminal-input {
+    max-width: 80%;
+    outline: none;
+    caret: block;
+    height: 10%;
+    border: none;
+    font-size: 16px;
+    justify-self:flex-end;
+}
+
+#terminal-menu {
+    height: 100%;
+    width: 20%;
+
+    overflow: scroll;
+    scrollbar-width: none;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap:3px;
+
+    overflow: scroll;
+    margin-left:20px;
+    scrollbar-width: none;
+}
+
+
+
+
+/* For elements that have an RGB hue when hovered over */
+.element-rgb-hover {
+    outline: 1px solid; 
+    border-radius: 10px; 
+    outline-color:white;
+    transition: outline-color 0.5s ease-in-out; 
+    transition: box-shadow 0.5s ease-in-out; 
+}
+
+.element-rgb-hover:hover {
+    outline:3px solid;
+    outline-color: #0066cc;
+    box-shadow: 0 0 10px #0066cc; 
+}
+
+.terminal-instance{
+    display:flex;
+    flex-direction:column;
+    justify-content:left;
+    height:100%;
+    width:80%;
+    overflow:scroll;
+    scrollbar-width:none;
+}
+
+.terminal-instance-element{
+    display:flex;
+    flex-direction:column;
+    width:100%;
+    height:fit-content;
+}
+
+/* Name of the object that sent the message */
+.terminal-instance-element .message-header p {
+    color: rgb(58, 189, 255);
+}
+
+.container-generic-flex-row{
+    display:flex;
+    flex-direction:row;
+    width:100%;
+    height:80%;
+    margin-bottom:20px;
+}
+
+.instance-list-item{
+    max-width:95%;
+    max-height:fit-content;
+}
+
+.menu-list{
+    height:100%;
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    overflow:scroll;
+    scrollbar-width:none;
+}
+
+.menu-list li{
+    width:90%;
+    height:auto;
+}
+
+.menu-list li a{
+    text-align:center !important;
+}
+
+.placeholder-image{
+    max-width:100%;
+    max-height:100%;
+    display:block;
+    margin:auto;
+}

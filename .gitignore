@@ -1,0 +1,25 @@
+
+#ext
+*.d
+*.slo
+*.lo
+*.o
+*.obj
+*.gch
+*.pch
+*.so
+*.dylib
+*.dll
+*.lai
+*.la
+*.a
+*.lib
+*.exe
+*.out
+*.app
+*.db
+
+#cmake and clion
+cmake-build-*/
+**/.idea/
+

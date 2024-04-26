@@ -18,6 +18,22 @@ function appendErrorNotification(msg){
     });
 
     document.getElementById('login-container').prepend(notification);
+
+    // ensure notification is deleted when button is clicked
+    document.querySelectorAll('.delete').forEach((element) => {
+        element.addEventListener('click', () => {
+            let parent = element.parentElement;
+    
+            do {
+                if (parent.classList.contains('deletable-parent')) {
+                    parent.remove();
+                    return;
+                }
+    
+                parent = parent.parentElement;
+            } while (parent);
+        });
+    });
 }
 
 

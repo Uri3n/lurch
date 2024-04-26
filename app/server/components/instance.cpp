@@ -4,6 +4,11 @@
 
 #include "instance.hpp"
 
+/* These macros are only used during development */
+#define LURCH_DEFAULT_BIND
+#define LURCH_DEFAULT_ADDRESS "127.0.0.1"
+#define LURCH_DEFAULT_PORT 8081
+
 //
 //  lurch::instance::begin() is where it all begins, literally.
 //  this function is responsible for setting up the database, routing,
@@ -17,9 +22,12 @@ void lurch::instance::begin() {
 
     std::optional<std::string> initial_user = std::nullopt;
     std::optional<std::string> initial_password = std::nullopt;
+    std::string server_addr;
+    uint16_t server_port = 0;
 
     io::print_banner();
     io::info("Initializing Lurch server instance.");
+
 
     if(!std::filesystem::exists("db/lurch_database.db")) {
         io::info("Existing database not found, one will be created.");
@@ -34,6 +42,7 @@ void lurch::instance::begin() {
     }
 
     this->tree.inst = this;
+    this->tree.root = std::make_unique<lurch::root>(this);
     this->routing.inst = this;
 
     lurch::result<bool> db_init = this->db.initialize(this, initial_user, initial_password);
@@ -41,6 +50,26 @@ void lurch::instance::begin() {
         throw std::runtime_error(db_init.error());
     }
 
-    io::info("running server...");
-    this->routing.run(); //run the server
+
+#if defined(LURCH_DEFAULT_BIND)
+    server_addr = LURCH_DEFAULT_ADDRESS;
+    server_port = LURCH_DEFAULT_PORT;
+#else
+    try {
+        server_addr = io::prompt_for("Specify server address:");
+        server_port = static_cast<uint16_t>(std::stoul(io::prompt_for("Specify port:")));
+        if(server_addr.empty()) {
+            throw std::exception();
+        }
+
+    } catch(...) {
+        io::failure("Invalid address or port provided. Localhost:8081 will be used.");
+        server_addr = "127.0.0.1";
+        server_port = 8081;
+    }
+#endif
+
+
+    std::cout << io::format_str("Attempting bind to: {}:{}", server_addr, std::to_string(server_port)) << std::endl;
+    this->routing.run(server_addr, server_port); //run the server
 }

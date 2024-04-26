@@ -8,6 +8,7 @@
 #include "../util/common.hpp"
 #include "../util/io.hpp"
 #include "../objects/base/base.hpp"
+#include "../objects/root/root.hpp"
 #include <crow.h>
 #include <optional>
 #include <cstdint>
@@ -40,10 +41,21 @@ class instance {
     class router {
         private:
             crow::SimpleApp app;
+            struct {
+                std::vector<crow::websocket::connection*> connections;
+                std::mutex lock;
+            } websockets;
+
         public:
             instance* inst = nullptr;
 
-            void run();
+            void add_ws_connection(crow::websocket::connection* conn);
+            void remove_ws_connection(crow::websocket::connection* conn);
+            void send_ws_data(const std::string& data, const bool is_binary);
+            inline void send_ws_text(const std::string& data);
+            inline void send_ws_binary(const std::string& data);
+
+            void run(std::string addr, uint16_t port);
             static result<std::pair<std::string, std::string>> hdr_extract_credentials(const crow::request& req);
 
             router() = default;
@@ -58,7 +70,7 @@ class instance {
         public:
             instance* inst = nullptr;
             std::shared_mutex tree_lock;
-            std::vector<std::unique_ptr<lurch::object>> root_children;
+            std::unique_ptr<lurch::object> root = nullptr;
 
             inline void set_max_object_count(const uint32_t count);
             inline void increment_object_count();

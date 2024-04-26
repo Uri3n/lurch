@@ -33,13 +33,9 @@ lurch::object::~object() {
 lurch::object::object()
     : id(lurch::object::generate_id()) {}
 
-lurch::owner::owner(owner* parent, instance* root) : parent(parent), root(root) {
+lurch::owner::owner(std::optional<owner*> parent, instance* root) : parent(parent), root(root) {
     this->lock = std::make_unique<std::mutex>();
 }
 
-lurch::owner::owner(instance *root) : root(root) {
-    this->lock = std::make_unique<std::mutex>();
-}
-
-lurch::leaf::leaf(lurch::owner* parent, instance *root)
+lurch::leaf::leaf(std::optional<owner*> parent, instance *root)
     : parent(parent), root(root) {}

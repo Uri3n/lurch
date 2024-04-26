@@ -18,4 +18,8 @@ add_executable(server main.cpp
         components/database.cpp
         components/router.cpp
         components/object_tree.cpp
+        objects/agent/agent.cpp
+        objects/agent/agent.hpp
+        objects/root/root.cpp
+        objects/root/root.hpp
 )

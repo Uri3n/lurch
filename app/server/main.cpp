@@ -5,13 +5,12 @@
 #include "components/instance.hpp"
 #include "util/io.hpp"
 
-#ifdef _MSVC_STL_VERSION && _MSVC_LANG
-    #ifdef _MSVC_LANG > 202002L
+#if defined(_MSVC_STL_VERSION) && defined(_MSVC_LANG)
+    #if _MSVC_LANG > 202002L
         #define LURCH_USE_STACKTRACE
         #include <stacktrace>
     #endif
 #endif
-
 
 void handle_uncaught_exception() {
 

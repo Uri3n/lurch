@@ -4,6 +4,24 @@
 
 #include "io.hpp"
 
+std::vector<std::string> lurch::io::into_chunks(const std::string& str) {
+    size_t cur_chunk_begin = 0;
+    std::vector<std::string> chunks;
+
+    for(size_t i = 0; i < str.size(); i++) {
+        if(i && i % 35 == 0) {
+            chunks.emplace_back(str.substr(cur_chunk_begin, i - cur_chunk_begin));
+            cur_chunk_begin = i;
+        }
+    }
+
+    if(cur_chunk_begin < str.size()) {
+        chunks.emplace_back(str.substr(cur_chunk_begin));
+    }
+
+    return chunks;
+}
+
 void lurch::io::success(const std::string& str) {
     std::cout << '|' << std::setw(50) << std::left << str << '|' << \
                 termcolor::bright_grey << std::setw(35) << std::setfill('.') << " " << \
@@ -15,7 +33,7 @@ void lurch::io::failure(const std::string& str) {
     std::cout << '|' << std::setw(50) << std::left << str << '|' << \
                 termcolor::bright_grey << std::setw(35) << std::setfill('.') << " " << \
                 std::left << std::right << termcolor::reset << '[' << \
-                termcolor::red << "FAILURE" << termcolor::reset << ']' << std::setfill(' ') << std::endl;
+                termcolor::red << "ERROR" << termcolor::reset << ']' << std::setfill(' ') << std::endl;
 }
 
 void lurch::io::info(const std::string& str) {
@@ -24,6 +42,49 @@ void lurch::io::info(const std::string& str) {
                 std::left << std::right << termcolor::reset << '[' << \
                 termcolor::blue << "INFO" << termcolor::reset << ']' << std::setfill(' ') << std::endl;
 }
+
+void lurch::io::big_info(const std::string &str) {
+    if(str.empty()){
+        return;
+    }
+
+    const std::vector<std::string> chunks = into_chunks(str);
+    std::cout << BLUE_TEXT(std::format("|{:^35}|", "INFO")) << std::endl;
+    std::cout << std::setw(37) << std::setfill('-') << std::left << '-' << std::setfill(' ') << std::endl;
+
+    for(const std::string& chunk : chunks) {
+        std::cout << BLUE_TEXT('|') << std::setw(35) << std::left << chunk << BLUE_TEXT('|') << std::endl;
+    }
+}
+
+void lurch::io::big_failure(const std::string &str) {
+    if(str.empty()){
+        return;
+    }
+
+    const std::vector<std::string> chunks = into_chunks(str);
+    std::cout << RED_TEXT(std::format("|{:^35}|", "ERROR")) << std::endl;
+    std::cout << std::setw(37) << std::setfill('-') << std::left << '-' << std::setfill(' ') << std::endl;
+
+    for(const std::string& chunk : chunks) {
+        std::cout << RED_TEXT('|') << std::setw(35) << std::left << chunk << RED_TEXT('|') << std::endl;
+    }
+}
+
+void lurch::io::big_success(const std::string &str) {
+    if(str.empty()){
+        return;
+    }
+
+    const std::vector<std::string> chunks = into_chunks(str);
+    std::cout << GREEN_TEXT(std::format("|{:^35}|", "SUCCESS")) << std::endl;
+    std::cout << std::setw(37) << std::setfill('-') << std::left << '-' << std::setfill(' ') << std::endl;
+
+    for(const std::string& chunk : chunks) {
+        std::cout << GREEN_TEXT('|') << std::setw(35) << std::left << chunk << GREEN_TEXT('|') << std::endl;
+    }
+}
+
 
 std::string lurch::io::prompt_for(const std::string prompt) {
     std::string input;

@@ -7,11 +7,18 @@
 #include <iostream>
 #include <format>
 #include <string>
+#include <vector>
 #include <iomanip>
 #include "../vendor/termcolor.hpp"
 
+#define BLUE_TEXT(str) termcolor::bright_cyan << str << termcolor::reset
+#define RED_TEXT(str) termcolor::red << str << termcolor::reset
+#define GREEN_TEXT(str) termcolor::green << str << termcolor::reset
+
 namespace lurch {
 class io {
+private:
+    static std::vector<std::string> into_chunks(const std::string& str);
 public:
 
     template<typename ... Args>
@@ -32,6 +39,10 @@ public:
     static void success(const std::string& str);
     static void failure(const std::string& str);
     static void info(const std::string& str);
+
+    static void big_success(const std::string& str);
+    static void big_failure(const std::string& str);
+    static void big_info(const std::string& str);
 
     static void print_banner();
     static std::string prompt_for(const std::string prompt);

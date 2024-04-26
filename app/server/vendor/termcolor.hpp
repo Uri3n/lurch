@@ -9,9 +9,9 @@
 //! :license: BSD, see LICENSE for details
 //!
 
-#define WIN32_LEAN_AND_MEAN
 #ifndef TERMCOLOR_HPP_
 #define TERMCOLOR_HPP_
+#define WIN32_LEAN_AND_MEAN
 
 #include <iostream>
 

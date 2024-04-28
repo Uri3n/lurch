@@ -4,6 +4,8 @@
 
 #include "argument_parser.hpp"
 
+#include <typeindex>
+
 lurch::result<double> lurch::argument_parser::safe_to_double(const std::string token) {
 
 	if (token.find('.') == std::string::npos) {
@@ -121,7 +123,6 @@ std::pair<std::string, size_t> lurch::argument_parser::get_quoted_string(const s
 		return {};
 	}
 
-
 	return std::make_pair(quoted_string, (index - start) + 1);
 }
 
@@ -190,3 +191,53 @@ lurch::result<lurch::command> lurch::argument_parser::parse(std::string raw) {
 	cmd.name = name;
 	return lurch::result<lurch::command>(cmd);
 }
+
+lurch::formatted_command& lurch::accepted_commands::add_command(const std::string& name) {
+	return commands.emplace_back(formatted_command(name));
+}
+
+bool lurch::accepted_commands::matches(const lurch::command& passed) {
+	for(const auto& command : this->commands) {
+		if(command.name == passed.name) {
+			return match_flags(passed, command);
+		}
+	}
+
+	return false;
+}
+
+bool lurch::accepted_commands::match_flags(const lurch::command& passed, const formatted_command& to_compare) {
+
+	std::map<std::string, std::optional<std::type_index>> arg_map;
+	for(const auto&[flag_name, parameter] : passed.arguments) {
+		if(arg_map.contains(flag_name)) {
+			return false;
+		}
+
+		arg_map[flag_name] = std::visit([](auto&& arg) -> std::type_index { return typeid(arg); }, parameter);
+	}
+
+	//
+	// Iterate through "real" flags, check if they match. If the map
+	// is not empty at the end of this, passed flags are invalid.
+	//
+
+	for(const auto& real_arg : to_compare.args) {
+		auto it = arg_map.begin();
+
+		if( (it = arg_map.find(real_arg.long_form)) != arg_map.end() || (it = arg_map.find(real_arg.short_form)) != arg_map.end() ) {
+			if((it->second.has_value() && it->second.value() == real_arg.type_name) &&
+				arg_map.count(real_arg.long_form) + arg_map.count(real_arg.short_form) < 2) {
+
+				arg_map.erase(it);
+			}
+		}
+
+		else if(real_arg.required){ //if arg is required and not found, fail.
+			return false;
+		}
+	}
+
+	return arg_map.empty();
+}
+

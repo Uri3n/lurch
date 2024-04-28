@@ -1,8 +1,8 @@
 #include <iostream>
 #include <exception>
 #include <csignal>
-#include <chrono>
 #include "components/instance.hpp"
+#include "util/argument_parser.hpp"
 #include "util/io.hpp"
 
 #if defined(_MSVC_STL_VERSION) && defined(_MSVC_LANG)
@@ -33,7 +33,7 @@ void handle_uncaught_exception() {
     std::cout << st << std::endl;
 #endif
 
-    std::cerr << "[!] exception routine finished. terminating..." << std::endl;
+    std::cout << "[!] exception routine finished. terminating..." << std::endl;
     std::exit(1);
 }
 

@@ -4,7 +4,8 @@
 
 #include "instance.hpp"
 
-lurch::result<std::pair<std::string, std::string>> lurch::instance::router::hdr_extract_credentials(const crow::request &req) {
+lurch::result<std::pair<std::string, std::string>>
+lurch::instance::router::hdr_extract_credentials(const crow::request &req) {
 
     try {
         std::string encoded_creds = req.get_header_value("Authorization").substr(6);
@@ -26,14 +27,16 @@ lurch::result<std::pair<std::string, std::string>> lurch::instance::router::hdr_
 }
 
 
-void lurch::instance::router::add_ws_connection(crow::websocket::connection *conn) {
+void
+lurch::instance::router::add_ws_connection(crow::websocket::connection *conn) {
 
     std::lock_guard<std::mutex> lock(this->websockets.lock);
     this->websockets.connections.push_back(conn);
     io::info("Opened new websocket connection from " + conn->get_remote_ip());
 }
 
-void lurch::instance::router::remove_ws_connection(crow::websocket::connection* conn) {
+void
+lurch::instance::router::remove_ws_connection(crow::websocket::connection* conn) {
 
     std::lock_guard<std::mutex> lock(this->websockets.lock);
     for(auto it = websockets.connections.begin(); it != websockets.connections.end();) {
@@ -46,7 +49,8 @@ void lurch::instance::router::remove_ws_connection(crow::websocket::connection* 
     }
 }
 
-void lurch::instance::router::send_ws_data(const std::string &data, const bool is_binary) {
+void
+lurch::instance::router::send_ws_data(const std::string &data, const bool is_binary) {
 
     std::lock_guard<std::mutex> lock(this->websockets.lock);
     for(auto& conn : this->websockets.connections) {
@@ -58,15 +62,18 @@ void lurch::instance::router::send_ws_data(const std::string &data, const bool i
     }
 }
 
-inline void lurch::instance::router::send_ws_text(const std::string &data) {
+void
+lurch::instance::router::send_ws_text(const std::string &data) {
     send_ws_data(data, false);
 }
 
-void lurch::instance::router::send_ws_binary(const std::string &data) {
+void
+lurch::instance::router::send_ws_binary(const std::string &data) {
     send_ws_data(data, true);
 }
 
-void lurch::instance::router::run(std::string addr, uint16_t port) {
+void
+lurch::instance::router::run(std::string addr, uint16_t port) {
 
     CROW_ROUTE(this->app, "/")
     .methods("GET"_method)([&](const crow::request& req, crow::response& res) {
@@ -120,11 +127,13 @@ void lurch::instance::router::run(std::string addr, uint16_t port) {
     });
 
     CROW_ROUTE(this->app, "/objects/getchildren/<string>")
-    .methods("POST"_method)([&](const crow::request& req, crow::response& res, std::string GUID){
+    .methods("GET"_method)([&](const crow::request& req, crow::response& res, std::string GUID){
 
-        res.code = 200;
-        res.body = "hello world";
-        io::info("serving POST at endpoint: \"/objects/getchildren\" :: " + std::to_string(res.code));
+        res.code = 404;
+
+
+
+        io::info("serving GET at endpoint: \"/objects/getchildren\" :: " + std::to_string(res.code));
         res.end();
     });
 

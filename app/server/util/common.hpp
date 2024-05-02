@@ -15,12 +15,20 @@
 #include <typeindex>
 
 namespace lurch {
-    enum class object_type {
-        GENERIC,
-        CUSTOM,
+
+    enum class object_type : int64_t {
+        NONE,
+        GROUP,
         AGENT,
         EXTERNAL,
-        GROUP
+        ROOT
+    };
+
+    enum class object_index : int64_t {
+        BAPHOMET,
+        GENERIC_GROUP,
+        GENERIC_CHATROOM,
+        GENERIC_ROOT,
     };
 
     template<typename T>

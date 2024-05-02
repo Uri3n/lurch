@@ -6,7 +6,8 @@
 
 #include <typeindex>
 
-lurch::result<double> lurch::argument_parser::safe_to_double(const std::string token) {
+lurch::result<double>
+lurch::argument_parser::safe_to_double(const std::string token) {
 
 	if (token.find('.') == std::string::npos) {
 		return error("failed.");
@@ -19,7 +20,8 @@ lurch::result<double> lurch::argument_parser::safe_to_double(const std::string t
 	return d;
 }
 
-lurch::result<int64_t> lurch::argument_parser::safe_to_signed_integer(const std::string token) {
+lurch::result<int64_t>
+lurch::argument_parser::safe_to_signed_integer(const std::string token) {
 
 	int64_t i = 0;
 
@@ -28,14 +30,16 @@ lurch::result<int64_t> lurch::argument_parser::safe_to_signed_integer(const std:
 	return i;
 }
 
-lurch::result<bool> lurch::argument_parser::safe_to_boolean(const std::string token) {
+lurch::result<bool>
+lurch::argument_parser::safe_to_boolean(const std::string token) {
 
 	if (token == "true") { return true; }
 	else if (token == "false") { return false;}
 	return error("failed.");
 }
 
-lurch::argument_parameter lurch::argument_parser::infer_parameter_type(const std::string token) {
+lurch::argument_parameter
+lurch::argument_parser::infer_parameter_type(const std::string token) {
 
 	result<int64_t> param_i64     =   argument_parser::safe_to_signed_integer(token);
 	result<bool> param_bool       =   argument_parser::safe_to_boolean(token);
@@ -57,7 +61,8 @@ lurch::argument_parameter lurch::argument_parser::infer_parameter_type(const std
 }
 
 
-void lurch::argument_parser::strip_whitespace(std::string& str) {
+void
+lurch::argument_parser::strip_whitespace(std::string& str) {
 
 	if (str.empty()) {
 		return;
@@ -83,7 +88,8 @@ void lurch::argument_parser::strip_whitespace(std::string& str) {
 }
 
 
-std::pair<std::string, std::vector<std::string>> lurch::argument_parser::tokenize_input(std::string& str) {
+std::pair<std::string, std::vector<std::string>>
+lurch::argument_parser::tokenize_input(std::string& str) {
 
 	std::istringstream        iss(str);
 	std::string               name;
@@ -100,7 +106,8 @@ std::pair<std::string, std::vector<std::string>> lurch::argument_parser::tokeniz
 }
 
 
-std::pair<std::string, size_t> lurch::argument_parser::get_quoted_string(const std::vector<std::string>& tokens, size_t index) {
+std::pair<std::string, size_t>
+lurch::argument_parser::get_quoted_string(const std::vector<std::string>& tokens, size_t index) {
 
 	if (index >= tokens.size() || tokens.empty()) {
 		return {};
@@ -127,7 +134,8 @@ std::pair<std::string, size_t> lurch::argument_parser::get_quoted_string(const s
 }
 
 
-lurch::result<lurch::command> lurch::argument_parser::parse(std::string raw) {
+lurch::result<lurch::command>
+lurch::argument_parser::parse(std::string raw) {
 
 	lurch::command cmd;
 	argument cur_argument = {.parameter = std::monostate()};
@@ -192,11 +200,15 @@ lurch::result<lurch::command> lurch::argument_parser::parse(std::string raw) {
 	return lurch::result<lurch::command>(cmd);
 }
 
-lurch::formatted_command& lurch::accepted_commands::add_command(const std::string& name) {
+
+lurch::formatted_command&
+lurch::accepted_commands::add_command(const std::string& name) {
 	return commands.emplace_back(formatted_command(name));
 }
 
-bool lurch::accepted_commands::matches(const lurch::command& passed) {
+
+bool
+lurch::accepted_commands::matches(const lurch::command& passed) {
 	for(const auto& command : this->commands) {
 		if(command.name == passed.name) {
 			return match_flags(passed, command);
@@ -206,7 +218,9 @@ bool lurch::accepted_commands::matches(const lurch::command& passed) {
 	return false;
 }
 
-bool lurch::accepted_commands::match_flags(const lurch::command& passed, const formatted_command& to_compare) {
+
+bool
+lurch::accepted_commands::match_flags(const lurch::command& passed, const formatted_command& to_compare) {
 
 	std::map<std::string, std::optional<std::type_index>> arg_map;
 	for(const auto&[flag_name, parameter] : passed.arguments) {

@@ -4,7 +4,10 @@
 
 #include "base.hpp"
 
-std::string lurch::object::generate_id() {
+#include <utility>
+
+std::string
+lurch::object::generate_id() {
 
     std::random_device device;
     std::mt19937 generator(device());
@@ -26,16 +29,11 @@ std::string lurch::object::generate_id() {
 
 lurch::object::~object() {
     if(!id.empty()) {
-        std::cout << "deleting object with GUID: " << id << "\n\n";
+        io::info("deleting object with GUID: " + id);
+    } else {
+        io::failure("an object with no GUID is being deleted. Possible undefined behaviour.");
     }
 }
 
-lurch::object::object()
-    : id(lurch::object::generate_id()) {}
-
-lurch::owner::owner(std::optional<owner*> parent, instance* root) : parent(parent), root(root) {
-    this->lock = std::make_unique<std::mutex>();
-}
-
-lurch::leaf::leaf(std::optional<owner*> parent, instance *root)
-    : parent(parent), root(root) {}
+lurch::owner::owner(std::optional<std::weak_ptr<owner>> parent, instance* root) : parent(std::move(parent)), root(root) {}
+lurch::leaf::leaf(std::optional<std::weak_ptr<owner>> parent, instance *root) : parent(std::move(parent)), root(root) {}

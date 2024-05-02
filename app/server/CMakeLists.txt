@@ -22,4 +22,6 @@ add_executable(server main.cpp
         objects/agent/agent.hpp
         objects/root/root.cpp
         objects/root/root.hpp
+        objects/group/group.cpp
+        objects/group/group.hpp
 )

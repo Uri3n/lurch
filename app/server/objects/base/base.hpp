@@ -7,6 +7,7 @@
 #include <memory>
 #include <vector>
 #include "../../util/common.hpp"
+#include "../../util/io.hpp"
 #include <iomanip>
 #include <iostream>
 #include <random>
@@ -21,29 +22,28 @@ namespace lurch {
 
         static std::string generate_id();
         virtual ~object();
-        object();
+        object() = default;
     };
 
     class owner : public object {
     public:
-        std::optional<owner*> parent;
+        std::optional<std::weak_ptr<owner>> parent;
         instance* root;
-        std::vector<std::unique_ptr<object>> children;
-        std::unique_ptr<std::mutex> lock = nullptr;
+        std::vector<std::shared_ptr<object>> children;
 
         virtual std::string recieve(const lurch::command& cmd) = 0;
         virtual ~owner() = default;
-        owner(std::optional<owner*> parent, instance* root);
+        owner(std::optional<std::weak_ptr<owner>> parent, instance* root);
     };
 
     class leaf : public object {
     public:
-        std::optional<owner*> parent;
+        std::optional<std::weak_ptr<owner>> parent;
         instance* root;
 
         virtual std::string recieve(const lurch::command& cmd) = 0;
         virtual ~leaf() = default;
-        leaf(std::optional<owner*> parent, instance* root);
+        leaf(std::optional<std::weak_ptr<owner>> parent, instance* root);
     };
 
 } // lurch::objects

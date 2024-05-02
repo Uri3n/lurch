@@ -37,8 +37,8 @@ function appendErrorNotification(msg){
 }
 
 
-document.getElementById('submit').addEventListener('click',()=> {
-    
+function submitCredentials(){
+
     let username = document.getElementById('username').value.trim()
     let password = document.getElementById('password').value.trim();
 
@@ -72,4 +72,16 @@ document.getElementById('submit').addEventListener('click',()=> {
         .catch(error => {
             appendErrorNotification(error.toString());
         });
-});
+}
+
+
+//
+// Event listeners
+// 
+
+document.getElementById('submit').addEventListener('click', submitCredentials);
+document.addEventListener('keydown', (event) => {
+    if(event.key === 'Enter'){
+        submitCredentials();
+    }
+})

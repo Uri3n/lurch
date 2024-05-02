@@ -15,7 +15,7 @@ private:
 public:
 
     std::string recieve(const lurch::command &cmd) override;
-    agent(const std::optional<owner *> &parent, instance* const root)
+    agent(const std::optional<std::weak_ptr<owner>> &parent, instance* const root)
         : leaf(parent, root) {
     }
 };

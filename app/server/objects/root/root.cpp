@@ -4,6 +4,7 @@
 
 #include "root.hpp"
 
-std::string lurch::root::recieve(const lurch::command &cmd) {
+std::string
+lurch::root::recieve(const lurch::command &cmd) {
     return std::string("got this: ") + cmd.name;
 }

@@ -4,6 +4,7 @@
 
 #include "agent.hpp"
 
-std::string lurch::agent::recieve(const lurch::command &cmd) {
+std::string
+lurch::agent::recieve(const lurch::command &cmd) {
     return cmd.name;
 }

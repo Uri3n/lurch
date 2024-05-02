@@ -4,21 +4,22 @@
 
 #include "instance.hpp"
 
-/* These macros are only used during development */
 #define LURCH_DEFAULT_BIND
 #define LURCH_DEFAULT_ADDRESS "127.0.0.1"
 #define LURCH_DEFAULT_PORT 8081
 
 //
 //  lurch::instance::begin() is where it all begins, literally.
-//  this function is responsible for setting up the database, routing,
-//  object tree, etc.
+//  this function is responsible for:
+//  - setting up routing, database, object tree.
+//  - calling database::restore_objects to set up objects that were used last time.
 //
 // IMPORTANT:
 //  if this function fails in any way, it will throw a fatal exception.
 //  if we cannot set up the server instance, we cannot continue further.
 
-void lurch::instance::begin() {
+void
+lurch::instance::begin() {
 
     std::optional<std::string> initial_user = std::nullopt;
     std::optional<std::string> initial_password = std::nullopt;
@@ -41,12 +42,17 @@ void lurch::instance::begin() {
         }
     }
 
+
     this->tree.inst = this;
-    this->tree.root = std::make_unique<lurch::root>(this);
     this->routing.inst = this;
 
-    lurch::result<bool> db_init = this->db.initialize(this, initial_user, initial_password);
+    result<bool> db_init = this->db.initialize(this, initial_user, initial_password);
     if(!db_init) {
+        throw std::runtime_error(db_init.error());
+    }
+
+    result<bool> db_restore = this->db.restore_objects();
+    if(!db_restore) {
         throw std::runtime_error(db_init.error());
     }
 

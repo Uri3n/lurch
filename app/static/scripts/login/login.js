@@ -75,13 +75,16 @@ function submitCredentials(){
 }
 
 
-//
-// Event listeners
-// 
 
 document.getElementById('submit').addEventListener('click', submitCredentials);
 document.addEventListener('keydown', (event) => {
     if(event.key === 'Enter'){
-        submitCredentials();
+        if(document.activeElement === document.getElementById('username')){
+            document.getElementById('password').focus();
+        }
+        
+        else {
+            submitCredentials();
+        }
     }
 })

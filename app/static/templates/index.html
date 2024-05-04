@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="static/stylesheets/bulma.min.css" />
     <link rel="stylesheet" href="static/stylesheets/main.css" />
-    <script src="static/scripts/main.js" defer></script>
+    <script type="module" src="static/scripts/main/main.js" defer></script>
 </head>
     
 <body>
@@ -13,29 +13,30 @@
     <!-- Contains object info, notifications -->
     <div id="object-container">
         <div id="object-menu" class="element-rgb-hover">
-            <nav class="panel is-info">
+                <ul class="menu-list menu">
 
-                <div class="panel-block-container">
-                    <a class="panel-block is-active">
-                        Agent1
-                    </a>
-                    <a class="panel-block">
-                        Group1
-                    </a>
-                    <a class="panel-block">
-                        Teamserver2
-                    </a>
-                    <a class="panel-block">
-                        Other
-                    </a>
-                    <a class="panel-block">
-                        Other
-                    </a>
-                    <a class="panel-block">
-                        Other
-                    </a>
-                </div>
-            </nav>
+                    <li><a>Team Settings</a></li>
+                    <li>
+                      <a class="is-active">Manage Your Team</a>
+                      <ul>
+                        <li><a>Members</a></li>
+                        <li><a>Plugins</a></li>
+                        <li><a>Add a member</a></li>
+                      </ul>
+                    </li>
+                    <li><a>Invitations</a></li>
+                    <li><a>Cloud Storage Environment Settings</a></li>
+                    <li><a>Authentication</a></li>
+                    <li><a>Invitations</a></li>
+                    <li><a>Cloud Storage Environment Settings</a></li>
+                    <li><a>Authentication</a></li>
+                    <li><a>Invitations</a></li>
+                    <li><a>Cloud Storage Environment Settings</a></li>
+                    <li><a>Authentication</a></li>
+                    <li><a>Invitations</a></li>
+                    <li><a>Cloud Storage Environment Settings</a></li>
+                    <li><a>Authentication</a></li>
+                </ul>
 
             <div id="object-icon-container"> 
                 <img src="static/assets/icon_root.png" class="placeholder-image"/>

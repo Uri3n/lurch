@@ -1,19 +1,17 @@
-﻿
-//-------------------------------------------------
-
-const g_Observer = new MutationObserver(mutationCallback);
 
 //-------------------------------------------------
+export const observer = new MutationObserver(mutationCallback);
+//-------------------------------------------------
 
 
-function observeElement(newElement){
+export function observeElement(newElement){
 
     const observerConfig = {
         childList : true,
         attributes: true //may need this later
     };
 
-    g_Observer.observe(newElement, observerConfig);
+    observer.observe(newElement, observerConfig);
 }
 
 
@@ -34,7 +32,7 @@ function mutationCallback(mutationList, observer){
 }
 
 
-function addDeleteButtonHandlers(){
+export function addDeleteButtonHandlers(){
     const deleteButtons = document.querySelectorAll('.delete');
     
     if(deleteButtons !== null){
@@ -53,19 +51,3 @@ function addDeleteButtonHandlers(){
         });
     }
 }
-
-
-function main(){
-    
-    addDeleteButtonHandlers();
-    observeElement(document.getElementById('notification-center'));
-
-    document.querySelectorAll('.terminal-instance').forEach( element => {
-        observeElement(element);
-    });
-
-
-    
-}
-
-main();

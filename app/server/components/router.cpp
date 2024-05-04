@@ -115,6 +115,9 @@ lurch::instance::router::run(std::string addr, uint16_t port) {
     .methods("POST"_method)([&](const crow::request& req, crow::response& res, std::string GUID){
 
         res.code = 400;
+        if(GUID == "root") {
+            GUID = inst->db.query_root_guid().value_or(GUID);
+        }
 
         if(!req.body.empty() && req.body.size() < 200) {                                                   //check for a valid request
             const auto msg_result = inst->tree.send_message(GUID, req.body);                               //send the message
@@ -143,6 +146,7 @@ lurch::instance::router::run(std::string addr, uint16_t port) {
     .methods("GET"_method)([&](const crow::request& req, crow::response& res, std::string GUID){
 
         res.code = 404;
+
         if(const auto data_result = inst->db.query_object_data(GUID)) {
             const auto& [parent,alias,type,index] = data_result.value();
 
@@ -158,7 +162,7 @@ lurch::instance::router::run(std::string addr, uint16_t port) {
             io::failure("error: " + data_result.error());
         }
 
-        io::info("serving GET at endpoint: \"/objects/getchildren\" :: " + std::to_string(res.code));
+        io::info("serving GET at endpoint: \"/objects/getdata\" :: " + std::to_string(res.code));
         res.end();
     });
 
@@ -210,7 +214,11 @@ lurch::instance::router::run(std::string addr, uint16_t port) {
                 json["sender"] = sender;
                 json["body"] = body;
                 json["timestamp"] = timestamp;
-                res.body += json.dump();
+                res.body += (json.dump() + ',');
+            }
+
+            if(res.body.back() == ',') {
+                res.body.pop_back();
             }
 
             res.body += ']';

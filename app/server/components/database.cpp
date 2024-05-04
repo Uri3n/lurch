@@ -307,7 +307,7 @@ lurch::instance::database::query_object_messages(const std::string &guid) {
     std::lock_guard<std::mutex> lock(this->mtx);
 
     try {
-        for(auto&& row : *this->db << "select sender,body,insert_time from messages where guid = ?" << guid) {
+        for(auto&& row : *this->db << "select sender,body,insert_time from messages where guid = ? order by _id asc;" << guid) {
             std::string q_sender;
             std::string q_body;
             std::string q_time;

@@ -9,7 +9,11 @@
 #include <string>
 #include <vector>
 #include <iomanip>
+#include "common.hpp"
 #include "../vendor/termcolor.hpp"
+
+#define TEXT_WIDTH 70
+#define PERIOD_FILLER_WIDTH 20
 
 #define BLUE_TEXT(str) termcolor::bright_cyan << str << termcolor::reset
 #define RED_TEXT(str) termcolor::red << str << termcolor::reset
@@ -36,6 +40,7 @@ public:
         return output;
     }
 
+    static std::string type_to_str(const object_type type);
     static void success(const std::string& str);
     static void failure(const std::string& str);
     static void info(const std::string& str);

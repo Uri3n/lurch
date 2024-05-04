@@ -4,6 +4,12 @@
 
 #include "instance.hpp"
 
+//
+// Contains implementations of SQL queries.
+// these functions should NOT call other query functions, ever.
+// database mutex is not recursive, so that will result in a deadlock.
+//
+
 bool
 lurch::instance::database::match_user(const std::string& username, const std::string& password) {
 
@@ -19,6 +25,7 @@ lurch::instance::database::match_user(const std::string& username, const std::st
         }
 
         throw std::exception();
+
     } catch(...) {
         io::failure(io::format_str("Query for user: {}, password: {} failed.", username, password));
         return false;
@@ -98,8 +105,10 @@ lurch::instance::database::initialize(
         *this->db <<
             "create table if not exists messages ("
             "   _id integer primary key autoincrement not null,"
-            "   recipient text not null,"
-            "   sender text not null"
+            "   guid text not null,"
+            "   sender text not null,"
+            "   body text not null,"
+            "   insert_time timestamp default current_timestamp"
             ");";
 
         if(initial_user && initial_password) {
@@ -109,16 +118,40 @@ lurch::instance::database::initialize(
                 << hash_password(initial_password.value());
         }
 
-
     } catch(const sqlite::sqlite_exception& e) {
-        return lurch::error(io::format_str("exception: {} SQL: {}", e.what(), e.get_sql()));
+        return error(io::format_str("exception: {} SQL: {}", e.what(), e.get_sql()));
+    } catch(const std::exception& e) {
+        return error(e.what());
     } catch(...) {
-        return lurch::error("unknown exception encountered");
+        return error("unknown exception encountered");
     }
 
     return lurch::result<bool>(true);
 }
 
+
+lurch::result<bool>
+lurch::instance::database::store_message(const std::string& guid, const std::string& sender, const std::string& body) {
+
+    std::lock_guard<std::mutex> lock(this->mtx);
+    try {
+        *this->db <<
+            "insert into messages (guid,sender,body) values (?,?,?)"
+            << guid
+            << sender
+            << body;
+
+    } catch(const sqlite::sqlite_exception& e) {
+        io::failure("SQL exception while storing message from: " + sender);
+        io::failure(std::string("exception type: ") + e.what());
+        return error(io::format_str("exception: {} SQL: {}", e.what(), e.get_sql()));
+    } catch(...) {
+        return error("unknown exception encountered");
+    }
+
+    io::success("stored message. Sender: " + sender);
+    return result<bool>(true);
+}
 
 lurch::result<bool>
 lurch::instance::database::store_object(
@@ -161,7 +194,7 @@ lurch::instance::database::store_object(
     } catch (const sqlite::sqlite_exception& e) {
         return error(io::format_str("exception: {} SQL: {}", e.what(), e.get_sql()));
     } catch(...) {
-        return lurch::error("unknown exception encountered");
+        return error("unknown exception encountered");
     }
 
     return result<bool>(true);
@@ -228,10 +261,79 @@ lurch::instance::database::query_object_children(const std::string &guid){
     return children;
 }
 
+lurch::result<lurch::object_data>
+lurch::instance::database::query_object_data(const std::string &guid) {
+
+    if(guid.empty()) {
+        return error("empty GUID provided.");
+    }
+
+    std::optional<object_data> data = std::nullopt;
+    std::lock_guard<std::mutex> lock(this->mtx);
+    try {
+        *this->db << "select parent,alias,type,type_index from objects where guid = ? ;"
+                    << guid
+                    >> [&](std::unique_ptr<std::string> parent, std::string alias, int64_t type, int64_t index) {
+                        if(parent != nullptr) {
+                            data = std::make_tuple(
+                                *parent,
+                                alias,
+                                static_cast<object_type>(type),
+                                static_cast<object_index>(index)
+                            );
+                        }
+                    };
+
+        if(data.has_value()) {
+            return data.value();
+        }
+
+        throw std::runtime_error("object does not exist.");
+
+    } catch (const sqlite::sqlite_exception& e) {
+        return error(io::format_str("exception: {} SQL: {}", e.what(), e.get_sql()));
+    } catch(const std::exception& e) {
+        return error(e.what());
+    } catch(...) {
+        return error("unknown exception encountered");
+    }
+}
+
+
+lurch::result<std::vector<lurch::object_message>>
+lurch::instance::database::query_object_messages(const std::string &guid) {
+
+    std::vector<object_message> messages;
+    std::lock_guard<std::mutex> lock(this->mtx);
+
+    try {
+        for(auto&& row : *this->db << "select sender,body,insert_time from messages where guid = ?" << guid) {
+            std::string q_sender;
+            std::string q_body;
+            std::string q_time;
+
+            row >> q_sender >> q_body >> q_time;
+            messages.emplace_back(std::make_tuple(q_sender, q_body, q_time));
+        }
+
+        if(messages.empty()) {
+            throw std::runtime_error("no messages found.");
+        }
+
+    } catch (const sqlite::sqlite_exception& e) {
+        return error(io::format_str("exception: {} SQL: {}", e.what(), e.get_sql()));
+    } catch(const std::exception& e) {
+        return error(e.what());
+    } catch(...) {
+        return error("unknown exception encountered");
+    }
+
+    return messages;
+}
+
 
 size_t
 lurch::instance::database::object_count() {
-
     std::lock_guard<std::mutex> lock(this->mtx);
     try {
         size_t count = 0;
@@ -317,7 +419,8 @@ lurch::instance::database::restore_objects() {
         }
 
     } else {
-        io::info("restored root object: " + root_guid.value());
+        ++total_restored_objects;
+        io::success("restored root object: " + root_guid.value());
     }
 
     std::shared_ptr<object> root_ptr = inst->tree.create_object(
@@ -331,9 +434,8 @@ lurch::instance::database::restore_objects() {
 
     restore_objects_r(std::dynamic_pointer_cast<owner>(inst->tree.root), total_restored_objects);
 
-    io::info("finished restoration.");
-    io::info("objects restored: " + std::to_string(total_restored_objects));
-    io::info("total objects in database: " + std::to_string(object_count()));
+    io::success("finished restoration.");
+    io::success("objects restored: " + std::to_string(total_restored_objects));
 
     return result<bool>(true);
 }

@@ -6,5 +6,5 @@
 
 std::string
 lurch::agent::recieve(const lurch::command &cmd) {
-    return cmd.name;
+    return std::string("got ya shit: ") + cmd.name;
 }

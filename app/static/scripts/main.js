@@ -64,6 +64,8 @@ function main(){
         observeElement(element);
     });
 
+
+    
 }
 
 main();

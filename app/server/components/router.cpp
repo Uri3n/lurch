@@ -22,7 +22,7 @@ lurch::instance::router::hdr_extract_credentials(const crow::request &req) {
 
         return std::make_pair(decoded_creds.substr(0, found), decoded_creds.substr(found+1));
     } catch(...) {
-        return lurch::error("Invalid credentials provided.");
+        return error("Invalid credentials provided.");
     }
 }
 
@@ -84,12 +84,14 @@ lurch::instance::router::run(std::string addr, uint16_t port) {
         res.end();
     });
 
+
     CROW_ROUTE(this->app, "/isrunning")
     .methods("GET"_method)([&](const crow::request& req, crow::response& res) {
         res.code = 200;
         res.body = "LURCH_SERVER_OK";
         res.end();
     });
+
 
     CROW_ROUTE(this->app, "/main")
     .methods("GET"_method)([&](const crow::request& req, crow::response& res) {
@@ -108,40 +110,118 @@ lurch::instance::router::run(std::string addr, uint16_t port) {
         res.end();
     });
 
+
     CROW_ROUTE(this->app, "/objects/send/<string>")
     .methods("POST"_method)([&](const crow::request& req, crow::response& res, std::string GUID){
 
-        res.code = 200;
-        res.body = std::string("got ur shit") + req.body;
+        res.code = 400;
+
+        if(!req.body.empty() && req.body.size() < 200) {                                                   //check for a valid request
+            const auto msg_result = inst->tree.send_message(GUID, req.body);                               //send the message
+            if(msg_result.has_value()) {
+
+                res.code = 200;
+                res.body = msg_result.value();
+
+                io::success("successfully parsed command: " + req.body);
+                io::success("responsible object: " + GUID);
+
+                inst->db.store_message(GUID, req.remote_ip_address, req.body);                              //we need to store two messages here.
+                inst->db.store_message(GUID, GUID, msg_result.value());                                     //The message sent from client->object and object->client (the response).
+
+            } else {
+                io::failure("Invalid message sent to object.");
+            }
+        }
+
         io::info("serving POST at endpoint: \"/objects/send\" :: " + std::to_string(res.code));
         res.end();
     });
 
+
     CROW_ROUTE(this->app, "/objects/getdata/<string>")
     .methods("GET"_method)([&](const crow::request& req, crow::response& res, std::string GUID){
 
-        res.code = 200;
-        res.body = "hello world";
-        io::info("serving GET at endpoint: \"/objects/getdata\" :: " + std::to_string(res.code));
-        res.end();
-    });
-
-    CROW_ROUTE(this->app, "/objects/getchildren/<string>")
-    .methods("GET"_method)([&](const crow::request& req, crow::response& res, std::string GUID){
-
         res.code = 404;
+        if(const auto data_result = inst->db.query_object_data(GUID)) {
+            const auto& [parent,alias,type,index] = data_result.value();
 
+            crow::json::wvalue json;
+            json["parent"] = parent;
+            json["alias"] = alias;
+            json["type"] = io::type_to_str(type);
 
+            res.code = 200;
+            res.body = json.dump();
+        } else {
+            io::failure(io::format_str("getdata request for {} failed.", GUID));
+            io::failure("error: " + data_result.error());
+        }
 
         io::info("serving GET at endpoint: \"/objects/getchildren\" :: " + std::to_string(res.code));
         res.end();
     });
 
+
+    CROW_ROUTE(this->app, "/objects/getchildren/<string>")
+    .methods("GET"_method)([&](const crow::request& req, crow::response& res, std::string GUID){
+
+        res.code = 404;
+        if(GUID == "root") {
+            GUID = inst->db.query_root_guid().value_or(GUID);
+        }
+
+        result<array_of_children> children = inst->db.query_object_children(GUID);
+        if(children) {
+            res.body = '[';
+            for(const auto &[guid, alias, type, index] : children.value()) {
+                crow::json::wvalue json;
+
+                json["guid"] = guid;
+                json["alias"] = alias;
+                json["type"] = io::type_to_str(type);
+
+                res.body += (json.dump() + ',');
+            }
+
+            if(res.body.back() == ',') {
+                res.body.pop_back();
+            }
+
+            res.body += ']';
+            res.code = 200;
+        }
+
+        io::info("serving GET at endpoint: \"/objects/getchildren\" :: " + std::to_string(res.code));
+        res.end();
+    });
+
+
     CROW_ROUTE(this->app, "/objects/getmessages/<string>")
     .methods("GET"_method)([&](const crow::request& req, crow::response& res, std::string GUID){
 
-        res.code = 200;
-        res.body = "hello world";
+        res.code = 400;
+        const auto query_result = inst->db.query_object_messages(GUID);
+
+        if(query_result.has_value()) {
+            res.body = '[';
+            for(const auto &[sender, body, timestamp] : query_result.value()) {
+                crow::json::wvalue json;
+                json["sender"] = sender;
+                json["body"] = body;
+                json["timestamp"] = timestamp;
+                res.body += json.dump();
+            }
+
+            res.body += ']';
+            res.code = 200;
+            io::success("got messages for: " + GUID);
+
+        } else {
+            io::failure("message query failed.");
+            io::failure("error: " + query_result.error());
+        }
+
         io::info("serving GET at endpoint: \"/objects/getmessages\" :: " + std::to_string(res.code));
         res.end();
     });
@@ -161,7 +241,7 @@ lurch::instance::router::run(std::string addr, uint16_t port) {
         remove_ws_connection(&conn);
     })
     .onmessage([&](crow::websocket::connection& conn, const std::string& data, bool is_binary) {
-        io::info("recieved unexpected websocket message from " + conn.get_remote_ip());
+        io::failure("recieved unexpected websocket message from " + conn.get_remote_ip());
         if(!is_binary) {
             io::info("message: " + data);
         }

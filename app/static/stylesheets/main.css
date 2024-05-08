@@ -141,9 +141,13 @@ body {
 
 #terminal-menu .menu-list li a{
     text-align:center !important;
+    text-overflow: hidden;
 }
 
 
+.hidden-image{
+    display: none !important;
+}
 
 /* For elements that have an RGB hue when hovered over */
 .element-rgb-hover {
@@ -163,9 +167,19 @@ body {
 .terminal-instance{
     display:flex;
     flex-direction:column;
-    justify-content:left;
     height:100%;
     width:80%;
+    overflow:auto;
+    scrollbar-width:none;
+}
+
+.terminal-session{
+    height:100%;
+    width:100%;
+    overflow:scroll;
+    justify-content: left;
+    display:flex;
+    flex-direction:column;
     overflow:scroll;
     scrollbar-width:none;
 }
@@ -177,7 +191,6 @@ body {
     height:fit-content;
 }
 
-/* Name of the object that sent the message */
 .terminal-instance-element .message-header p {
     color: rgb(58, 189, 255);
 }

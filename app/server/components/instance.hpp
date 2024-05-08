@@ -77,6 +77,13 @@ class instance {
             void send_ws_text(const std::string& data);
             void send_ws_binary(const std::string& data);
 
+            /* handler functions should NOT call crow::response::end, or set the response code. */
+            bool handler_main(const crow::request& req, crow::response& res) const;
+            bool handler_objects_send(std::string GUID, const crow::request& req, crow::response& res) const;
+            bool handler_objects_getdata(std::string GUID, crow::response& res) const;
+            bool handler_objects_getchildren(std::string GUID, crow::response& res) const;
+            bool handler_objects_getmessages(std::string GUID,  crow::response& res) const;
+
             void run(std::string addr, uint16_t port);
             static result<std::pair<std::string, std::string>> hdr_extract_credentials(const crow::request& req);
 

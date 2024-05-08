@@ -13,35 +13,20 @@
     <!-- Contains object info, notifications -->
     <div id="object-container">
         <div id="object-menu" class="element-rgb-hover">
-                <ul class="menu-list menu">
-
-                    <li><a>Team Settings</a></li>
-                    <li>
-                      <a class="is-active">Manage Your Team</a>
-                      <ul>
-                        <li><a>Members</a></li>
-                        <li><a>Plugins</a></li>
-                        <li><a>Add a member</a></li>
-                      </ul>
-                    </li>
-                    <li><a>Invitations</a></li>
-                    <li><a>Cloud Storage Environment Settings</a></li>
-                    <li><a>Authentication</a></li>
-                    <li><a>Invitations</a></li>
-                    <li><a>Cloud Storage Environment Settings</a></li>
-                    <li><a>Authentication</a></li>
-                    <li><a>Invitations</a></li>
-                    <li><a>Cloud Storage Environment Settings</a></li>
-                    <li><a>Authentication</a></li>
-                    <li><a>Invitations</a></li>
-                    <li><a>Cloud Storage Environment Settings</a></li>
-                    <li><a>Authentication</a></li>
-                </ul>
+            <ul class="menu-list menu">
+                <li data-object-type="root"><a draggable="true">root :: root object</a></li>
+            </ul>
 
             <div id="object-icon-container"> 
-                <img src="static/assets/icon_root.png" class="placeholder-image"/>
+                <img src="static/assets/icon_question_mark.png" data-object-type="none"         class="placeholder-image"/>
+                <img src="static/assets/icon_root.png"          data-object-type="root"         class="placeholder-image" style="display:none;"/>
+                <img src="static/assets/icon_agent.png"         data-object-type="agent"        class="placeholder-image" style="display:none;"/>
+                <img src="static/assets/icon_group.png"         data-object-type="group"        class="placeholder-image" style="display:none;"/>
+                <img src="static/assets/icon_external.png"      data-object-type="external"     class="placeholder-image" style="display:none;"/>
+                <img src="static/assets/icon_generic.png"       data-object-type="generic"      class="placeholder-image" style="display:none;"/>
             </div>
         </div>
+
 
         <!-- displays notifications (event log) -->
         <div id="notification-center" class="element-rgb-hover">
@@ -55,7 +40,7 @@
                 This notification indicates success
                 blablabla
             </div>
-
+            
             <div class="notification deletable-parent">
                 <button class="delete"></button>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit lorem ipsum dolor.
@@ -71,6 +56,8 @@
                 nulla. Vestibulum rhoncus ac ex sit amet fringilla. Nullam gravida purus diam,
                 et dictum efficitur.
             </div>
+
+            <img src="static/assets/ui_empty_notifications.png" class="placeholder-image" style="display:none;">
         </div>
     </div>
 
@@ -81,78 +68,83 @@
         <div class="container-generic-flex-row">
             <div class="terminal-instance element-rgb-hover">
 
-                
-                <div class="terminal-instance-element message deletable-parent">
-                    <div class="message-header">
-                        <p>Hello World</p>
-                        <button class="delete" aria-label="delete"></button>
+                <img src="static/assets/ui_empty_sessions.png" class="placeholder-image" style="display:none;">
+
+                <div class="terminal-session" data-object-guid="e67a9661-cbb2-420c-a212-9ec894a5e239">
+                    
+                    <img src="static/assets/ui_empty_terminal.png" class="placeholder-image" style="display:none;">
+                    <div class="terminal-instance-element message deletable-parent">
+                        <div class="message-header">
+                            <p>Hello World</p>
+                            <button class="delete" aria-label="delete"></button>
+                        </div>
+                        
+                        <div class="message-body">
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                            eleifend lacus, in mollis lectus. Donec sodales, arcu et
+                            sollicitudin porttitor, tortor urna tempor ligula, id porttitor mi magna a
+                            neque. Donec dui urna, vehicula et sem eget, facilisis sodales sem.
+                        </div>
                     </div>
-                    <div class="message-body">
+                    
+                    <div class="terminal-instance-element message deletable-parent">
+                        <div class="message-header">
+                            <p>Hello World</p>
+                            <button class="delete" aria-label="delete"></button>
+                        </div>
+                        
+                        <div class="message-body">
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                            eleifend lacus, in mollis lectus. Donec sodales, arcu et
+                            sollicitudin porttitor, tortor urna tempor ligula, id porttitor mi magna a
+                            neque. Donec dui urna, vehicula et sem eget, facilisis sodales sem.
+                        </div>
+                    </div>
 
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-
-                        eleifend lacus, in mollis lectus. Donec sodales, arcu et
-
-                        sollicitudin porttitor, tortor urna tempor ligula, id porttitor mi magna a
-                        neque. Donec dui urna, vehicula et sem eget, facilisis sodales sem.
-
+                    <div class="terminal-instance-element message deletable-parent">
+                        <div class="message-header">
+                            <p>Hello World</p>
+                            <button class="delete" aria-label="delete"></button>
+                        </div>
+                        
+                        <div class="message-body">
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                            eleifend lacus, in mollis lectus. Donec sodales, arcu et
+                            sollicitudin porttitor, tortor urna tempor ligula, id porttitor mi magna a
+                            neque. Donec dui urna, vehicula et sem eget, facilisis sodales sem.
+                        </div>
                     </div>
                 </div>
 
 
-                <div class="terminal-instance-element message deletable-parent">
-                    <div class="message-header">
-                        <p>Hello World</p>
-                        <button class="delete" aria-label="delete"></button>
-                    </div>
-                    <div class="message-body">
-
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                        ligula, id porttitor mi magna a
-                        neque. Donec dui urna, vehicula et sem eget, facilisis sodales sem.
-
-                    </div>
-                </div>
-
-
-                <div class="terminal-instance-element message deletable-parent">
-                    <div class="message-header">
-                        <p>Hello World</p>
-                        <button class="delete" aria-label="delete"></button>
-                    </div>
-                    <div class="message-body">
-
-                        Lorem ipsum dolor sit amet, consectetur adipiscing
-
-                    </div>
-                </div>
-
-
-                <div class="terminal-instance-element message deletable-parent">
-                    <div class="message-header">
-                        <p>Hello World</p>
-                        <button class="delete" aria-label="delete"></button>
-                    </div>
-                    <div class="message-body">
-
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                        ligula, id porttitor mi magna a
-                        neque. Donec dui urna, vehicula et sem eget, facilisis sodales sem.
-
+                <div class="terminal-session" data-object-guid="8a403ec1-f5ea-4bda-cf08-57ca02c6862c" style="display:none;">
+                    <img src="static/assets/ui_empty_terminal.png" class="placeholder-image" style="display:none;">
+                    
+                    <div class="terminal-instance-element message deletable-parent">
+                        <div class="message-header">
+                            <p>Hello World</p>
+                            <button class="delete" aria-label="delete"></button>
+                        </div>
+                        
+                        <div class="message-body">
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                            eleifend lacus, in mollis lectus. Donec sodales, arcu et
+                            sollicitudin porttitor, tortor urna tempor ligula, id porttitor mi magna a
+                            neque. Donec dui urna, vehicula et sem eget, facilisis sodales sem.
+                        </div>
                     </div>
                 </div>
             </div>
+
 
             <div id="terminal-menu" class="menu element-rgb-hover">
                 <p class="menu-label" style="margin-top:1vh">Object Sessions</p>
                 <ul class="menu-list">
-                    <li><a>Example1</a></li>
-                    <li><a>Example2</a></li>
-                    <li><a>Example3</a></li>
+                    <li data-object-guid="e67a9661-cbb2-420c-a212-9ec894a5e239" class="deletable-parent is-active"><a>First Option </a> <button class="delete" aria-label="delete"> </li>
+                    <li data-object-guid="8a403ec1-f5ea-4bda-cf08-57ca02c6862c" class="deletable-parent"><a>Second Option</a> <button class="delete" aria-label="delete"></li>
                 </ul>
             </div>
         </div>
-
 
         <input id="terminal-input" class="input is-normal element-rgb-hover" type="text" placeholder="Input Goes Here...">
 

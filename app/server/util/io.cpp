@@ -29,14 +29,19 @@ lurch::io::type_to_str(const object_type type) {
     switch(type) {
         case object_type::NONE:
             return "none";
+
         case object_type::ROOT:
             return "root";
+
         case object_type::GROUP:
             return "group";
+
         case object_type::AGENT:
             return "agent";
+
         case object_type::EXTERNAL:
             return "external";
+
         default:
             return "unknown";
     }

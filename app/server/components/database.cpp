@@ -274,14 +274,12 @@ lurch::instance::database::query_object_data(const std::string &guid) {
         *this->db << "select parent,alias,type,type_index from objects where guid = ? ;"
                     << guid
                     >> [&](std::unique_ptr<std::string> parent, std::string alias, int64_t type, int64_t index) {
-                        if(parent != nullptr) {
-                            data = std::make_tuple(
-                                *parent,
-                                alias,
-                                static_cast<object_type>(type),
-                                static_cast<object_index>(index)
-                            );
-                        }
+                        data = std::make_tuple(
+                            (parent == nullptr ? std::string("none") : *parent),
+                            alias,
+                            static_cast<object_type>(type),
+                            static_cast<object_index>(index)
+                        );
                     };
 
         if(data.has_value()) {

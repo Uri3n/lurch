@@ -1,3 +1,4 @@
+import { deleteButtonCallback } from "./ui.js";
 
 //-------------------------------------------------
 export const observer = new MutationObserver(mutationCallback);
@@ -8,7 +9,7 @@ export function observeElement(newElement){
 
     const observerConfig = {
         childList : true,
-        attributes: true //may need this later
+        attributes: true 
     };
 
     observer.observe(newElement, observerConfig);
@@ -17,15 +18,18 @@ export function observeElement(newElement){
 
 function mutationCallback(mutationList, observer){
     mutationList.forEach(mutation => {
-        if(mutation.type === 'childList' && mutation.target.children.length === 0){
-            
-            const targetId = mutation.target.getAttribute('id');
-            if(targetId !== null && targetId === 'notification-center'){    //Short circuit evaluated, should be OK.
-                mutation.target.innerHTML = '<img src="static/assets/ui_empty_notifications.png" class="placeholder-image">'
-            }
+        if(mutation.type === 'childList'){
 
-            else if(mutation.target.classList.contains('terminal-instance')){
-                mutation.target.innerHTML = '<img src="static/assets/ui_empty_terminal.png" class="placeholder-image">'
+            const placeholderImage = mutation.target.querySelector('img');
+            
+            if(placeholderImage !== null){
+                if(mutation.target.children.length === 1){
+                    placeholderImage.style.display = 'flex';
+                }
+                
+                else {
+                    placeholderImage.style.display = 'none';    
+                }
             }
         }
     })
@@ -37,17 +41,7 @@ export function addDeleteButtonHandlers(){
     
     if(deleteButtons !== null){
         deleteButtons.forEach((button) => {
-           button.addEventListener('click', () => {
-                let parent = button.parentElement;
-
-                do{
-                    if(parent.classList.contains('deletable-parent')){
-                        parent.remove();
-                    }
-
-                    parent = parent.parentElement;
-                } while(parent);
-           }); 
+           button.addEventListener('click', deleteButtonCallback);
         });
     }
 }

@@ -31,6 +31,12 @@ namespace lurch {
         GENERIC_ROOT,
     };
 
+    enum class ws_notification_intent : uint16_t {
+        NEUTRAL,
+        BAD,
+        GOOD
+    };
+
     template<typename T>
     using result = std::expected<T, std::string>;
     using error = std::unexpected<std::string>;

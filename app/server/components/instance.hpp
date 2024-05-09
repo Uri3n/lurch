@@ -46,6 +46,9 @@ class instance {
             result<bool> store_user(const std::string& username, const std::string& password);
             result<bool> store_message(const std::string& guid, const std::string& sender,  const std::string& body);
 
+            result<bool> delete_object(const std::string& guid);
+            result<bool> delete_user(const std::string& username);
+
             result<std::string> query_root_guid();
             result<object_type> query_object_type(const std::string& guid);
             result<array_of_children> query_object_children(const std::string& guid);
@@ -73,13 +76,19 @@ class instance {
 
             void add_ws_connection(crow::websocket::connection* conn);
             void remove_ws_connection(crow::websocket::connection* conn);
+
             void send_ws_data(const std::string& data, const bool is_binary);
             void send_ws_text(const std::string& data);
             void send_ws_binary(const std::string& data);
 
+            void send_ws_object_message_update(const std::string& body, const std::string& sender, std::string recipient);
+            void send_ws_object_create_update(const std::string& guid, std::string parent, const std::string& alias, object_type type);
+            void send_ws_object_delete_update(const std::string& guid);
+            void send_ws_notification(const std::string& message, ws_notification_intent intent);
+
             /* handler functions should NOT call crow::response::end, or set the response code. */
             bool handler_main(const crow::request& req, crow::response& res) const;
-            bool handler_objects_send(std::string GUID, const crow::request& req, crow::response& res) const;
+            bool handler_objects_send(std::string GUID, const crow::request& req, crow::response& res);
             bool handler_objects_getdata(std::string GUID, crow::response& res) const;
             bool handler_objects_getchildren(std::string GUID, crow::response& res) const;
             bool handler_objects_getmessages(std::string GUID,  crow::response& res) const;
@@ -107,7 +116,6 @@ class instance {
             uint32_t get_max_object_count() const;
             void increment_object_count();
 
-            result<bool> create_child(const std::string& parent_guid, object_index index);
             std::shared_ptr<object> create_object(object_index index, const std::optional<std::string> guid, const std::optional<std::weak_ptr<owner>> parent);
             result<std::string> send_message(const std::string& guid, const std::string& cmd_raw);
 

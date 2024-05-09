@@ -1,7 +1,21 @@
 ﻿import {observeElement, addDeleteButtonHandlers} from './observer.js';
 import {startWebsocket} from './ws.js';
-import {sendObjectMessage, fetchObjectMessages, fetchObjectData, fetchObjectChildren} from './fetch.js';
-import {appendListElement, listElementClickCallback, listElementDragStartCallback, listElementDragEndCallback, terminalMenuClickCallback} from './ui.js';
+
+import {
+    sendObjectMessage, 
+    fetchObjectMessages, 
+    fetchObjectData, 
+    fetchObjectChildren
+} from './fetch.js';
+
+import {
+    appendListElement, 
+    listElementClickCallback, 
+    listElementDragStartCallback, 
+    listElementDragEndCallback, 
+    terminalMenuClickCallback,
+    keyDownCallback
+} from './ui.js';
 
 //-------------------------------------------------------------------------------------------
 
@@ -34,6 +48,21 @@ async function main(){
     document.querySelectorAll('#terminal-menu .menu-list li').forEach(element => {
         element.addEventListener('click', terminalMenuClickCallback);
     });
+
+
+    //
+    // init websocket
+    //
+
+    startWebsocket();
+
+    //
+    // submit field event listener
+    //
+
+    document.addEventListener('keydown', keyDownCallback);
+
+
 
 }
 

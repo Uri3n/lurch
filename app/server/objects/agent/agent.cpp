@@ -5,6 +5,6 @@
 #include "agent.hpp"
 
 std::string
-lurch::agent::recieve(const lurch::command &cmd) {
+lurch::agent::recieve(const command &cmd) {
     return std::string("got ya shit: ") + cmd.name;
 }

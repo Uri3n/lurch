@@ -9,19 +9,6 @@ export const templates = {
     //
 
 
-    notification : (content) => {
-        const template = `<div class="notification deletable-parent"> 
-                            <button class="delete"></button>
-                            ${content.replace(/[<>]/g, '')}
-                          </div>`;
-
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(template, 'text/html');
-        
-        return doc.body.firstChild;
-    },
-
-
     terminalMessage : (headerContent, content) => {
         const template = `<div class="terminal-instance-element message deletable-parent">
                             <div class="message-header">
@@ -34,9 +21,10 @@ export const templates = {
                         </div>`;
 
         const parser = new DOMParser();
-        const doc = parser.parseFromString(template, 'text/html');
-
-        return doc.body.firstChild;
+        const element = parser.parseFromString(template, 'text/html').body.firstChild;
+        element.querySelector('.delete').addEventListener('click', deleteButtonCallback);
+        
+        return element;
     },
 
 
@@ -64,10 +52,10 @@ export const templates = {
                           </div>`
     
         const parser = new DOMParser();
-        const doc = parser.parseFromString(template, 'text/html');
-        observeElement(doc);
+        const element = parser.parseFromString(template, 'text/html').body.firstChild;
+        observeElement(element);
         
-        return doc.body.firstChild; 
+        return element;
     },
 
 
@@ -86,6 +74,51 @@ export const templates = {
     
         li.appendChild(a);
         return li;
-    }
+    },
+
+
+    neutralNotification : (content) => {
+
+        const template = `<div class="notification deletable-parent"> 
+                            <button class="delete"></button>
+                            ${content.replace(/[<>]/g, '')}
+                          </div>`;
+
+        const parser = new DOMParser();
+        const element = parser.parseFromString(template, 'text/html').body.firstChild;
+        element.querySelector('.delete').addEventListener('click', deleteButtonCallback);
+        
+        return element;
+    },
+
+
+    badNotification : (content) => {
+
+        const template = `<div class="notification deletable-parent is-danger"> 
+                            <button class="delete"></button>
+                            ${content.replace(/[<>]/g, '')}
+                          </div>`;
+
+        const parser = new DOMParser();
+        const element = parser.parseFromString(template, 'text/html').body.firstChild;
+        element.querySelector('.delete').addEventListener('click', deleteButtonCallback);
+        
+        return element;
+    },
+
+
+    goodNotification : (content) => {
+
+        const template = `<div class="notification deletable-parent is-link"> 
+                            <button class="delete"></button>
+                            ${content.replace(/[<>]/g, '')}
+                          </div>`;
+
+        const parser = new DOMParser();
+        const element = parser.parseFromString(template, 'text/html').body.firstChild;
+        element.querySelector('.delete').addEventListener('click', deleteButtonCallback);
+        
+        return element;
+    },
 
 };

@@ -10,13 +10,17 @@
     
 <body>
 
-    <!-- Contains object info, notifications -->
+    <!-- Contains object menu and notifications -->
     <div id="object-container">
         <div id="object-menu" class="element-rgb-hover">
+            
+            <!-- this menu list should always start out with the root object available. -->
             <ul class="menu-list menu">
                 <li data-object-type="root"><a draggable="true">root :: root object</a></li>
             </ul>
 
+            <!-- contains icons that are displayed when objects are clicked in the menu. -->
+            <!-- to avoid slow load times, all icons are kept on the page but hidden, and then unhidden when they need to be displayed. -->
             <div id="object-icon-container"> 
                 <img src="static/assets/icon_question_mark.png" data-object-type="none"         class="placeholder-image"/>
                 <img src="static/assets/icon_root.png"          data-object-type="root"         class="placeholder-image" style="display:none;"/>
@@ -35,13 +39,13 @@
                 This is a notification!
             </div>
 
-            <div class="notification deletable-parent">
+            <div class="notification deletable-parent is-link">
                 <button class="delete"></button>
                 This notification indicates success
                 blablabla
             </div>
             
-            <div class="notification deletable-parent">
+            <div class="notification deletable-parent is-danger">
                 <button class="delete"></button>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit lorem ipsum dolor.
                 Pellentesque risus mi, tempus quis placerat ut, porta nec
@@ -67,81 +71,13 @@
 
         <div class="container-generic-flex-row">
             <div class="terminal-instance element-rgb-hover">
-
-                <img src="static/assets/ui_empty_sessions.png" class="placeholder-image" style="display:none;">
-
-                <div class="terminal-session" data-object-guid="e67a9661-cbb2-420c-a212-9ec894a5e239">
-                    
-                    <img src="static/assets/ui_empty_terminal.png" class="placeholder-image" style="display:none;">
-                    <div class="terminal-instance-element message deletable-parent">
-                        <div class="message-header">
-                            <p>Hello World</p>
-                            <button class="delete" aria-label="delete"></button>
-                        </div>
-                        
-                        <div class="message-body">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                            eleifend lacus, in mollis lectus. Donec sodales, arcu et
-                            sollicitudin porttitor, tortor urna tempor ligula, id porttitor mi magna a
-                            neque. Donec dui urna, vehicula et sem eget, facilisis sodales sem.
-                        </div>
-                    </div>
-                    
-                    <div class="terminal-instance-element message deletable-parent">
-                        <div class="message-header">
-                            <p>Hello World</p>
-                            <button class="delete" aria-label="delete"></button>
-                        </div>
-                        
-                        <div class="message-body">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                            eleifend lacus, in mollis lectus. Donec sodales, arcu et
-                            sollicitudin porttitor, tortor urna tempor ligula, id porttitor mi magna a
-                            neque. Donec dui urna, vehicula et sem eget, facilisis sodales sem.
-                        </div>
-                    </div>
-
-                    <div class="terminal-instance-element message deletable-parent">
-                        <div class="message-header">
-                            <p>Hello World</p>
-                            <button class="delete" aria-label="delete"></button>
-                        </div>
-                        
-                        <div class="message-body">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                            eleifend lacus, in mollis lectus. Donec sodales, arcu et
-                            sollicitudin porttitor, tortor urna tempor ligula, id porttitor mi magna a
-                            neque. Donec dui urna, vehicula et sem eget, facilisis sodales sem.
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="terminal-session" data-object-guid="8a403ec1-f5ea-4bda-cf08-57ca02c6862c" style="display:none;">
-                    <img src="static/assets/ui_empty_terminal.png" class="placeholder-image" style="display:none;">
-                    
-                    <div class="terminal-instance-element message deletable-parent">
-                        <div class="message-header">
-                            <p>Hello World</p>
-                            <button class="delete" aria-label="delete"></button>
-                        </div>
-                        
-                        <div class="message-body">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                            eleifend lacus, in mollis lectus. Donec sodales, arcu et
-                            sollicitudin porttitor, tortor urna tempor ligula, id porttitor mi magna a
-                            neque. Donec dui urna, vehicula et sem eget, facilisis sodales sem.
-                        </div>
-                    </div>
-                </div>
+                <img src="static/assets/ui_empty_sessions.png" class="placeholder-image">
             </div>
-
 
             <div id="terminal-menu" class="menu element-rgb-hover">
                 <p class="menu-label" style="margin-top:1vh">Object Sessions</p>
                 <ul class="menu-list">
-                    <li data-object-guid="e67a9661-cbb2-420c-a212-9ec894a5e239" class="deletable-parent is-active"><a>First Option </a> <button class="delete" aria-label="delete"> </li>
-                    <li data-object-guid="8a403ec1-f5ea-4bda-cf08-57ca02c6862c" class="deletable-parent"><a>Second Option</a> <button class="delete" aria-label="delete"></li>
+                    
                 </ul>
             </div>
         </div>

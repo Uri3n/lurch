@@ -26,7 +26,8 @@ lurch::instance::database::match_user(const std::string& username, const std::st
 
         throw std::exception();
 
-    } catch(...) {
+    }
+    catch(...) {
         io::failure(io::format_str("Query for user: {}, password: {} failed.", username, password));
         return false;
     }
@@ -43,9 +44,11 @@ lurch::instance::database::store_user(const std::string &username, const std::st
             << username
             << hash_password(password);
 
-    } catch(const sqlite::sqlite_exception& e) {
+    }
+    catch(const sqlite::sqlite_exception& e) {
         return lurch::error(io::format_str("exception: {} SQL: {}", e.what(), e.get_sql()));
-    } catch(...) {
+    }
+    catch(...) {
         return lurch::error("unknown exception encountered");
     }
 
@@ -118,11 +121,14 @@ lurch::instance::database::initialize(
                 << hash_password(initial_password.value());
         }
 
-    } catch(const sqlite::sqlite_exception& e) {
+    }
+    catch(const sqlite::sqlite_exception& e) {
         return error(io::format_str("exception: {} SQL: {}", e.what(), e.get_sql()));
-    } catch(const std::exception& e) {
+    }
+    catch(const std::exception& e) {
         return error(e.what());
-    } catch(...) {
+    }
+    catch(...) {
         return error("unknown exception encountered");
     }
 
@@ -140,18 +146,54 @@ lurch::instance::database::store_message(const std::string& guid, const std::str
             << guid
             << sender
             << body;
-
-    } catch(const sqlite::sqlite_exception& e) {
-        io::failure("SQL exception while storing message from: " + sender);
-        io::failure(std::string("exception type: ") + e.what());
+    }
+    catch(const sqlite::sqlite_exception& e) {
         return error(io::format_str("exception: {} SQL: {}", e.what(), e.get_sql()));
-    } catch(...) {
+    }
+    catch(...) {
         return error("unknown exception encountered");
     }
 
     io::success("stored message. Sender: " + sender);
     return result<bool>(true);
 }
+
+
+lurch::result<bool>
+lurch::instance::database::delete_object(const std::string &guid) {
+
+    std::lock_guard<std::mutex> lock(this->mtx);
+    try {
+        *this->db << "delete from objects where guid = ?;" << guid;
+    }
+    catch (const sqlite::sqlite_exception& e) {
+        return error(io::format_str("exception: {} SQL: {}", e.what(), e.get_sql()));
+    }
+    catch(...) {
+        return error("unknown exception encountered");
+    }
+
+    return result<bool>(true);
+}
+
+
+lurch::result<bool>
+lurch::instance::database::delete_user(const std::string &username) {
+
+    std::lock_guard<std::mutex> lock(this->mtx);
+    try {
+        *this->db << "delete from users where username = ?;" << username;
+    }
+    catch (const sqlite::sqlite_exception& e) {
+        return error(io::format_str("exception: {} SQL: {}", e.what(), e.get_sql()));
+    }
+    catch(...) {
+        return error("unknown exception encountered");
+    }
+
+    return result<bool>(true);
+}
+
 
 lurch::result<bool>
 lurch::instance::database::store_object(
@@ -172,7 +214,7 @@ lurch::instance::database::store_object(
         // Note: this is really fucking shit.
         // However, I cannot simply do (parent.has_value() ? parent.value() : nullptr).
         // The compiler does not like this (assumedly because the two ternary options are unrelated types?)
-        // anyways, I'll be sticking to this for now until I can find something better.
+        // anyways, I'll be sticking to this for now.
         if(parent.has_value()) {
             *this->db <<
                 "insert into objects (guid,alias,parent,type,type_index) values (?,?,?,?,?);"
@@ -191,9 +233,11 @@ lurch::instance::database::store_object(
                 << static_cast<int64_t>(index);
         }
 
-    } catch (const sqlite::sqlite_exception& e) {
+    }
+    catch (const sqlite::sqlite_exception& e) {
         return error(io::format_str("exception: {} SQL: {}", e.what(), e.get_sql()));
-    } catch(...) {
+    }
+    catch(...) {
         return error("unknown exception encountered");
     }
 
@@ -216,10 +260,12 @@ lurch::instance::database::query_object_type(const std::string &guid) {
         //Can be done better... okay for now
         throw std::exception();
 
-    } catch (const sqlite::sqlite_exception& e) {
+    }
+    catch (const sqlite::sqlite_exception& e) {
         return error(io::format_str("exception: {} SQL: {}", e.what(), e.get_sql()));
-    } catch(...) {
-        return lurch::error("unknown exception encountered");
+    }
+    catch(...) {
+        return error("unknown exception encountered");
     }
 }
 
@@ -250,11 +296,14 @@ lurch::instance::database::query_object_children(const std::string &guid){
             throw std::runtime_error("object has no children.");
         }
 
-    } catch (const sqlite::sqlite_exception& e) {
+    }
+    catch (const sqlite::sqlite_exception& e) {
         return error(io::format_str("exception: {} SQL: {}", e.what(), e.get_sql()));
-    } catch(const std::exception& e) {
+    }
+    catch(const std::exception& e) {
         return error(e.what());
-    } catch(...) {
+    }
+    catch(...) {
         return error("unknown exception encountered");
     }
 
@@ -288,11 +337,14 @@ lurch::instance::database::query_object_data(const std::string &guid) {
 
         throw std::runtime_error("object does not exist.");
 
-    } catch (const sqlite::sqlite_exception& e) {
+    }
+    catch (const sqlite::sqlite_exception& e) {
         return error(io::format_str("exception: {} SQL: {}", e.what(), e.get_sql()));
-    } catch(const std::exception& e) {
+    }
+    catch(const std::exception& e) {
         return error(e.what());
-    } catch(...) {
+    }
+    catch(...) {
         return error("unknown exception encountered");
     }
 }
@@ -318,11 +370,14 @@ lurch::instance::database::query_object_messages(const std::string &guid) {
             throw std::runtime_error("no messages found.");
         }
 
-    } catch (const sqlite::sqlite_exception& e) {
+    }
+    catch (const sqlite::sqlite_exception& e) {
         return error(io::format_str("exception: {} SQL: {}", e.what(), e.get_sql()));
-    } catch(const std::exception& e) {
+    }
+    catch(const std::exception& e) {
         return error(e.what());
-    } catch(...) {
+    }
+    catch(...) {
         return error("unknown exception encountered");
     }
 
@@ -357,9 +412,11 @@ lurch::instance::database::query_root_guid() {
 
         throw std::runtime_error("root GUID does not exist.");
 
-    } catch (const sqlite::sqlite_exception& e) {
+    }
+    catch (const sqlite::sqlite_exception& e) {
         return error(io::format_str("exception: {} SQL: {}", e.what(), e.get_sql()));
-    } catch(const std::exception& e) {
+    }
+    catch(const std::exception& e) {
         return error(e.what());
     }
 }
@@ -380,7 +437,7 @@ lurch::instance::database::restore_objects_r(std::shared_ptr<owner> object, size
         std::shared_ptr<lurch::object> child_ptr = inst->tree.create_object(
             index,
             guid,
-            std::weak_ptr(object)
+            std::nullopt //Parent pointers are unused for now. May change this later.
         );
 
         io::info(io::format_str("restoring object {} :: {}", guid, alias));

@@ -28,22 +28,25 @@ namespace lurch {
     class owner : public object {
     public:
         std::optional<std::weak_ptr<owner>> parent;
-        instance* root;
+        instance* inst;
         std::vector<std::shared_ptr<object>> children;
 
-        virtual std::string recieve(const lurch::command& cmd) = 0;
+        result<bool> create_child(object_index index, object_type type, const std::string& alias);
+        result<bool> delete_child(const std::string& guid);
+
+        virtual std::string recieve(const command& cmd) = 0;
         virtual ~owner() = default;
-        owner(std::optional<std::weak_ptr<owner>> parent, instance* root);
+        owner(std::optional<std::weak_ptr<owner>> parent, instance* inst);
     };
 
     class leaf : public object {
     public:
         std::optional<std::weak_ptr<owner>> parent;
-        instance* root;
+        instance* inst;
 
-        virtual std::string recieve(const lurch::command& cmd) = 0;
+        virtual std::string recieve(const command& cmd) = 0;
         virtual ~leaf() = default;
-        leaf(std::optional<std::weak_ptr<owner>> parent, instance* root);
+        leaf(std::optional<std::weak_ptr<owner>> parent, instance* inst);
     };
 
 } // lurch::objects

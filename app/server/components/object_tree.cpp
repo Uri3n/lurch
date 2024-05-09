@@ -28,7 +28,7 @@ lurch::instance::object_tree::increment_object_count() {
 }
 
 std::shared_ptr<lurch::object>
-lurch::instance::object_tree::create_object(object_index index, const std::optional<std::string> guid, const std::optional<std::weak_ptr<owner>> parent) {
+lurch::instance::object_tree::create_object(const object_index index, const std::optional<std::string> guid, const std::optional<std::weak_ptr<owner>> parent) {
 
     std::shared_ptr<object> obj = nullptr;
 
@@ -56,6 +56,7 @@ lurch::instance::object_tree::create_object(object_index index, const std::optio
 
 lurch::result<std::string>
 lurch::instance::object_tree::send_message_r(const std::shared_ptr<object>& current, const std::string &guid, const command& cmd) {
+
     //This SHOULD be safe, because the ref count of "current" is being held by the loop variable in the previous call.
     const auto owner_ptr = dynamic_cast<owner*>(current.get());
     const auto leaf_ptr = dynamic_cast<leaf*>(current.get());
@@ -83,6 +84,7 @@ lurch::instance::object_tree::send_message_r(const std::shared_ptr<object>& curr
     return error("object not found.");
 }
 
+
 lurch::result<std::string>
 lurch::instance::object_tree::send_message(const std::string& guid, const std::string& cmd_raw) {
 
@@ -94,12 +96,6 @@ lurch::instance::object_tree::send_message(const std::string& guid, const std::s
         return send_message_r(root_ptr, guid, cmd.value());
     }
 
-    return error(cmd.error());
+    return send_message_r(root_ptr, guid, command{ .name = cmd_raw });
 }
 
-
-lurch::result<bool>
-lurch::instance::object_tree::create_child(const std::string &parent_guid, object_index index) {
-    increment_object_count();
-    return error("unimplemented");
-}

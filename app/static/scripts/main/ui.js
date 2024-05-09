@@ -1,5 +1,11 @@
-import { fetchObjectData, fetchObjectChildren } from "./fetch.js";  
 import { templates } from "./templating.js";
+
+import { 
+    fetchObjectData, 
+    fetchObjectChildren, 
+    fetchObjectMessages, 
+    sendObjectMessage 
+} from "./fetch.js";  
 
 
 async function appendListChildren(element){
@@ -125,9 +131,34 @@ export function listElementDragStartCallback(event){
 }
 
 
-async function appendListElement_r(guid, data, element){
-    const children = element.children;
+function deleteListElement_r(guid, element){
 
+    const children = element.children;
+    for(const child of children){
+        
+        const anchorTag = child.querySelector('a');
+        const subList = child.querySelector('ul');
+    
+        if(anchorTag.textContent.trim().split(" ")[0] === guid) {
+            child.remove();
+            break;
+        }
+
+        else if(subList !== null){
+            deleteListElement_r(guid, subList);
+        }
+    }
+}
+
+
+export function deleteListElement(guid){
+    deleteListElement_r(guid, document.querySelector('#object-menu .menu-list'));
+}
+
+
+async function appendListElement_r(guid, data, element){
+    
+    const children = element.children;
     for(const child of children){
         const anchorTag = child.querySelector('a');
         const subList = child.querySelector('ul');
@@ -145,15 +176,15 @@ async function appendListElement_r(guid, data, element){
 }   
 
 
-export async function appendListElement(guid){
-    try {
-        const json = await fetchObjectData(guid);
-        await appendListElement_r(guid, json, document.querySelector('#object-menu .menu-list'));
+export function appendListElement(guid, parent, alias, type){
 
-    } catch(error){
-        console.error("appendListElement(): ",error);
-        return;
-    }
+    const data = {
+        alias   : alias,
+        type    : type,
+        parent  : parent
+    };
+
+    appendListElement_r(guid, data, document.querySelector('#object-menu .menu-list'));
 }
 
 
@@ -226,6 +257,42 @@ function sessionExists(guid){
 }
 
 
+export function appendNotification(body, intent){
+
+    let notification;
+    const notificationCenter = document.getElementById('notification-center');
+
+    switch(intent){
+        case "good":
+            notification = templates.goodNotification(body);
+            break;
+
+        case "bad":
+            notification = templates.badNotification(body);
+            break;
+    
+        default:
+            notification = templates.neutralNotification(body);
+            break;
+    }
+
+    notificationCenter.insertBefore(notification, notificationCenter.firstChild);
+}
+
+
+export function appendMessage(body, sender, recipient){
+
+    const sessions = document.querySelectorAll('.terminal-session');
+    if(sessions !== null){
+        sessions.forEach(session => {
+            if(session.getAttribute('data-object-guid') === recipient){
+                session.appendChild(templates.terminalMessage(sender, body));
+            }
+        });
+    }
+}
+
+
 export function terminalMenuClickCallback(event){
     
     event.stopPropagation();
@@ -236,7 +303,7 @@ export function terminalMenuClickCallback(event){
 }
 
 
-export function startSession(guid, alias){
+export async function startSession(guid, alias){
 
     if(sessionExists(guid)){
         selectTerminalMenuElement(guid);
@@ -244,13 +311,92 @@ export function startSession(guid, alias){
     } 
     
     else {
+
         const newSession = templates.terminalSession(guid);
         const menuElement = templates.terminalMenuElement(guid, alias);
 
+        try {
+            const messages = await fetchObjectMessages(guid);
+
+            for(const message of messages){
+                newSession.appendChild(templates.terminalMessage(message.sender, message.body));
+            }
+
+        } catch(error) {
+            console.log(`${guid}: no messages found.`);
+        }
+
         document.querySelector('#terminal-menu .menu-list').appendChild(menuElement);
         document.querySelector('.terminal-instance').appendChild(newSession);
-
+        
         selectTerminalMenuElement(guid);
         selectTerminalSession(guid);
+    }
+}
+
+
+// This function does nothing if there is no active session with this GUID.
+export function forceEndSession(guid){
+
+    const sessions = document.querySelectorAll('.terminal-session');
+    const terminalMenuElements = document.querySelectorAll('#terminal-menu .menu-list li');
+
+    if(sessions !== null){
+        sessions.forEach(session => {
+            if(session.getAttribute('data-object-guid') === guid){
+                session.remove();
+            }
+        });
+    }
+
+    if(terminalMenuElements !== null){
+        terminalMenuElements.forEach(element => {
+            if(element.getAttribute('data-object-guid') === guid){
+                element.remove();
+            }
+        });
+    }
+}
+
+
+function isInputSelected(){
+    const activeElement = document.activeElement;
+    return activeElement !== null && activeElement.getAttribute('id') === 'terminal-input'; 
+}
+
+function currentInputContent(){
+    return document.getElementById('terminal-input').value.trim();
+}
+
+function clearInputContent(){
+    document.getElementById('terminal-input').value = '';
+}
+
+
+export async function keyDownCallback(event){
+    
+    if(event.key === 'Enter' && isInputSelected()){
+        
+        const sessions = document.querySelectorAll('.terminal-session');
+        const messageContent = currentInputContent();
+        
+        if(sessions !== null && messageContent.length > 0){
+            for(const session of sessions){
+                
+                const guid = session.getAttribute('data-object-guid');
+                if(session.style.display !== 'none' && guid !== null){
+                    
+                    try {
+                        await sendObjectMessage(guid, messageContent);
+                    }
+                    
+                    catch(error) {
+                        console.log('keyDownCallback():', error);
+                    }
+                }
+            }
+        }
+
+        clearInputContent();
     }
 }

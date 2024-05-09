@@ -55,11 +55,16 @@ void
 lurch::instance::router::send_ws_data(const std::string &data, const bool is_binary) {
 
     std::lock_guard<std::mutex> lock(this->websockets.lock);
-    for(auto& conn : this->websockets.connections) {
-        if(is_binary) {
-            conn->send_binary(data);
-        } else {
-            conn->send_text(data);
+    for(auto conn : this->websockets.connections) {
+        try {
+            if(is_binary) {
+                conn->send_binary(data);
+            } else {
+                conn->send_text(data);
+            }
+        } catch(...) {
+            io::failure("exception while sending websocket data!");
+            return;
         }
     }
 }
@@ -74,6 +79,82 @@ lurch::instance::router::send_ws_text(const std::string &data) {
 void
 lurch::instance::router::send_ws_binary(const std::string &data) {
     send_ws_data(data, true);
+}
+
+
+void
+lurch::instance::router::send_ws_object_message_update(const std::string &body, const std::string &sender, std::string recipient) {
+
+    const auto root_guid = inst->db.query_root_guid();
+    if(root_guid.has_value() && root_guid.value() == recipient) {
+        recipient = "root";
+    }
+
+    crow::json::wvalue json;
+    json["update-type"] = "message";
+    json["body"] = body;
+    json["sender"] = sender;
+    json["recipient"] = recipient;
+
+    send_ws_text(json.dump());
+}
+
+
+void
+lurch::instance::router::send_ws_object_create_update(
+    const std::string &guid,
+    std::string parent, const
+    std::string& alias,
+    const object_type type
+    ) {
+
+    const auto root_guid = inst->db.query_root_guid();
+    if(root_guid.has_value() && root_guid.value() == parent) {
+        parent = "root";
+    }
+
+    crow::json::wvalue json;
+    json["update-type"] = "object-create";
+    json["guid"] = guid;
+    json["parent"] = parent;
+    json["alias"] = alias;
+    json["type"] = io::type_to_str(type);
+
+    send_ws_text(json.dump());
+}
+
+
+void
+lurch::instance::router::send_ws_object_delete_update(const std::string &guid) {
+
+    crow::json::wvalue json;
+    json["update-type"] = "object-delete";
+    json["guid"] = guid;
+
+    send_ws_text(json.dump());
+}
+
+
+void
+lurch::instance::router::send_ws_notification(const std::string &message, const ws_notification_intent intent) {
+
+    crow::json::wvalue json;
+    json["update-type"] = "notification";
+    json["body"] = message;
+
+    switch(intent) {
+        case ws_notification_intent::GOOD:
+            json["intent"] = "good";
+            break;
+        case ws_notification_intent::BAD:
+            json["intent"] = "bad";
+            break;
+        default:
+            json["intent"] = "neutral";
+            break;
+    }
+
+    send_ws_text(json.dump());
 }
 
 
@@ -94,7 +175,7 @@ lurch::instance::router::handler_main(const crow::request &req, crow::response &
 
 
 bool
-lurch::instance::router::handler_objects_send(std::string GUID, const crow::request& req, crow::response& res) const {
+lurch::instance::router::handler_objects_send(std::string GUID, const crow::request& req, crow::response& res) {
 
     if(GUID == "root") {
         GUID = inst->db.query_root_guid().value_or(GUID);
@@ -108,11 +189,16 @@ lurch::instance::router::handler_objects_send(std::string GUID, const crow::requ
             io::success("successfully parsed command: " + req.body);
             io::success("responsible object: " + GUID);
 
-            inst->db.store_message(GUID, req.remote_ip_address, req.body);                              //we need to store two messages here.
-            inst->db.store_message(GUID, GUID, msg_result.value());                                     //The message sent from client->object and object->client (the response).
+            inst->db.store_message(GUID, req.remote_ip_address, req.body);                              //we potentially need to store two messages here: client->server and server->client
+            send_ws_object_message_update(req.body, req.remote_ip_address, GUID);                       //send websocket update for the message.
+
+            if(!msg_result.value().empty()) {
+                inst->db.store_message(GUID, GUID, msg_result.value());                                 //object may decide to not return a message, in this case don't store or send anything.
+                send_ws_object_message_update(msg_result.value(), GUID, GUID);
+            }
+
             return true;
         }
-
         io::failure("Invalid message sent to object.");
     }
 
@@ -181,8 +267,11 @@ lurch::instance::router::handler_objects_getchildren(std::string GUID, crow::res
 bool
 lurch::instance::router::handler_objects_getmessages(std::string GUID, crow::response &res) const {
 
-    const auto query_result = inst->db.query_object_messages(GUID);
+    if(GUID == "root") {
+        GUID = inst->db.query_root_guid().value_or(GUID);
+    }
 
+    const auto query_result = inst->db.query_object_messages(GUID);
     if(query_result.has_value()) {
         res.body = '[';
         for(const auto &[sender, body, timestamp] : query_result.value()) {

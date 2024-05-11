@@ -1,5 +1,15 @@
-import {listElementClickCallback, listElementDragStartCallback, listElementDragEndCallback, deleteButtonCallback, terminalMenuClickCallback} from './ui.js';
 import { observeElement } from './observer.js'; 
+
+import {
+    listElementClickCallback,
+    listElementDragStartCallback,
+    listElementDragEndCallback,
+    deleteButtonCallback,
+    terminalMenuClickCallback,
+    sessionScrollCallback
+} from './ui.js';
+
+
 
 export const templates = {
     
@@ -10,19 +20,35 @@ export const templates = {
 
 
     terminalMessage : (headerContent, content) => {
-        const template = `<div class="terminal-instance-element message deletable-parent">
-                            <div class="message-header">
-                                <p>${headerContent.replace(/[<>]/g, '')}</p>
-                                <button class="delete" aria-label="delete"></button>
-                            </div>
-                            <div class="message-body">
-                                ${content.replace(/[<>]/g, '')}
+
+        // temporary shit fix for this retarded word wrapping issue
+        let replacementContent = '';
+        for(let i = 0, k = 0; i < content.length; i++, k++){
+            
+            if(content[i] === '\n'){
+                k = 0;
+            }
+
+            if( k > 0 && k % 100 === 0 ){
+                replacementContent += '\n';
+            }
+
+            replacementContent += content[i];
+        }
+
+        const template = `<div class="terminal-instance-element">
+                            <div class="message is-small">
+                                <div class="message-header">
+                                    <p>${headerContent.replace(/[<>]/g, '')}</p>
+                                </div>
+                                <div class="message-body">
+                                    <p>${replacementContent.replace(/[<>]/g, '')}</p>
+                                </div>
                             </div>
                         </div>`;
 
         const parser = new DOMParser();
         const element = parser.parseFromString(template, 'text/html').body.firstChild;
-        element.querySelector('.delete').addEventListener('click', deleteButtonCallback);
         
         return element;
     },
@@ -53,6 +79,8 @@ export const templates = {
     
         const parser = new DOMParser();
         const element = parser.parseFromString(template, 'text/html').body.firstChild;
+        
+        element.addEventListener('scroll', sessionScrollCallback);
         observeElement(element);
         
         return element;

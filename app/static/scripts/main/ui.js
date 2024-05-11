@@ -8,6 +8,42 @@ import {
 } from "./fetch.js";  
 
 
+function popInElement(element, scrollTo){
+
+    if(element.style.display !== 'none'){                           // element must be hidden initially for this to work
+        console.error(`popInElement(): passed element: ${element}\n
+                       without display set to "none".`);
+        return;
+    }
+
+    setTimeout(() => {
+        
+        element.style.display = 'flex';                             // small delay to ensure element is loaded
+        element.style.animation = 'popIn 0.3s ease';                // play "pop in" animation
+        
+        element.addEventListener('animationend', () => {
+            element.style.animation = 'none';
+        });
+
+        if(scrollTo){
+            element.scrollIntoView({behavior : 'smooth'});              // scroll towards the newly added element
+        }
+
+    }, 10);
+}
+
+
+function popOutElement(element) {
+
+    element.style.animation = 'popOut 0.3s ease';
+    element.style.transition = 'opacity 0.3s ease';
+    
+    element.addEventListener('animationend', () => {
+        element.remove();
+    });
+}
+
+
 async function appendListChildren(element){
     try {
         const children = await fetchObjectChildren(element.querySelector('a').textContent.trim().split(" ")[0]);
@@ -19,8 +55,8 @@ async function appendListChildren(element){
         }
 
         element.appendChild(childList);
-
-    } catch(error) {
+    } 
+    catch(error) {
         console.error('appendListChildren(): ',error);
     }
 }
@@ -51,6 +87,7 @@ function deselectListElement(element){
     
     element.querySelector('a').classList.remove('is-active');
     Array.from(document.getElementById('object-icon-container').children).forEach(element => {
+        
         if(element.getAttribute('data-object-type') !== 'none'){
             element.style.display = 'none';
         }
@@ -71,6 +108,7 @@ function selectListElement(element){
 
     if(typeAttr !== null){
         Array.from(document.getElementById('object-icon-container').children).forEach(element => {
+            
             if(element.getAttribute('data-object-type') === typeAttr){
                 element.style.display = 'flex';
             }
@@ -118,7 +156,6 @@ export function listElementDragEndCallback(event){                              
         
             startSession(guid, alias);
         }
-        
         catch(error){
             console.error('listElementDragEndCallback(): ', error);
         }        
@@ -160,6 +197,7 @@ async function appendListElement_r(guid, data, element){
     
     const children = element.children;
     for(const child of children){
+        
         const anchorTag = child.querySelector('a');
         const subList = child.querySelector('ul');
 
@@ -217,7 +255,7 @@ export function deleteButtonCallback(event){
                 deleteTerminalSession(guid);
             }
             
-            parent.remove();
+            popOutElement(parent);
         }
 
         parent = parent.parentElement;
@@ -276,7 +314,10 @@ export function appendNotification(body, intent){
             break;
     }
 
-    notificationCenter.insertBefore(notification, notificationCenter.firstChild);
+    notification.style.display = 'none';
+    notificationCenter.appendChild(notification);
+    
+    popInElement(notification, true);
 }
 
 
@@ -286,7 +327,21 @@ export function appendMessage(body, sender, recipient){
     if(sessions !== null){
         sessions.forEach(session => {
             if(session.getAttribute('data-object-guid') === recipient){
-                session.appendChild(templates.terminalMessage(sender, body));
+
+                const terminalMessage = templates.terminalMessage(sender, body);
+                
+                terminalMessage.style.display = 'none';                                 
+                session.appendChild(terminalMessage);                                   
+                popInElement(terminalMessage, true);
+
+                
+                try {
+                    const messageIndex = parseInt(session.getAttribute('data-message-index'), 10);
+                    session.setAttribute('data-message-index', (messageIndex + 1).toString());   
+                }
+                catch(error) {
+                    console.error('appendMessage():', error);
+                }
             }
         });
     }
@@ -303,6 +358,40 @@ export function terminalMenuClickCallback(event){
 }
 
 
+export async function sessionScrollCallback(event){
+    
+    event.stopPropagation();
+    
+    const session = event.target;
+    let msgIndex = parseInt(session.getAttribute('data-message-index'), 10);
+    const guid = session.getAttribute('data-object-guid');
+
+    if(event.target.scrollTop === 0 && msgIndex !== null && guid !== null){
+        try {
+
+            const messages = await fetchObjectMessages(guid, msgIndex.toString());            
+
+            for(const message of messages) {
+
+                const messageElement = templates.terminalMessage(message.sender, message.body) 
+                messageElement.style.display = 'none';
+                popInElement(messageElement, false);
+                
+                session.prepend(messageElement);
+                msgIndex++;
+            }
+        } 
+        catch(error) {
+            console.error('sessionScrollCallback():',error);
+        }
+        finally {
+            session.setAttribute('data-message-index', msgIndex.toString());
+            console.log('Message Index:', session.getAttribute('data-message-index'));
+        }
+    }
+}
+
+
 export async function startSession(guid, alias){
 
     if(sessionExists(guid)){
@@ -314,16 +403,21 @@ export async function startSession(guid, alias){
 
         const newSession = templates.terminalSession(guid);
         const menuElement = templates.terminalMenuElement(guid, alias);
+        let msgIndex = 0;
 
         try {
-            const messages = await fetchObjectMessages(guid);
+            const messages = await fetchObjectMessages(guid, msgIndex);
 
-            for(const message of messages){
-                newSession.appendChild(templates.terminalMessage(message.sender, message.body));
+            for(let i = messages.length - 1; i >= 0; i--){
+                newSession.appendChild(templates.terminalMessage(messages[i].sender, messages[i].body));
+                msgIndex++;
             }
-
-        } catch(error) {
+        } 
+        catch(error) {
             console.log(`${guid}: no messages found.`);
+        }
+        finally {
+            newSession.setAttribute('data-message-index', msgIndex.toString());
         }
 
         document.querySelector('#terminal-menu .menu-list').appendChild(menuElement);
@@ -331,6 +425,14 @@ export async function startSession(guid, alias){
         
         selectTerminalMenuElement(guid);
         selectTerminalSession(guid);
+
+        // Scroll down to the last message.
+        try {
+            newSession.lastChild.scrollIntoView({ behavior: "smooth" });
+        } 
+        catch(error) {
+            //-
+        }
     }
 }
 

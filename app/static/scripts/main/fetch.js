@@ -43,9 +43,9 @@ export async function fetchObjectData(guid){
 }
 
 
-export async function fetchObjectMessages(guid){
+export async function fetchObjectMessages(guid, index){
 
-    const endpoint = `/objects/getmessages/${encodeURIComponent(guid)}`;
+    const endpoint = `/objects/getmessages/${encodeURIComponent(guid)}/${index}`;
     const response = await fetch(endpoint, {
         method: 'GET'
     });

@@ -4,7 +4,6 @@
     padding: 0;
     display: flex;
     font-family: 'Cascadia Mono', Consolas, monospace, 'Cascadia Code', Arial !important;
-    scrollbar-width:none;
 }
 
 head{
@@ -51,8 +50,9 @@ body {
     height:100% !important;
     display: flex;
     justify-content: left;
-    align-items: center;
-    flex-direction: column;
+    align-items:center;
+    flex-direction:column;
+
     overflow:scroll;
     scrollbar-width: none;
 }
@@ -77,17 +77,31 @@ body {
     align-items:center;
     flex-direction:column;
     
-    overflow:scroll;
-    scrollbar-width:none;
+    overflow-y:scroll;
+    overflow-x:hidden;
 
     width:20%;
     margin-left:1.2%;
     height:100%;
 }
 
+#notification-center::-webkit-scrollbar {
+    width:10px;
+}
+
+#notification-center::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    background-color: rgb(57, 63, 75);
+}
+
+#notification-center::-webkit-scrollbar-track {
+    background-color: rgb(46, 51, 61);
+}
+
 #notification-center .notification {
-    margin-bottom: 8px !important;
-    width: 95% !important;
+    margin-bottom: 1.5vh !important;
+    width: 91% !important;
+    text-overflow: hidden;
 }
 
 #terminal-container{
@@ -98,7 +112,7 @@ body {
 }
 
 #terminal-input {
-    max-width: 80%;
+    width: 100%;
     outline: none;
     caret: block;
     height: 10%;
@@ -127,11 +141,14 @@ body {
 #terminal-menu .menu-list{
     height:100%;
     width:100%;
+    
     display:flex;
     flex-direction:column;
     align-items:center;
-    overflow:scroll;
-    scrollbar-width:none;
+
+    overflow-x:hidden;
+    overflow-y: scroll;
+    scrollbar-width: none;
 }
 
 #terminal-menu .menu-list li{
@@ -145,23 +162,23 @@ body {
 }
 
 
-.hidden-image{
-    display: none !important;
-}
 
-/* For elements that have an RGB hue when hovered over */
+/* all four main boxes on the page should have this. provides soft blue glow effect when hovered. */
 .element-rgb-hover {
-    outline: 1px solid; 
     border-radius: 10px; 
+    outline: 2px solid transparent; 
     outline-color:white;
-    transition: outline-color 0.5s ease-in-out; 
-    transition: box-shadow 0.5s ease-in-out; 
+    transition: outline-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    box-shadow: 0 0 0 transparent; 
 }
 
 .element-rgb-hover:hover {
-    outline:3px solid;
     outline-color: #0066cc;
     box-shadow: 0 0 10px #0066cc; 
+}
+
+.hidden-image{
+    display: none !important;
 }
 
 .terminal-instance{
@@ -170,25 +187,62 @@ body {
     height:100%;
     width:80%;
     overflow:auto;
-    scrollbar-width:none;
 }
 
 .terminal-session{
     height:100%;
     width:100%;
-    overflow:scroll;
+    
+    overflow-y:scroll;
+    overflow-x:hidden;
+    
     justify-content: left;
     display:flex;
     flex-direction:column;
-    overflow:scroll;
-    scrollbar-width:none;
+}
+
+.terminal-session::-webkit-scrollbar{
+    width: 10px;
+}
+
+.terminal-session::-webkit-scrollbar-thumb { 
+    border-radius: 8px;
+    background-color: rgb(57, 63, 75);
+}
+
+.terminal-session::-webkit-scrollbar-track {
+    background-color: rgb(46, 51, 61);
 }
 
 .terminal-instance-element{
     display:flex;
-    flex-direction:column;
-    width:100%;
+    flex-direction:row;
+    width:96%;
+    padding-left:2%;
     height:fit-content;
+    padding-top: 1.5vh;
+    padding-bottom: 1vh;
+}
+
+.terminal-instance-element .message{
+    display:flex;
+    flex-direction:column;
+    width:100% !important;
+    height:fit-content !important;
+}
+
+.message-dot-icon{
+    display:flex;
+    width:5%;
+    height:fit-content;
+    padding-top: 4vh;
+}
+
+.message-body p{
+    height:auto;
+    overflow:hidden;
+    word-wrap: break-word;
+    white-space: normal;
 }
 
 .terminal-instance-element .message-header p {
@@ -208,11 +262,31 @@ body {
     max-height:fit-content;
 }
 
-
-
 .placeholder-image{
     max-width:100%;
     max-height:100%;
     display:block;
     margin:auto;
+}
+
+
+
+@keyframes popIn {
+    0% {
+        transform: scale(0); 
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes popOut {
+    0% {
+        transform: scale(1); 
+        opacity: 1; 
+    }
+    100% {
+        transform: scale(0.5); 
+        opacity: 0; 
+    }
 }

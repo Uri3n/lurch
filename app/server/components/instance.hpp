@@ -53,7 +53,7 @@ class instance {
             result<object_type> query_object_type(const std::string& guid);
             result<array_of_children> query_object_children(const std::string& guid);
             result<object_data> query_object_data(const std::string& guid);
-            result<std::vector<object_message>> query_object_messages(const std::string& guid);
+            result<std::vector<object_message>> query_object_messages(const std::string& guid, const int message_index);
 
             result<bool> initialize(instance* inst, const std::optional<std::string >& initial_user, const std::optional<std::string>& initial_password);
             result<bool> restore_objects();
@@ -91,7 +91,7 @@ class instance {
             bool handler_objects_send(std::string GUID, const crow::request& req, crow::response& res);
             bool handler_objects_getdata(std::string GUID, crow::response& res) const;
             bool handler_objects_getchildren(std::string GUID, crow::response& res) const;
-            bool handler_objects_getmessages(std::string GUID,  crow::response& res) const;
+            bool handler_objects_getmessages(std::string GUID, int message_index, crow::response& res) const;
 
             void run(std::string addr, uint16_t port);
             static result<std::pair<std::string, std::string>> hdr_extract_credentials(const crow::request& req);

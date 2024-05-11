@@ -38,11 +38,11 @@ function socketMessage(event) {
                 throw new Error('invalid socket update type.');
         }
     }
-
     catch(error) {
         console.error('socketMessage():', error);
     }
 }
+
 
 function socketOpen() {
     console.log('successfully established websocket connection with teamserver.');

@@ -19,20 +19,14 @@ import {
 
 //-------------------------------------------------------------------------------------------
 
-async function main(){
-    
+function main(){
 
-    //---------------------------------------------------------------------------------------
-    addDeleteButtonHandlers();
-    observeElement(document.getElementById('notification-center'));
-
-    document.querySelectorAll('.terminal-session').forEach( element => {
-        observeElement(element);
-    });
+    //
+    // initial mutation observer targets
+    //
 
     observeElement(document.querySelector('.terminal-instance'));
-
-    //---------------------------------------------------------------------------------------
+    observeElement(document.getElementById('notification-center'));
 
 
     //
@@ -45,10 +39,6 @@ async function main(){
     rootListElement.querySelector('a').addEventListener('dragstart', listElementDragStartCallback);
     rootListElement.querySelector('a').addEventListener('dragend', listElementDragEndCallback);
 
-    document.querySelectorAll('#terminal-menu .menu-list li').forEach(element => {
-        element.addEventListener('click', terminalMenuClickCallback);
-    });
-
 
     //
     // init websocket
@@ -56,14 +46,13 @@ async function main(){
 
     startWebsocket();
 
+
     //
     // submit field event listener
     //
 
     document.addEventListener('keydown', keyDownCallback);
-
-
-
+    addDeleteButtonHandlers();
 }
 
 main();

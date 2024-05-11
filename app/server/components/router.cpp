@@ -181,8 +181,8 @@ lurch::instance::router::handler_objects_send(std::string GUID, const crow::requ
         GUID = inst->db.query_root_guid().value_or(GUID);
     }
 
-    if(!req.body.empty() && req.body.size() < 200) {                                                   //check for a valid request
-        const auto msg_result = inst->tree.send_message(GUID, req.body);                               //send the message
+    if(!req.body.empty() && req.body.size() < 200) {                                                    //check for a valid request
+        const auto msg_result = inst->tree.send_message(GUID, req.body);                                //send the message
         if(msg_result.has_value()) {
             res.body = msg_result.value();
 
@@ -265,14 +265,15 @@ lurch::instance::router::handler_objects_getchildren(std::string GUID, crow::res
 
 
 bool
-lurch::instance::router::handler_objects_getmessages(std::string GUID, crow::response &res) const {
+lurch::instance::router::handler_objects_getmessages(std::string GUID, const int message_index, crow::response &res) const {
 
     if(GUID == "root") {
         GUID = inst->db.query_root_guid().value_or(GUID);
     }
 
-    const auto query_result = inst->db.query_object_messages(GUID);
+    const auto query_result = inst->db.query_object_messages(GUID, message_index);
     if(query_result.has_value()) {
+
         res.body = '[';
         for(const auto &[sender, body, timestamp] : query_result.value()) {
             crow::json::wvalue json;
@@ -366,10 +367,11 @@ lurch::instance::router::run(std::string addr, uint16_t port) {
     });
 
 
-    CROW_ROUTE(this->app, "/objects/getmessages/<string>")
-    .methods("GET"_method)([&](const crow::request& req, crow::response& res, std::string GUID){
-        res.code = 400;
-        if(handler_objects_getmessages(GUID, res)) {
+    CROW_ROUTE(this->app, "/objects/getmessages/<string>/<int>")
+    .methods("GET"_method)([&](const crow::request& req, crow::response& res, std::string GUID, int index){
+
+        res.code = 404;
+        if(handler_objects_getmessages(GUID, index, res)) {
             res.code = 200;
         }
 

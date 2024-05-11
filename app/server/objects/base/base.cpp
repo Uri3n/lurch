@@ -12,7 +12,7 @@ lurch::object::generate_id() {
 
     std::random_device device;
     std::mt19937 generator(device());
-    std::uniform_int_distribution<> distribution(0, 15);
+    std::uniform_int_distribution distribution(0, 15);
 
     static const char* character_set = "0123456789abcdef";
     std::string guid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx";
@@ -33,7 +33,7 @@ lurch::object::~object() {
     if(!id.empty()) {
         io::info("deleting object with GUID: " + id);
     } else {
-        io::failure("an object with no GUID is being deleted. Possible undefined behaviour.");
+        io::failure("an object with no GUID is being deleted. Something is wrong.");
     }
 }
 

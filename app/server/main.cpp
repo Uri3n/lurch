@@ -19,9 +19,11 @@ void handle_uncaught_exception() {
 
     try {
         std::rethrow_exception(exception);
-    } catch(const std::exception& e) {
+    }
+    catch(const std::exception& e) {
         std::cout << "[!] uncaught exception! what: " << e.what() << std::endl;
-    } catch(...) {
+    }
+    catch(...) {
         std::cout << "[!] unknown fatal exception!" << std::endl;
     }
 

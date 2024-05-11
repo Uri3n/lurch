@@ -46,10 +46,10 @@ lurch::instance::database::store_user(const std::string &username, const std::st
 
     }
     catch(const sqlite::sqlite_exception& e) {
-        return lurch::error(io::format_str("exception: {} SQL: {}", e.what(), e.get_sql()));
+        return error(io::format_str("exception: {} SQL: {}", e.what(), e.get_sql()));
     }
     catch(...) {
-        return lurch::error("unknown exception encountered");
+        return error("unknown exception encountered");
     }
 
     return result<bool>(true);
@@ -79,7 +79,7 @@ lurch::instance::database::hash_password(const std::string &password) {
 
 lurch::result<bool>
 lurch::instance::database::initialize(
-    lurch::instance* inst,
+    instance* inst,
     const std::optional<std::string >& initial_user,
     const std::optional<std::string>& initial_password
 ) {
@@ -351,25 +351,34 @@ lurch::instance::database::query_object_data(const std::string &guid) {
 
 
 lurch::result<std::vector<lurch::object_message>>
-lurch::instance::database::query_object_messages(const std::string &guid) {
+lurch::instance::database::query_object_messages(const std::string &guid, const int message_index) {
 
     std::vector<object_message> messages;
     std::lock_guard<std::mutex> lock(this->mtx);
 
     try {
-        for(auto&& row : *this->db << "select sender,body,insert_time from messages where guid = ? order by _id asc;" << guid) {
-            std::string q_sender;
-            std::string q_body;
-            std::string q_time;
 
-            row >> q_sender >> q_body >> q_time;
-            messages.emplace_back(std::make_tuple(q_sender, q_body, q_time));
+        int _index = 0;
+        for(auto&& row : *this->db << "select sender,body,insert_time from messages where guid = ? order by _id desc;" << guid) {
+            if(_index >= message_index) {
+                std::string q_sender;
+                std::string q_body;
+                std::string q_time;
+
+                row >> q_sender >> q_body >> q_time;
+                messages.emplace_back(std::make_tuple(q_sender, q_body, q_time));
+
+                if(_index - message_index >= 20) {
+                    break;
+                }
+            }
+
+            ++_index;
         }
 
         if(messages.empty()) {
             throw std::runtime_error("no messages found.");
         }
-
     }
     catch (const sqlite::sqlite_exception& e) {
         return error(io::format_str("exception: {} SQL: {}", e.what(), e.get_sql()));

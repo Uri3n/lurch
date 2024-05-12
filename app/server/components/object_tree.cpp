@@ -7,17 +7,17 @@
 
 void
 lurch::instance::object_tree::set_max_object_count(const uint32_t count) {
-    this->max_object_count = count;
+    max_object_count = count;
 }
 
 uint32_t
 lurch::instance::object_tree::get_max_object_count() const {
-    return this->max_object_count;
+    return max_object_count;
 }
 
 void
 lurch::instance::object_tree::increment_object_count() {
-    this->curr_object_count++;
+    curr_object_count++;
 }
 
 std::shared_ptr<lurch::object>

@@ -43,20 +43,20 @@ lurch::instance::begin() {
     }
 
 
-    this->tree.inst = this;
-    this->routing.inst = this;
+    tree.inst = this;
+    routing.inst = this;
 
-    const auto db_init = this->db.initialize(this, initial_user, initial_password);
+    const auto db_init = db.initialize(this, initial_user, initial_password);
     if(!db_init) {
         throw std::runtime_error(db_init.error());
     }
 
-    const auto db_restore = this->db.restore_objects();
+    const auto db_restore = db.restore_objects();
     if(!db_restore) {
         throw std::runtime_error(db_init.error());
     }
 
-    this->db.delete_old_tokens();
+    db.delete_old_tokens();
 
 #if defined(LURCH_DEFAULT_BIND)
     server_addr = LURCH_DEFAULT_ADDRESS;
@@ -77,7 +77,7 @@ lurch::instance::begin() {
 #endif
 
     std::cout << io::format_str("Attempting bind to: {}:{}", server_addr, std::to_string(server_port)) << std::endl;
-    std::thread worker([&] { this->routing.run(server_addr, server_port); });
+    std::thread worker([&] { routing.run(server_addr, server_port); });
 
     await_shutdown();
     worker.join();

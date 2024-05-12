@@ -11,7 +11,7 @@ class root : public owner {
 private:
 public:
 
-    std::string recieve(const lurch::command &cmd) override;
+    std::string recieve(const command &cmd) override;
     explicit root(instance* inst) : owner(std::nullopt, inst) {}
 };
 

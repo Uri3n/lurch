@@ -62,8 +62,8 @@ lurch::instance::router::verify_token(const crow::request &req) const {
 void
 lurch::instance::router::add_ws_connection(crow::websocket::connection* conn) {
 
-    std::lock_guard<std::mutex> lock(this->websockets.lock);
-    this->websockets.connections.emplace_back(std::make_pair(conn, false));
+    std::lock_guard<std::mutex> lock(websockets.lock);
+    websockets.connections.emplace_back(std::make_pair(conn, false));
     //io::info("Opened new websocket connection from " + conn->get_remote_ip());
 }
 
@@ -71,7 +71,7 @@ lurch::instance::router::add_ws_connection(crow::websocket::connection* conn) {
 void
 lurch::instance::router::remove_ws_connection(crow::websocket::connection* conn) {
 
-    std::lock_guard<std::mutex> lock(this->websockets.lock);
+    std::lock_guard<std::mutex> lock(websockets.lock);
     for(auto it = websockets.connections.begin(); it != websockets.connections.end();) {
         if(it->first == conn) {
             io::info("Closing websocket connection from " + conn->get_remote_ip());
@@ -87,7 +87,7 @@ bool
 lurch::instance::router::verify_ws_user(crow::websocket::connection* conn, const std::string& data) {
 
     if(inst->db.match_token(data)) {
-        std::lock_guard<std::mutex> lock(this->websockets.lock);
+        std::lock_guard<std::mutex> lock(websockets.lock);
         for(auto& pair : websockets.connections) {
             if(pair.first == conn) {
                 pair.second = true;
@@ -103,8 +103,8 @@ lurch::instance::router::verify_ws_user(crow::websocket::connection* conn, const
 void
 lurch::instance::router::send_ws_data(const std::string &data, const bool is_binary) {
 
-    std::lock_guard<std::mutex> lock(this->websockets.lock);
-    for(const auto& [conn, verified] : this->websockets.connections) {
+    std::lock_guard<std::mutex> lock(websockets.lock);
+    for(const auto& [conn, verified] : websockets.connections) {
         if(verified) {
             try {
                 if(is_binary) {

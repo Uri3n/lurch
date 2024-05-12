@@ -612,7 +612,7 @@ lurch::instance::database::restore_objects() {
     io::success("finished restoration.");
     io::success("objects restored: " + std::to_string(total_restored_objects));
 
-    return result<bool>(true);
+    return { true };
 }
 
 

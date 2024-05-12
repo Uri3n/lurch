@@ -4,13 +4,6 @@
 
 #include "instance.hpp"
 
-//
-// Contains implementations for writing/changing data in the tree, and creating objects.
-// as of right now the tree is controlled by a singular recursive mutex.
-// functions should try on each lock to the mutex, and return right away if locking
-// causes std::system_error to be thrown. Ideally the lock should only be used at most twice or three
-// times by a single thread.
-//
 
 void
 lurch::instance::object_tree::set_max_object_count(const uint32_t count) {
@@ -57,7 +50,7 @@ lurch::instance::object_tree::create_object(const object_index index, const std:
 lurch::result<std::string>
 lurch::instance::object_tree::send_message_r(const std::shared_ptr<object>& current, const std::string &guid, const command& cmd) {
 
-    //This SHOULD be safe, because the ref count of "current" is being held by the loop variable in the previous call.
+    // ref count of "current" is being held by the loop variable in the previous call.
     const auto owner_ptr = dynamic_cast<owner*>(current.get());
     const auto leaf_ptr = dynamic_cast<leaf*>(current.get());
 
@@ -88,7 +81,7 @@ lurch::instance::object_tree::send_message_r(const std::shared_ptr<object>& curr
 lurch::result<std::string>
 lurch::instance::object_tree::send_message(const std::string& guid, const std::string& cmd_raw) {
 
-    result<command> cmd = argument_parser::parse(cmd_raw);
+    const result<command> cmd = argument_parser::parse(cmd_raw);
     const std::shared_ptr<object> root_ptr = root;
     std::lock_guard<std::recursive_mutex> lock(tree_lock); //lock tree
 

@@ -36,7 +36,7 @@ void handle_uncaught_exception() {
 #endif
 
     std::cout << "[!] exception routine finished. terminating..." << std::endl;
-    std::exit(1);
+    std::exit(EXIT_FAILURE);
 }
 
 void handle_kb_interrupt(int signal) {
@@ -46,10 +46,10 @@ void handle_kb_interrupt(int signal) {
 
 int main() {
 
+    lurch::instance inst;
     std::set_terminate(handle_uncaught_exception);
     std::signal(SIGINT, handle_kb_interrupt);
 
-    lurch::instance inst;
     inst.begin();
 
     return EXIT_SUCCESS;

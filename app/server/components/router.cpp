@@ -4,6 +4,7 @@
 
 #include "instance.hpp"
 
+
 lurch::result<std::pair<std::string, std::string>>
 lurch::instance::router::hdr_extract_credentials(const crow::request &req) {
 
@@ -21,17 +22,48 @@ lurch::instance::router::hdr_extract_credentials(const crow::request &req) {
         }
 
         return std::make_pair(decoded_creds.substr(0, found), decoded_creds.substr(found+1));
-    } catch(...) {
+    }
+    catch(...) {
         return error("Invalid credentials provided.");
     }
 }
 
 
+lurch::result<std::string>
+lurch::instance::router::hdr_extract_token(const crow::request &req) {
+    try {
+        std::string token = req.get_header_value("Authorization").substr(7);
+        if(token.empty()) {
+            throw std::exception();
+        }
+
+        return { token };
+    }
+    catch(...) {
+        return error("Invalid token.");
+    }
+}
+
+
+bool
+lurch::instance::router::verify_token(const crow::request &req) const {
+
+    if(const auto result = hdr_extract_token(req)) {
+        if(inst->db.match_token(result.value())) {
+            io::success("authenticated token " + result.value());
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
 void
-lurch::instance::router::add_ws_connection(crow::websocket::connection *conn) {
+lurch::instance::router::add_ws_connection(crow::websocket::connection* conn) {
 
     std::lock_guard<std::mutex> lock(this->websockets.lock);
-    this->websockets.connections.push_back(conn);
+    this->websockets.connections.emplace_back(std::make_pair(conn, false));
     //io::info("Opened new websocket connection from " + conn->get_remote_ip());
 }
 
@@ -41,7 +73,7 @@ lurch::instance::router::remove_ws_connection(crow::websocket::connection* conn)
 
     std::lock_guard<std::mutex> lock(this->websockets.lock);
     for(auto it = websockets.connections.begin(); it != websockets.connections.end();) {
-        if(*it == conn) {
+        if(it->first == conn) {
             io::info("Closing websocket connection from " + conn->get_remote_ip());
             it = websockets.connections.erase(it);
         } else {
@@ -51,20 +83,40 @@ lurch::instance::router::remove_ws_connection(crow::websocket::connection* conn)
 }
 
 
+bool
+lurch::instance::router::verify_ws_user(crow::websocket::connection* conn, const std::string& data) {
+
+    if(inst->db.match_token(data)) {
+        std::lock_guard<std::mutex> lock(this->websockets.lock);
+        for(auto& pair : websockets.connections) {
+            if(pair.first == conn) {
+                pair.second = true;
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+
 void
 lurch::instance::router::send_ws_data(const std::string &data, const bool is_binary) {
 
     std::lock_guard<std::mutex> lock(this->websockets.lock);
-    for(auto conn : this->websockets.connections) {
-        try {
-            if(is_binary) {
-                conn->send_binary(data);
-            } else {
-                conn->send_text(data);
+    for(const auto& [conn, verified] : this->websockets.connections) {
+        if(verified) {
+            try {
+                if(is_binary) {
+                    conn->send_binary(data);
+                } else {
+                    conn->send_text(data);
+                }
             }
-        } catch(...) {
-            io::failure("exception while sending websocket data!");
-            return;
+            catch(...) {
+                io::failure("exception while sending websocket data!");
+                return;
+            }
         }
     }
 }
@@ -159,13 +211,24 @@ lurch::instance::router::send_ws_notification(const std::string &message, const 
 
 
 bool
-lurch::instance::router::handler_main(const crow::request &req, crow::response &res) const {
+lurch::instance::router::handler_verify(const crow::request &req, crow::response &res) const {
 
     const auto result = hdr_extract_credentials(req);
+
     if(result.has_value()) {
-        auto [username, password] = result.value();
+        const auto [username, password] = result.value();
         if(inst->db.match_user(username, password)) {
-            res.set_static_file_info("static/templates/index.html");
+
+            const std::string auth_token = database::generate_token();
+            const auto store_auth_token = inst->db.store_token(auth_token, username);
+
+            if(!store_auth_token) {
+                io::failure("Failed to store token!");
+                io::failure("error: " + store_auth_token.error_or("-"));
+                return false;
+            }
+
+            res.body = auth_token;
             return true;
         }
     }
@@ -182,7 +245,7 @@ lurch::instance::router::handler_objects_send(std::string GUID, const crow::requ
     }
 
     if(!req.body.empty() && req.body.size() < 200) {                                                    //check for a valid request
-        const auto msg_result = inst->tree.send_message(GUID, req.body);                                //send the message
+        const auto msg_result = inst->tree.send_message(GUID, req.body);                                //send the message to the object
         if(msg_result.has_value()) {
             res.body = msg_result.value();
 
@@ -190,7 +253,11 @@ lurch::instance::router::handler_objects_send(std::string GUID, const crow::requ
             io::success("responsible object: " + GUID);
 
             inst->db.store_message(GUID, req.remote_ip_address, req.body);                              //we potentially need to store two messages here: client->server and server->client
-            send_ws_object_message_update(req.body, req.remote_ip_address, GUID);                       //send websocket update for the message.
+            send_ws_object_message_update(                                                              //send message update to websocket clients
+                req.body,
+                inst->db.query_token_alias(hdr_extract_token(req).value_or("-")).value_or(req.remote_ip_address),
+                GUID
+            );
 
             if(!msg_result.value().empty()) {
                 inst->db.store_message(GUID, GUID, msg_result.value());                                 //object may decide to not return a message, in this case don't store or send anything.
@@ -199,7 +266,6 @@ lurch::instance::router::handler_objects_send(std::string GUID, const crow::requ
 
             return true;
         }
-        io::failure("Invalid message sent to object.");
     }
 
     return false;
@@ -231,6 +297,7 @@ lurch::instance::router::handler_objects_getdata(std::string GUID, crow::respons
         return false;
     }
 }
+
 
 bool
 lurch::instance::router::handler_objects_getchildren(std::string GUID, crow::response &res) const {
@@ -303,6 +370,7 @@ lurch::instance::router::run(std::string addr, uint16_t port) {
 
     CROW_ROUTE(this->app, "/")
     .methods("GET"_method)([&](const crow::request& req, crow::response& res) {
+
         res.set_static_file_info("static/templates/login.html");
         res.code = 200;
 
@@ -319,10 +387,25 @@ lurch::instance::router::run(std::string addr, uint16_t port) {
     });
 
 
+    CROW_ROUTE(this->app, "/verify")
+    .methods("POST"_method)([&](const crow::request& req, crow::response& res) {
+
+        res.code = 403;
+        if(handler_verify(req, res)) {
+            res.code = 200;
+        }
+
+        io::info("serving POST at \"/verify\" :: " + std::to_string(res.code));
+        res.end();
+    });
+
+
     CROW_ROUTE(this->app, "/main")
     .methods("GET"_method)([&](const crow::request& req, crow::response& res) {
+
         res.code = 403;
-        if(handler_main(req, res)) {
+        if(verify_token(req)) {
+            res.set_static_file_info("static/templates/index.html");
             res.code = 200;
         }
 
@@ -333,8 +416,9 @@ lurch::instance::router::run(std::string addr, uint16_t port) {
 
     CROW_ROUTE(this->app, "/objects/send/<string>")
     .methods("POST"_method)([&](const crow::request& req, crow::response& res, std::string GUID){
+
         res.code = 400;
-        if(handler_objects_send(GUID, req, res)) {
+        if(verify_token(req) && handler_objects_send(GUID, req, res)) {
             res.code = 200;
         }
 
@@ -345,8 +429,9 @@ lurch::instance::router::run(std::string addr, uint16_t port) {
 
     CROW_ROUTE(this->app, "/objects/getdata/<string>")
     .methods("GET"_method)([&](const crow::request& req, crow::response& res, std::string GUID){
+
         res.code = 404;
-        if(handler_objects_getdata(GUID, res)) {
+        if(verify_token(req) && handler_objects_getdata(GUID, res)) {
             res.code = 200;
         }
 
@@ -357,8 +442,9 @@ lurch::instance::router::run(std::string addr, uint16_t port) {
 
     CROW_ROUTE(this->app, "/objects/getchildren/<string>")
     .methods("GET"_method)([&](const crow::request& req, crow::response& res, std::string GUID){
+
         res.code = 404;
-        if(handler_objects_getchildren(GUID, res)) {
+        if(verify_token(req) && handler_objects_getchildren(GUID, res)) {
             res.code = 200;
         }
 
@@ -371,7 +457,7 @@ lurch::instance::router::run(std::string addr, uint16_t port) {
     .methods("GET"_method)([&](const crow::request& req, crow::response& res, std::string GUID, int index){
 
         res.code = 404;
-        if(handler_objects_getmessages(GUID, index, res)) {
+        if(verify_token(req) && handler_objects_getmessages(GUID, index, res)) {
             res.code = 200;
         }
 
@@ -379,11 +465,6 @@ lurch::instance::router::run(std::string addr, uint16_t port) {
         res.end();
     });
 
-
-    //
-    // Primary websocket endpoint.
-    // Note that we should never recieve messages on this endpoint.
-    //
 
     CROW_ROUTE(app, "/ws")
     .websocket()
@@ -394,9 +475,11 @@ lurch::instance::router::run(std::string addr, uint16_t port) {
         remove_ws_connection(&conn);
     })
     .onmessage([&](crow::websocket::connection& conn, const std::string& data, bool is_binary) {
-        io::failure("recieved unexpected websocket message from " + conn.get_remote_ip());
-        if(!is_binary) {
-            io::info("message: " + data);
+        if(!is_binary && verify_ws_user(&conn, data)) {
+            io::success("authenticated websocket connection via token.");
+        }
+        else {
+            io::failure("websocket verification failed: " + conn.get_remote_ip());
         }
     });
 

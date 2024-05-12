@@ -9,7 +9,7 @@
 #define LURCH_DEFAULT_PORT 8081
 
 //
-//  lurch::instance::begin() is where it all begins, literally.
+//  lurch::instance::begin()
 //  this function is responsible for:
 //  - setting up routing, database, object tree.
 //  - calling database::restore_objects to set up objects that were used last time.
@@ -46,16 +46,17 @@ lurch::instance::begin() {
     this->tree.inst = this;
     this->routing.inst = this;
 
-    result<bool> db_init = this->db.initialize(this, initial_user, initial_password);
+    const auto db_init = this->db.initialize(this, initial_user, initial_password);
     if(!db_init) {
         throw std::runtime_error(db_init.error());
     }
 
-    result<bool> db_restore = this->db.restore_objects();
+    const auto db_restore = this->db.restore_objects();
     if(!db_restore) {
         throw std::runtime_error(db_init.error());
     }
 
+    this->db.delete_old_tokens();
 
 #if defined(LURCH_DEFAULT_BIND)
     server_addr = LURCH_DEFAULT_ADDRESS;
@@ -75,7 +76,19 @@ lurch::instance::begin() {
     }
 #endif
 
-
     std::cout << io::format_str("Attempting bind to: {}:{}", server_addr, std::to_string(server_port)) << std::endl;
-    this->routing.run(server_addr, server_port); //run the server
+    std::thread worker([&] { this->routing.run(server_addr, server_port); });
+
+    await_shutdown();
+    worker.join();
+}
+
+
+void lurch::instance::await_shutdown() {
+
+    std::unique_lock<std::mutex> lock(mtx);
+    io::info(io::format_str("thread with TID {}: awaiting shutdown condition.", std::this_thread::get_id()));
+    shutdown_condition.wait(lock, [this]{ return shutdown; });
+
+    routing.app.stop(); //can do additional cleanup tasks here...
 }

@@ -37,43 +37,64 @@ function appendErrorNotification(msg){
 }
 
 
-function submitCredentials(){
+async function fetchToken(username, password){
+    
+    const encodedCredentials = btoa(username + ':' + password);
+    const response = await fetch("/verify", {
+        method : "POST",
+        headers : {
+            Authorization : "Basic " + encodedCredentials
+        }
+    });
 
-    let username = document.getElementById('username').value.trim()
-    let password = document.getElementById('password').value.trim();
+    if(!response.ok) {
+        throw new Error(response.status);
+    }
+
+    const token = await response.text();
+    return token;
+}
+
+
+async function loadMain(token) {
+
+    const response = await fetch("/main", {
+        method : "GET",
+        headers : {
+            Authorization : "Bearer " + token
+        }
+    });
+
+    if(!response.ok){
+        throw new Error(response.status);
+    }
+
+    const text = await response.text();
+    const newDocument = new DOMParser().parseFromString(text, 'text/html');
+    newDocument.body.setAttribute('data-temp-token', token);
+    
+    document.open();
+    document.write(newDocument.documentElement.outerHTML);
+    document.close();
+}
+
+async function submitCredentials(){
+
+    const username = document.getElementById('username').value.trim()
+    const password = document.getElementById('password').value.trim();
 
     if(username.length === 0 || password.length === 0){
         appendErrorNotification("empty username or password!");
     }
 
-
-    const encodedCredentials = btoa(username + ':' + password);
-    
-    fetch("/main", {
-        method: "GET",
-        headers:{
-            Authorization: "basic " + encodedCredentials
-        }
-    })
-        .then(response => {
-            if(!response.ok){
-                throw new Error("invalid username or password!");
-            }
-            
-            return response.text();
-        })
-        .then(text => {
-            const newDocument = new DOMParser().parseFromString(text, 'text/html');
-            
-            document.open();
-            document.write(newDocument.documentElement.outerHTML);
-            document.close();
-        })
-        .catch(error => {
-            appendErrorNotification(error.toString());
-        });
+    try {
+        const token = await fetchToken(username, password);
+        await loadMain(token);
+    }
+    catch(error) {
+        console.error('submitCredentials():', error);
+    }
 }
-
 
 
 document.getElementById('submit').addEventListener('click', submitCredentials);

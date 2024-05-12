@@ -25,12 +25,32 @@ lurch::instance::database::match_user(const std::string& username, const std::st
         }
 
         throw std::exception();
-
     }
     catch(...) {
         io::failure(io::format_str("Query for user: {}, password: {} failed.", username, password));
         return false;
     }
+}
+
+
+bool
+lurch::instance::database::match_token(const std::string &token) {
+
+    std::lock_guard<std::mutex> lock(this->mtx);
+    try {
+        std::string q_token;
+        *this->db << u"select token from tokens where token = ? and expiration_time > strftime('%s', 'now')" << token >> q_token;
+
+        if(q_token.empty()) {
+            throw std::runtime_error("token does not exist.");
+        }
+    }
+    catch(...) {
+        io::failure("couldnt match token");
+        return false;
+    }
+
+    return true;
 }
 
 
@@ -52,7 +72,7 @@ lurch::instance::database::store_user(const std::string &username, const std::st
         return error("unknown exception encountered");
     }
 
-    return result<bool>(true);
+    return { true };
 }
 
 
@@ -77,6 +97,29 @@ lurch::instance::database::hash_password(const std::string &password) {
 }
 
 
+std::string
+lurch::instance::database::generate_token(const size_t length) {
+
+    //
+    // Not cryptographically secure. Gonna change this heavily later
+    //
+
+    static const std::string charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    std::string result;
+    result.reserve(length);
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<size_t> distribution(0, charset.size() - 1);
+
+    for (int i = 0; i < length; ++i) {
+        result += charset[distribution(gen)];
+    }
+
+    return crow::utility::base64encode(result, result.size());
+}
+
+
 lurch::result<bool>
 lurch::instance::database::initialize(
     instance* inst,
@@ -92,14 +135,21 @@ lurch::instance::database::initialize(
             "create table if not exists users ("
             "   _id integer primary key autoincrement not null,"
             "   username text unique,"
-            "   password integer" //hashed
+            "   password integer"                                                   //hashed
+            ");";
+
+        *this->db <<
+            "create table if not exists tokens ("
+            "   token text unique not null,"
+            "   expiration_time integer not null,"
+            "   alias text"
             ");";
 
         *this->db <<
             "create table if not exists objects ("
             "   _id integer primary key autoincrement not null,"
             "   guid text unique not null,"
-            "   parent text," //can be null.
+            "   parent text,"                                                       //can be null.
             "   alias text not null,"
             "   type integer not null,"
             "   type_index integer not null"
@@ -132,7 +182,7 @@ lurch::instance::database::initialize(
         return error("unknown exception encountered");
     }
 
-    return lurch::result<bool>(true);
+    return { true };
 }
 
 
@@ -154,9 +204,38 @@ lurch::instance::database::store_message(const std::string& guid, const std::str
         return error("unknown exception encountered");
     }
 
-    io::success("stored message. Sender: " + sender);
-    return result<bool>(true);
+    return { true };
 }
+
+
+lurch::result<bool>
+lurch::instance::database::store_token(const std::string &token, const std::optional<std::string>& alias, uint64_t expiration_time) {
+
+    std::lock_guard<std::mutex> lock(this->mtx);
+    try {
+        if(alias.has_value()) {
+            *this->db << u"insert into tokens (token,expiration_time,alias) values (?, strftime('%s', 'now') + ?, ?);"
+                << token
+                << expiration_time * 3600
+                << alias.value();
+        }
+        else {
+            *this->db << u"insert into tokens (token,expiration_time) values (?, strftime('%s', 'now') + ?);"
+                << token
+                << expiration_time * 3600;
+        }
+    }
+    catch(const sqlite::sqlite_exception& e) {
+        return error(io::format_str("exception: {} SQL: {}", e.what(), e.get_sql()));
+    }
+    catch(...) {
+        return error("unknown exception.");
+    }
+
+    return { true };
+}
+
+
 
 
 lurch::result<bool>
@@ -173,7 +252,7 @@ lurch::instance::database::delete_object(const std::string &guid) {
         return error("unknown exception encountered");
     }
 
-    return result<bool>(true);
+    return { true };
 }
 
 
@@ -191,7 +270,20 @@ lurch::instance::database::delete_user(const std::string &username) {
         return error("unknown exception encountered");
     }
 
-    return result<bool>(true);
+    return { true };
+}
+
+
+void
+lurch::instance::database::delete_old_tokens() {
+
+    std::lock_guard<std::mutex> lock(this->mtx);
+    try {
+        *this->db << u"delete from tokens where expiration_time < strftime('%s', 'now')";
+    }
+    catch(...) {
+        io::info("no expired tokens.");
+    }
 }
 
 
@@ -241,7 +333,7 @@ lurch::instance::database::store_object(
         return error("unknown exception encountered");
     }
 
-    return result<bool>(true);
+    return { true };
 }
 
 
@@ -257,9 +349,7 @@ lurch::instance::database::query_object_type(const std::string &guid) {
             return static_cast<object_type>(q_object_type);
         }
 
-        //Can be done better... okay for now
         throw std::exception();
-
     }
     catch (const sqlite::sqlite_exception& e) {
         return error(io::format_str("exception: {} SQL: {}", e.what(), e.get_sql()));
@@ -309,6 +399,7 @@ lurch::instance::database::query_object_children(const std::string &guid){
 
     return children;
 }
+
 
 lurch::result<lurch::object_data>
 lurch::instance::database::query_object_data(const std::string &guid) {
@@ -402,7 +493,8 @@ lurch::instance::database::object_count() {
         *this->db << "select count(*) from objects" >> count;
         return count;
 
-    } catch(...) {
+    }
+    catch(...) {
         return 0;
     }
 }
@@ -427,6 +519,25 @@ lurch::instance::database::query_root_guid() {
     }
     catch(const std::exception& e) {
         return error(e.what());
+    }
+}
+
+
+lurch::result<std::string>
+lurch::instance::database::query_token_alias(const std::string &token) {
+
+    std::lock_guard<std::mutex> lock(this->mtx);
+    try {
+        std::string q_alias;
+        *this->db << u"select alias from tokens where token = ?;" << token >> q_alias;
+        if(q_alias.empty()) {
+            throw std::exception();
+        }
+
+        return q_alias;
+    }
+    catch(...) {
+        return error("alias does not exist.");
     }
 }
 

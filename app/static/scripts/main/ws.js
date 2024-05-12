@@ -6,8 +6,8 @@ import {
     forceEndSession
 } from "./ui.js";
 
-const sock = new WebSocket(`ws://${window.location.hostname}:${window.location.port}/ws`);
-
+let sock;
+let authToken;
 
 function socketMessage(event) {
     
@@ -46,6 +46,7 @@ function socketMessage(event) {
 
 function socketOpen() {
     console.log('successfully established websocket connection with teamserver.');
+    sock.send(authToken);
 }
 
 function socketClose() {
@@ -58,7 +59,10 @@ function socketError(error) {
 }
 
 
-export function startWebsocket(){
+export function startWebsocket(token){
+
+    authToken = token;
+    sock = new WebSocket(`ws://${window.location.hostname}:${window.location.port}/ws`);
 
     sock.onopen = socketOpen;
     sock.onclose = socketClose;

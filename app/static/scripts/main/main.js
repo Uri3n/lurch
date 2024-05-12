@@ -1,15 +1,8 @@
 ﻿import {observeElement, addDeleteButtonHandlers} from './observer.js';
 import {startWebsocket} from './ws.js';
+import { setToken } from './fetch.js';
 
-import {
-    sendObjectMessage, 
-    fetchObjectMessages, 
-    fetchObjectData, 
-    fetchObjectChildren
-} from './fetch.js';
-
-import {
-    appendListElement, 
+import { 
     listElementClickCallback, 
     listElementDragStartCallback, 
     listElementDragEndCallback, 
@@ -19,14 +12,16 @@ import {
 
 //-------------------------------------------------------------------------------------------
 
+
 function main(){
 
     //
-    // initial mutation observer targets
+    // store in-memory auth token
     //
 
-    observeElement(document.querySelector('.terminal-instance'));
-    observeElement(document.getElementById('notification-center'));
+    const token = document.querySelector('body').getAttribute('data-temp-token');
+    document.querySelector('body').removeAttribute('data-temp-token');
+    setToken(token);
 
 
     //
@@ -44,7 +39,7 @@ function main(){
     // init websocket
     //
 
-    startWebsocket();
+    startWebsocket(token);
 
 
     //
@@ -52,7 +47,14 @@ function main(){
     //
 
     document.addEventListener('keydown', keyDownCallback);
-    addDeleteButtonHandlers();
+
+
+    //
+    // initial mutation observer targets
+    //
+
+    observeElement(document.querySelector('.terminal-instance'));
+    observeElement(document.getElementById('notification-center'));
 }
 
 main();

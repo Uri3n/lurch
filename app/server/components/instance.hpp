@@ -39,25 +39,31 @@ class instance {
             instance* inst = nullptr;
 
             bool match_user(const std::string& username, const std::string& password);
-            static inline uint32_t hash_password(const std::string &password);
-            size_t object_count();
+            bool match_token(const std::string& token);
 
-            result<bool> store_object(const std::string& GUID, const std::optional<std::string> parent, const std::string alias, object_type type, object_index index);
+            static inline uint32_t hash_password(const std::string &password);
+            static std::string generate_token(size_t length = 25);
+
+            result<bool> store_object(const std::string& GUID, std::optional<std::string> parent, std::string alias, object_type type, object_index index);
             result<bool> store_user(const std::string& username, const std::string& password);
             result<bool> store_message(const std::string& guid, const std::string& sender,  const std::string& body);
+            result<bool> store_token(const std::string& token, const std::optional<std::string>& alias = std::nullopt, uint64_t expiration_time = 12);
 
             result<bool> delete_object(const std::string& guid);
             result<bool> delete_user(const std::string& username);
+            void delete_old_tokens();
 
             result<std::string> query_root_guid();
+            result<std::string> query_token_alias(const std::string& token);
             result<object_type> query_object_type(const std::string& guid);
             result<array_of_children> query_object_children(const std::string& guid);
             result<object_data> query_object_data(const std::string& guid);
-            result<std::vector<object_message>> query_object_messages(const std::string& guid, const int message_index);
+            result<std::vector<object_message>> query_object_messages(const std::string& guid, int message_index);
 
             result<bool> initialize(instance* inst, const std::optional<std::string >& initial_user, const std::optional<std::string>& initial_password);
             result<bool> restore_objects();
             void restore_objects_r(std::shared_ptr<owner>, size_t& total_restored);
+            size_t object_count();
 
             database() = default;
             ~database() = default;
@@ -65,17 +71,23 @@ class instance {
 
     class router {
         private:
-            crow::SimpleApp app;
             struct {
-                std::vector<crow::websocket::connection*> connections;
+                std::vector<std::pair<crow::websocket::connection*, bool>> connections;
                 std::mutex lock;
             } websockets;
 
+            [[nodiscard]] bool verify_token(const crow::request& req) const;
+
         public:
+            crow::SimpleApp app;
             instance* inst = nullptr;
+
+            static result<std::pair<std::string, std::string>> hdr_extract_credentials(const crow::request& req);
+            static result<std::string> hdr_extract_token(const crow::request& req);
 
             void add_ws_connection(crow::websocket::connection* conn);
             void remove_ws_connection(crow::websocket::connection* conn);
+            bool verify_ws_user(crow::websocket::connection* conn, const std::string& data);
 
             void send_ws_data(const std::string& data, const bool is_binary);
             void send_ws_text(const std::string& data);
@@ -87,14 +99,13 @@ class instance {
             void send_ws_notification(const std::string& message, ws_notification_intent intent);
 
             /* handler functions should NOT call crow::response::end, or set the response code. */
-            bool handler_main(const crow::request& req, crow::response& res) const;
+            bool handler_verify(const crow::request& req, crow::response& res) const;
             bool handler_objects_send(std::string GUID, const crow::request& req, crow::response& res);
             bool handler_objects_getdata(std::string GUID, crow::response& res) const;
             bool handler_objects_getchildren(std::string GUID, crow::response& res) const;
             bool handler_objects_getmessages(std::string GUID, int message_index, crow::response& res) const;
 
             void run(std::string addr, uint16_t port);
-            static result<std::pair<std::string, std::string>> hdr_extract_credentials(const crow::request& req);
 
             router() = default;
             ~router() = default;
@@ -116,7 +127,7 @@ class instance {
             uint32_t get_max_object_count() const;
             void increment_object_count();
 
-            std::shared_ptr<object> create_object(object_index index, const std::optional<std::string> guid, const std::optional<std::weak_ptr<owner>> parent);
+            std::shared_ptr<object> create_object(object_index index, std::optional<std::string> guid, std::optional<std::weak_ptr<owner>> parent);
             result<std::string> send_message(const std::string& guid, const std::string& cmd_raw);
 
             object_tree() = default;
@@ -124,12 +135,18 @@ class instance {
     };
 
 public:
-    //std::thread server_thread; unused for now, may need later
+
+    std::mutex mtx;
+    std::condition_variable shutdown_condition;
+    bool shutdown = false;
+
     database db;
     router routing;
     object_tree tree;
 
     void begin();
+    void await_shutdown();
+
     instance() = default;
     ~instance() = default;
 };

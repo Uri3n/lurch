@@ -493,7 +493,8 @@ export async function keyDownCallback(event){
                     }
                     
                     catch(error) {
-                        console.log('keyDownCallback():', error);
+                        console.error('keyDownCallback():', error);
+                        appendNotification(`Invalid access level for object: ${guid}`, "bad");
                     }
                 }
             }

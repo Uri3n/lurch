@@ -16,6 +16,12 @@
 
 namespace lurch {
 
+    enum class access_level : int32_t {
+        LOW,
+        MEDIUM,
+        HIGH
+    };
+
     enum class object_type : int64_t {
         NONE,
         GROUP,
@@ -35,6 +41,12 @@ namespace lurch {
         NEUTRAL,
         BAD,
         GOOD
+    };
+
+    struct token_context {
+        std::string token;
+        std::string alias;
+        access_level access = access_level::LOW;
     };
 
     template<typename T>

@@ -19,6 +19,7 @@ namespace lurch {
     class object {
     public:
         std::string id;
+        access_level access = access_level::LOW;
 
         static std::string generate_id();
         virtual ~object();
@@ -35,7 +36,9 @@ namespace lurch {
         result<bool> delete_child(const std::string& guid);
 
         virtual std::string recieve(const command& cmd) = 0;
+        virtual std::string upload(const std::string& file, const std::string& extension) = 0;
         virtual ~owner() = default;
+
         owner(std::optional<std::weak_ptr<owner>> parent, instance* inst);
     };
 
@@ -45,7 +48,9 @@ namespace lurch {
         instance* inst;
 
         virtual std::string recieve(const command& cmd) = 0;
+        virtual std::string upload(const std::string& file, const std::string& extension) = 0;
         virtual ~leaf() = default;
+
         leaf(std::optional<std::weak_ptr<owner>> parent, instance* inst);
     };
 

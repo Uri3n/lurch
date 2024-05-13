@@ -5,6 +5,10 @@
 #include "root.hpp"
 #include "../../components/instance.hpp"
 
+std::string lurch::root::upload(const std::string &file, const std::string &extension) {
+    return "blabla";
+}
+
 std::string
 lurch::root::recieve(const command &cmd) {
 

@@ -9,13 +9,14 @@
 #include <iostream>
 
 namespace lurch {
-class agent : public leaf {
+class baphomet final : public leaf {
 private:
     std::queue<std::string> tasks;
 public:
 
+    std::string upload(const std::string &file, const std::string &extension) override;
     std::string recieve(const lurch::command &cmd) override;
-    agent(const std::optional<std::weak_ptr<owner>> &parent, instance* const root)
+    baphomet(const std::optional<std::weak_ptr<owner>> &parent, instance* const root)
         : leaf(parent, root) {
     }
 };

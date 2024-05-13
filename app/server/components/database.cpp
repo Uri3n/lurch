@@ -10,59 +10,69 @@
 // database mutex is not recursive, so that will result in a deadlock.
 //
 
-bool
+lurch::result<lurch::access_level>
 lurch::instance::database::match_user(const std::string& username, const std::string& password) {
 
     std::lock_guard<std::mutex> lock(this->mtx);
     try {
-        for(auto&& row : *this->db << "select username,password from users where username = ?" << username) {
-            std::string q_username; uint32_t q_password = 0;
+        for(auto&& row : *this->db << "select username,password,access_level from users where username = ?" << username) {
+            std::string q_username;
+            uint32_t q_password = 0;
+            int32_t q_access;
 
-            row >> q_username >> q_password;
+            row >> q_username >> q_password >> q_access;
             if(q_username == username && q_password == hash_password(password)) {
-                return true;
+                return static_cast<access_level>(q_access);
             }
         }
 
-        throw std::exception();
+        throw std::runtime_error("user does not exist.");
     }
-    catch(...) {
-        io::failure(io::format_str("Query for user: {}, password: {} failed.", username, password));
-        return false;
+    catch(const sqlite::sqlite_exception& e) {
+        return error(io::format_str("{} :: {}", e.get_sql(), e.what()));
+    }
+    catch(const std::exception& e) {
+        return error(e.what());
     }
 }
 
 
 bool
-lurch::instance::database::match_token(const std::string &token) {
+lurch::instance::database::match_token(const std::string &token, const access_level required_access) {
 
     std::lock_guard<std::mutex> lock(this->mtx);
     try {
-        std::string q_token;
-        *this->db << u"select token from tokens where token = ? and expiration_time > strftime('%s', 'now')" << token >> q_token;
+        for(auto&& row : *this->db << u"select token,access_level from tokens where token = ? and expiration_time > strftime('%s', 'now')" << token) {
+            std::string q_token;
+            int32_t q_access;
 
-        if(q_token.empty()) {
-            throw std::runtime_error("token does not exist.");
+            row >> q_token >> q_access;
+            if(required_access > static_cast<access_level>(q_access)) {
+                throw std::runtime_error("bad token access level");
+            }
+
+            return true;
         }
+
+        throw std::runtime_error("token does not exist.");
     }
-    catch(...) {
-        io::failure("couldnt match token");
+    catch(const std::exception& e) {
+        io::failure(std::string("match_token: ") + e.what());
         return false;
     }
-
-    return true;
 }
 
 
 lurch::result<bool>
-lurch::instance::database::store_user(const std::string &username, const std::string &password) {
+lurch::instance::database::store_user(const std::string &username, const std::string &password, const access_level access) {
 
     std::lock_guard<std::mutex> lock(this->mtx);
     try {
         *this->db <<
-            "insert into users (username,password) values (?,?);"
+            "insert into users (username,password,access_level) values (?,?,?);"
             << username
-            << hash_password(password);
+            << hash_password(password)
+            << static_cast<int32_t>(access);
 
     }
     catch(const sqlite::sqlite_exception& e) {
@@ -101,7 +111,7 @@ std::string
 lurch::instance::database::generate_token(const size_t length) {
 
     //
-    // Not cryptographically secure. Gonna change this heavily later
+    // Not secure. Gonna change this heavily later
     //
 
     static const std::string charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -123,7 +133,7 @@ lurch::instance::database::generate_token(const size_t length) {
 lurch::result<bool>
 lurch::instance::database::initialize(
     instance* inst,
-    const std::optional<std::string >& initial_user,
+    const std::optional<std::string>& initial_user,
     const std::optional<std::string>& initial_password
 ) {
 
@@ -134,15 +144,17 @@ lurch::instance::database::initialize(
         *this->db <<
             "create table if not exists users ("
             "   _id integer primary key autoincrement not null,"
-            "   username text unique,"
-            "   password integer"                                                   //hashed
+            "   username text unique not null,"
+            "   password integer not null,"                                                   //hashed
+            "   access_level integer not null"
             ");";
 
         *this->db <<
             "create table if not exists tokens ("
             "   token text unique not null,"
             "   expiration_time integer not null,"
-            "   alias text"
+            "   alias text not null,"
+            "   access_level integer not null"
             ");";
 
         *this->db <<
@@ -166,9 +178,10 @@ lurch::instance::database::initialize(
 
         if(initial_user && initial_password) {
             *this->db <<
-                "insert into users (username,password) values (?,?);"
+                "insert into users (username,password,access_level) values (?,?,?);"
                 << initial_user.value()
-                << hash_password(initial_password.value());
+                << hash_password(initial_password.value())
+                << static_cast<int32_t>(access_level::HIGH);
         }
 
     }
@@ -209,21 +222,19 @@ lurch::instance::database::store_message(const std::string& guid, const std::str
 
 
 lurch::result<bool>
-lurch::instance::database::store_token(const std::string &token, const std::optional<std::string>& alias, uint64_t expiration_time) {
+lurch::instance::database::store_token(
+    const std::string &token,
+    const access_level access,
+    const std::optional<std::string>& alias,
+    uint64_t expiration_time) {
 
     std::lock_guard<std::mutex> lock(this->mtx);
     try {
-        if(alias.has_value()) {
-            *this->db << u"insert into tokens (token,expiration_time,alias) values (?, strftime('%s', 'now') + ?, ?);"
-                << token
-                << expiration_time * 3600
-                << alias.value();
-        }
-        else {
-            *this->db << u"insert into tokens (token,expiration_time) values (?, strftime('%s', 'now') + ?);"
-                << token
-                << expiration_time * 3600;
-        }
+        *this->db << u"insert into tokens (token,expiration_time,alias,access_level) values (?,strftime('%s', 'now') + ?,?,?);"
+            << token
+            << expiration_time * 3600
+            << alias.value_or("unknown")
+            << static_cast<int32_t>(access);
     }
     catch(const sqlite::sqlite_exception& e) {
         return error(io::format_str("exception: {} SQL: {}", e.what(), e.get_sql()));
@@ -523,21 +534,26 @@ lurch::instance::database::query_root_guid() {
 }
 
 
-lurch::result<std::string>
-lurch::instance::database::query_token_alias(const std::string &token) {
+lurch::result<std::pair<std::string, lurch::access_level>>
+lurch::instance::database::query_token_context(const std::string &token) {
 
     std::lock_guard<std::mutex> lock(this->mtx);
     try {
-        std::string q_alias;
-        *this->db << u"select alias from tokens where token = ?;" << token >> q_alias;
-        if(q_alias.empty()) {
-            throw std::exception();
+        for(auto&& row : *this->db << u"select alias,access_level from tokens where token = ?" << token) {
+            std::string q_alias;
+            int32_t q_access;
+
+            row >> q_alias >> q_access;
+            return std::make_pair(q_alias, static_cast<access_level>(q_access));
         }
 
-        return q_alias;
+        throw std::runtime_error("token does not exist.");
     }
-    catch(...) {
-        return error("alias does not exist.");
+    catch (const sqlite::sqlite_exception& e) {
+        return error(io::format_str("exception: {} SQL: {}", e.what(), e.get_sql()));
+    }
+    catch(const std::exception& e) {
+        return error(e.what());
     }
 }
 

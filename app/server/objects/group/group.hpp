@@ -7,10 +7,11 @@
 #include "../base/base.hpp"
 
 namespace lurch {
-class group : public owner {
+class group final : public owner {
 public:
 
-    std::string recieve(const lurch::command &cmd) override;
+    std::string upload(const std::string &file, const std::string &extension) override;
+    std::string recieve(const command &cmd) override;
     group(const std::optional<std::weak_ptr<owner>> &parent, instance * const root)
         : owner(parent, root) {
     }

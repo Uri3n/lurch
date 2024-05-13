@@ -7,10 +7,10 @@
 #include "../base/base.hpp"
 
 namespace lurch {
-class root : public owner {
-private:
+class root final : public owner {
 public:
 
+    std::string upload(const std::string &file, const std::string &extension) override;
     std::string recieve(const command &cmd) override;
     explicit root(instance* inst) : owner(std::nullopt, inst) {}
 };

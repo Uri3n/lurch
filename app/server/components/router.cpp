@@ -46,10 +46,10 @@ lurch::instance::router::hdr_extract_token(const crow::request &req) {
 
 
 bool
-lurch::instance::router::verify_token(const crow::request &req) const {
+lurch::instance::router::verify_token(const crow::request &req, const access_level required_access) const {
 
     if(const auto result = hdr_extract_token(req)) {
-        if(inst->db.match_token(result.value())) {
+        if(inst->db.match_token(result.value(), required_access)) {
             io::success("authenticated token " + result.value());
             return true;
         }
@@ -86,7 +86,7 @@ lurch::instance::router::remove_ws_connection(crow::websocket::connection* conn)
 bool
 lurch::instance::router::verify_ws_user(crow::websocket::connection* conn, const std::string& data) {
 
-    if(inst->db.match_token(data)) {
+    if(inst->db.match_token(data, access_level::MEDIUM)) {
         std::lock_guard<std::mutex> lock(websockets.lock);
         for(auto& pair : websockets.connections) {
             if(pair.first == conn) {
@@ -217,10 +217,10 @@ lurch::instance::router::handler_verify(const crow::request &req, crow::response
 
     if(result.has_value()) {
         const auto [username, password] = result.value();
-        if(inst->db.match_user(username, password)) {
+        if(const auto user_result = inst->db.match_user(username, password)) {
 
             const std::string auth_token = database::generate_token();
-            const auto store_auth_token = inst->db.store_token(auth_token, username);
+            const auto store_auth_token = inst->db.store_token(auth_token, user_result.value(), username);
 
             if(!store_auth_token) {
                 io::failure("Failed to store token!");
@@ -238,14 +238,20 @@ lurch::instance::router::handler_verify(const crow::request &req, crow::response
 
 
 bool
-lurch::instance::router::handler_objects_send(std::string GUID, const crow::request& req, crow::response& res) {
+lurch::instance::router::handler_objects_send(
+    std::string GUID,
+    const crow::request& req,
+    crow::response& res,
+    const std::string& user_alias,
+    const access_level user_access
+) {
 
     if(GUID == "root") {
         GUID = inst->db.query_root_guid().value_or(GUID);
     }
 
     if(!req.body.empty() && req.body.size() < 200) {                                                    //check for a valid request
-        const auto msg_result = inst->tree.send_message(GUID, req.body);                                //send the message to the object
+        const auto msg_result = inst->tree.send_message(GUID, req.body, user_access);                   //send the message to the object
         if(msg_result.has_value()) {
             res.body = msg_result.value();
 
@@ -255,7 +261,7 @@ lurch::instance::router::handler_objects_send(std::string GUID, const crow::requ
             inst->db.store_message(GUID, req.remote_ip_address, req.body);                              //we potentially need to store two messages here: client->server and server->client
             send_ws_object_message_update(                                                              //send message update to websocket clients
                 req.body,
-                inst->db.query_token_alias(hdr_extract_token(req).value_or("-")).value_or(req.remote_ip_address),
+                user_alias,
                 GUID
             );
 
@@ -287,13 +293,13 @@ lurch::instance::router::handler_objects_getdata(std::string GUID, crow::respons
         json["alias"] = alias;
         json["type"] = io::type_to_str(type);
 
-        res.code = 200;
         res.body = json.dump();
         return true;
 
     } else {
         io::failure(io::format_str("getdata request for {} failed.", GUID));
         io::failure("error: " + data_result.error());
+        res.code = 404;
         return false;
     }
 }
@@ -327,6 +333,7 @@ lurch::instance::router::handler_objects_getchildren(std::string GUID, crow::res
         return true;
     }
 
+    res.code = 404;
     return false;
 }
 
@@ -361,6 +368,7 @@ lurch::instance::router::handler_objects_getmessages(std::string GUID, const int
 
     io::failure("message query failed.");
     io::failure("error: " + query_result.error());
+    res.code = 404;
     return false;
 }
 
@@ -381,6 +389,7 @@ lurch::instance::router::run(std::string addr, uint16_t port) {
 
     CROW_ROUTE(this->app, "/isrunning")
     .methods("GET"_method)([&](const crow::request& req, crow::response& res) {
+
         res.code = 200;
         res.body = "LURCH_SERVER_OK";
         res.end();
@@ -404,7 +413,7 @@ lurch::instance::router::run(std::string addr, uint16_t port) {
     .methods("GET"_method)([&](const crow::request& req, crow::response& res) {
 
         res.code = 403;
-        if(verify_token(req)) {
+        if(verify_token(req, access_level::MEDIUM)) {
             res.set_static_file_info("static/templates/index.html");
             res.code = 200;
         }
@@ -417,9 +426,14 @@ lurch::instance::router::run(std::string addr, uint16_t port) {
     CROW_ROUTE(this->app, "/objects/send/<string>")
     .methods("POST"_method)([&](const crow::request& req, crow::response& res, std::string GUID){
 
-        res.code = 400;
-        if(verify_token(req) && handler_objects_send(GUID, req, res)) {
-            res.code = 200;
+        res.code = 403;
+        if(const auto result = inst->db.query_token_context(hdr_extract_token(req).value_or("-"))) {
+            if(handler_objects_send(GUID, req, res, result.value().first, result.value().second)) {
+                res.code = 200;
+            }
+            else {
+                res.code = 400;
+            }
         }
 
         io::info("serving POST at endpoint: \"/objects/send\" :: " + std::to_string(res.code));
@@ -430,8 +444,8 @@ lurch::instance::router::run(std::string addr, uint16_t port) {
     CROW_ROUTE(this->app, "/objects/getdata/<string>")
     .methods("GET"_method)([&](const crow::request& req, crow::response& res, std::string GUID){
 
-        res.code = 404;
-        if(verify_token(req) && handler_objects_getdata(GUID, res)) {
+        res.code = 403;
+        if(verify_token(req, access_level::MEDIUM) && handler_objects_getdata(GUID, res)) {
             res.code = 200;
         }
 
@@ -443,8 +457,8 @@ lurch::instance::router::run(std::string addr, uint16_t port) {
     CROW_ROUTE(this->app, "/objects/getchildren/<string>")
     .methods("GET"_method)([&](const crow::request& req, crow::response& res, std::string GUID){
 
-        res.code = 404;
-        if(verify_token(req) && handler_objects_getchildren(GUID, res)) {
+        res.code = 403;
+        if(verify_token(req, access_level::MEDIUM) && handler_objects_getchildren(GUID, res)) {
             res.code = 200;
         }
 
@@ -456,8 +470,8 @@ lurch::instance::router::run(std::string addr, uint16_t port) {
     CROW_ROUTE(this->app, "/objects/getmessages/<string>/<int>")
     .methods("GET"_method)([&](const crow::request& req, crow::response& res, std::string GUID, int index){
 
-        res.code = 404;
-        if(verify_token(req) && handler_objects_getmessages(GUID, index, res)) {
+        res.code = 403;
+        if(verify_token(req, access_level::MEDIUM) && handler_objects_getmessages(GUID, index, res)) {
             res.code = 200;
         }
 

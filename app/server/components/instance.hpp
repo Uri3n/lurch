@@ -38,23 +38,23 @@ class instance {
         public:
             instance* inst = nullptr;
 
-            bool match_user(const std::string& username, const std::string& password);
-            bool match_token(const std::string& token);
+            result<access_level> match_user(const std::string& username, const std::string& password);
+            bool match_token(const std::string& token, access_level required_access);
 
             static inline uint32_t hash_password(const std::string &password);
             static std::string generate_token(size_t length = 25);
 
             result<bool> store_object(const std::string& GUID, std::optional<std::string> parent, std::string alias, object_type type, object_index index);
-            result<bool> store_user(const std::string& username, const std::string& password);
+            result<bool> store_user(const std::string& username, const std::string& password, access_level access);
             result<bool> store_message(const std::string& guid, const std::string& sender,  const std::string& body);
-            result<bool> store_token(const std::string& token, const std::optional<std::string>& alias = std::nullopt, uint64_t expiration_time = 12);
+            result<bool> store_token(const std::string& token, access_level access, const std::optional<std::string>& alias = std::nullopt, uint64_t expiration_time = 12);
 
             result<bool> delete_object(const std::string& guid);
             result<bool> delete_user(const std::string& username);
             void delete_old_tokens();
 
             result<std::string> query_root_guid();
-            result<std::string> query_token_alias(const std::string& token);
+            result<std::pair<std::string, access_level>> query_token_context(const std::string& token);
             result<object_type> query_object_type(const std::string& guid);
             result<array_of_children> query_object_children(const std::string& guid);
             result<object_data> query_object_data(const std::string& guid);
@@ -76,7 +76,7 @@ class instance {
                 std::mutex lock;
             } websockets;
 
-            [[nodiscard]] bool verify_token(const crow::request& req) const;
+            [[nodiscard]] bool verify_token(const crow::request& req, access_level required_access) const;
 
         public:
             crow::SimpleApp app;
@@ -89,7 +89,7 @@ class instance {
             void remove_ws_connection(crow::websocket::connection* conn);
             bool verify_ws_user(crow::websocket::connection* conn, const std::string& data);
 
-            void send_ws_data(const std::string& data, const bool is_binary);
+            void send_ws_data(const std::string& data, bool is_binary);
             void send_ws_text(const std::string& data);
             void send_ws_binary(const std::string& data);
 
@@ -100,7 +100,7 @@ class instance {
 
             /* handler functions should NOT call crow::response::end, or set the response code. */
             bool handler_verify(const crow::request& req, crow::response& res) const;
-            bool handler_objects_send(std::string GUID, const crow::request& req, crow::response& res);
+            bool handler_objects_send(std::string GUID, const crow::request& req, crow::response& res, const std::string& user_alias, access_level user_access);
             bool handler_objects_getdata(std::string GUID, crow::response& res) const;
             bool handler_objects_getchildren(std::string GUID, crow::response& res) const;
             bool handler_objects_getmessages(std::string GUID, int message_index, crow::response& res) const;
@@ -115,7 +115,7 @@ class instance {
         private:
             uint32_t max_object_count = 100;
             std::atomic_uint32_t curr_object_count = 0;
-            result<std::string> send_message_r(const std::shared_ptr<object>& current, const std::string& guid, const command& cmd);
+            result<std::string> send_message_r(const std::shared_ptr<object>& current, const std::string& guid, const command& cmd, access_level access);
 
         public:
 
@@ -128,7 +128,7 @@ class instance {
             void increment_object_count();
 
             std::shared_ptr<object> create_object(object_index index, std::optional<std::string> guid, std::optional<std::weak_ptr<owner>> parent);
-            result<std::string> send_message(const std::string& guid, const std::string& cmd_raw);
+            result<std::string> send_message(const std::string& guid, const std::string& cmd_raw, access_level access);
 
             object_tree() = default;
             ~object_tree() = default;

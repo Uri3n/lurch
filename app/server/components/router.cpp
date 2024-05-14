@@ -499,6 +499,7 @@ lurch::instance::router::run(std::string addr, uint16_t port) {
 
     app.loglevel(crow::LogLevel::Critical);
     this->app
+    .ssl_file("ssl/cert.crt", "ssl/keyfile.key")
     .bindaddr(addr)
     .port(port)
     .multithreaded()

@@ -62,7 +62,14 @@ function socketError(error) {
 export function startWebsocket(token){
 
     authToken = token;
-    sock = new WebSocket(`ws://${window.location.hostname}:${window.location.port}/ws`);
+    const protocol = window.location.protocol;
+
+    if(protocol === 'https:') {
+        sock = new WebSocket(`wss://${window.location.hostname}:${window.location.port}/ws`);
+    }
+    else {
+        sock = new WebSocket(`ws://${window.location.hostname}:${window.location.port}/ws`);
+    }
 
     sock.onopen = socketOpen;
     sock.onclose = socketClose;

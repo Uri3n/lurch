@@ -46,7 +46,6 @@ void handle_kb_interrupt(int signal) {
 
 int main() {
 
-    std::cout << "starting..." << std::endl;
     lurch::instance inst;
     std::set_terminate(handle_uncaught_exception);
     std::signal(SIGINT, handle_kb_interrupt);

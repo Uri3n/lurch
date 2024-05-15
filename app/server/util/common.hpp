@@ -49,6 +49,14 @@ namespace lurch {
         access_level access = access_level::LOW;
     };
 
+    struct config_data {
+        std::string bindaddr;
+        uint16_t port;
+        bool use_https;
+        std::string cert_path;
+        std::string key_path;
+    };
+
     template<typename T>
     using result = std::expected<T, std::string>;
     using error = std::unexpected<std::string>;
@@ -59,6 +67,26 @@ namespace lurch {
         std::string flag_name;
         argument_parameter parameter;
     };
+
+
+    template<typename T> requires std::is_invocable_v<T>
+    class defer_wrapper {
+        T callable;
+    public:
+
+        auto call() -> decltype(callable()) {
+            return callable();
+        }
+
+        explicit defer_wrapper(T func) : callable(func) {}
+        ~defer_wrapper() { callable(); }
+    };
+
+
+    template<typename T>
+    defer_wrapper<T> defer(T callable) {
+        return defer_wrapper<T>(callable);
+    }
 
     struct command {
         private:
@@ -103,6 +131,7 @@ namespace lurch {
                 return os;
             }
     };
+
 }
 
 #endif //COMMON_HPP

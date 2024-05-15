@@ -374,7 +374,13 @@ lurch::instance::router::handler_objects_getmessages(std::string GUID, const int
 
 
 void
-lurch::instance::router::run(std::string addr, uint16_t port) {
+lurch::instance::router::run(
+        const std::string addr,
+        const uint16_t port,
+        const std::optional<std::string>& ssl_cert,
+        const std::optional<std::string>& ssl_key
+    ) {
+
 
     CROW_ROUTE(this->app, "/")
     .methods("GET"_method)([&](const crow::request& req, crow::response& res) {
@@ -497,11 +503,38 @@ lurch::instance::router::run(std::string addr, uint16_t port) {
         }
     });
 
+
     app.loglevel(crow::LogLevel::Critical);
-    this->app
-    .ssl_file("ssl/cert.crt", "ssl/keyfile.key")
-    .bindaddr(addr)
-    .port(port)
-    .multithreaded()
-    .run();
+
+    try {
+        if(ssl_cert.has_value() && ssl_key.has_value()) {
+            this->app
+            .ssl_file(ssl_cert.value(), ssl_key.value())
+            .bindaddr(addr)
+            .port(port)
+            .multithreaded()
+            .run();
+        }
+
+        else {
+            this->app
+            .bindaddr(addr)
+            .port(port)
+            .multithreaded()
+            .run();
+        }
+    }
+    catch(const std::exception& e) {
+
+        std::cout << termcolor::red << "\n\n";
+        std::cout << io::format_str("[!] encountered exception binding to {}:{}!", addr, port) << std::endl;
+        std::cout << "[!] description: " << e.what() << std::endl;
+
+        std::cout << "\n  this most likely occurred because an invalid address or port was provided,"
+                     "\n  or because the certificate or key you provided is incorrect, or otherwise corrupted."
+                     "\n  please check the validity of these items, and create a new config.json file by deleting the old one." << std::endl;
+
+        std::cout << termcolor::reset << "\nexiting..." << std::endl;
+        std::exit(1);
+    }
 }

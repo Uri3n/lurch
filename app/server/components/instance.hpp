@@ -4,6 +4,7 @@
 
 #ifndef INSTANCE_HPP
 #define INSTANCE_HPP
+
 #include "../vendor/sqlite/sqlite_modern_cpp.h"
 #include "../util/common.hpp"
 #include "../util/argument_parser.hpp"
@@ -14,6 +15,12 @@
 #include "../objects/group/group.hpp"
 #include <crow.h>
 #include <optional>
+#include <openssl/bio.h>
+#include <openssl/err.h>
+#include <openssl/ssl.h>
+#include <openssl/pem.h>
+#include <openssl/x509.h>
+#include <openssl/x509v3.h>
 #include <cstdint>
 #include <memory>
 #include <mutex>
@@ -21,6 +28,16 @@
 #include <filesystem>
 #include <thread>
 #include <atomic>
+
+#if defined(_MSVC_STL_VERSION) && defined(_MSVC_LANG)
+    #if _MSVC_LANG > 202002L
+        #define LURCH_USE_STACKTRACE
+        #include <stacktrace>
+    #endif
+#endif
+
+#define LURCH_RSA_KEYSIZE 2048
+#define LURCH_CONFIG_PATH "config.json"
 
 
 namespace lurch {
@@ -105,7 +122,7 @@ class instance {
             bool handler_objects_getchildren(std::string GUID, crow::response& res) const;
             bool handler_objects_getmessages(std::string GUID, int message_index, crow::response& res) const;
 
-            void run(std::string addr, uint16_t port);
+            void run(std::string addr, uint16_t port, const std::optional<std::string>& ssl_cert, const std::optional<std::string>& ssl_key);
 
             router() = default;
             ~router() = default;
@@ -143,6 +160,10 @@ public:
     database db;
     router routing;
     object_tree tree;
+
+    static void handle_uncaught_exception();
+    static bool generate_self_signed_cert(const std::string& certfile_path, const std::string& keyfile_path, long certificate_version);
+    static result<config_data> init_config_data();
 
     void begin();
     void await_shutdown();

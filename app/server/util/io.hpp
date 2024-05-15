@@ -40,7 +40,8 @@ public:
         return output;
     }
 
-    static std::string type_to_str(const object_type type);
+    static bool yesno(const std::string& question);
+    static std::string type_to_str(object_type type);
     static void success(const std::string& str);
     static void failure(const std::string& str);
     static void info(const std::string& str);
@@ -50,7 +51,7 @@ public:
     static void big_info(const std::string& str);
 
     static void print_banner();
-    static std::string prompt_for(const std::string prompt);
+    static std::string prompt_for(std::string prompt);
 };
 
 } // lurch

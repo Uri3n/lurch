@@ -4,6 +4,8 @@
 
 #include "io.hpp"
 
+#include <algorithm>
+
 std::vector<std::string>
 lurch::io::into_chunks(const std::string& str) {
     size_t cur_chunk_begin = 0;
@@ -22,6 +24,27 @@ lurch::io::into_chunks(const std::string& str) {
 
     return chunks;
 }
+
+
+bool
+lurch::io::yesno(const std::string &question) {
+
+    while(true) {
+        std::string input = prompt_for(question + " Y/N ");
+        std::ranges::transform(input, input.begin(), [](const unsigned char c) {
+            return std::tolower(c);
+        });
+
+        if(input == "y" || input == "yes") {
+            return true;
+        }
+
+        if(input == "n" || input == "no") {
+            return false;
+        }
+    }
+}
+
 
 std::string
 lurch::io::type_to_str(const object_type type) {
@@ -68,7 +91,7 @@ lurch::io::info(const std::string& str) {
     std::cout << '|' << std::setw(TEXT_WIDTH) << std::left << str << '|' << \
                 termcolor::bright_grey << std::setw(PERIOD_FILLER_WIDTH) << std::setfill('.') << " " << \
                 std::left << std::right << termcolor::reset << '[' << \
-                termcolor::blue << "INFO" << termcolor::reset << ']' << std::setfill(' ') << std::endl;
+                termcolor::bright_cyan << "INFO" << termcolor::reset << ']' << std::setfill(' ') << std::endl;
 }
 
 void
@@ -129,7 +152,7 @@ lurch::io::prompt_for(const std::string prompt) {
     std::cout << "[!] " << prompt << termcolor::bright_cyan;
     std::getline(std::cin, input);
 
-    std::cout << termcolor::reset;
+    std::cout << termcolor::reset << std::flush;
     return input;
 }
 

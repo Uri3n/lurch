@@ -1,8 +1,8 @@
 //
-// Created by diago on 2024-04-24.
+// Created by diago on 2024-05-16.
 //
 
-#include "instance.hpp"
+#include "../instance.hpp"
 
 //
 // Contains implementations of SQL queries.
@@ -86,50 +86,6 @@ lurch::instance::database::store_user(const std::string &username, const std::st
 }
 
 
-uint32_t
-lurch::instance::database::hash_password(const std::string &password) {
-
-    static constexpr uint32_t initial_seed = 7; //can be altered if needed
-    uint32_t hash = 0;
-    size_t index = 0;
-
-    while(index != password.size()) {
-        hash += password[index++];
-        hash += hash << initial_seed;
-        hash ^= hash >> 6;
-    }
-
-    hash += hash << 3;
-    hash ^= hash >> 11;
-    hash += hash << 15;
-
-    return hash;
-}
-
-
-std::string
-lurch::instance::database::generate_token(const size_t length) {
-
-    //
-    // Not secure. Gonna change this heavily later
-    //
-
-    static const std::string charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    std::string result;
-    result.reserve(length);
-
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<size_t> distribution(0, charset.size() - 1);
-
-    for (int i = 0; i < length; ++i) {
-        result += charset[distribution(gen)];
-    }
-
-    return crow::utility::base64encode(result, result.size());
-}
-
-
 lurch::result<bool>
 lurch::instance::database::initialize(
     instance* inst,
@@ -193,6 +149,14 @@ lurch::instance::database::initialize(
     }
     catch(...) {
         return error("unknown exception encountered");
+    }
+
+    //
+    // let's do this real quick
+    //
+
+    if(!std::filesystem::exists("static/fileman/")) {
+        std::filesystem::create_directory("static/fileman/");
     }
 
     return { true };
@@ -300,14 +264,14 @@ lurch::instance::database::delete_old_tokens() {
 
 lurch::result<bool>
 lurch::instance::database::store_object(
-        const std::string &GUID,
+        const std::string &guid,
         const std::optional<std::string> parent,
         const std::string alias,
         const object_type type,
         const object_index index
  ) {
 
-    if(alias.empty() || GUID.empty()) {
+    if(alias.empty() || guid.empty()) {
         return error("Invalid parameters.");
     }
 
@@ -321,7 +285,7 @@ lurch::instance::database::store_object(
         if(parent.has_value()) {
             *this->db <<
                 "insert into objects (guid,alias,parent,type,type_index) values (?,?,?,?,?);"
-                << GUID
+                << guid
                 << alias
                 << parent.value()
                 << static_cast<int64_t>(type)
@@ -329,7 +293,7 @@ lurch::instance::database::store_object(
         } else {
             *this->db <<
                 "insert into objects (guid,alias,parent,type,type_index) values (?,?,?,?,?);"
-                << GUID
+                << guid
                 << alias
                 << nullptr
                 << static_cast<int64_t>(type)
@@ -556,79 +520,3 @@ lurch::instance::database::query_token_context(const std::string &token) {
         return error(e.what());
     }
 }
-
-
-void
-lurch::instance::database::restore_objects_r(std::shared_ptr<owner> object, size_t& total_restored) {
-
-    io::info("retrieving children of: " + object->id);
-    result<array_of_children> children = query_object_children(object->id);
-    if(!children) {
-        io::info("no children.");
-        return;
-    }
-
-    io::info(std::string("number of children: ") + std::to_string(children.value().size()) );
-    for(const auto &[guid, alias, type, index] : children.value()) {
-        std::shared_ptr<lurch::object> child_ptr = inst->tree.create_object(
-            index,
-            guid,
-            std::nullopt //Parent pointers are unused for now. May change this later.
-        );
-
-        io::info(io::format_str("restoring object {} :: {}", guid, alias));
-        ++total_restored;
-
-        if(const auto owner_ptr = std::dynamic_pointer_cast<owner>(object->children.emplace_back(std::move(child_ptr)))) {
-            io::info("owner. Restoring children.");
-            restore_objects_r(owner_ptr,total_restored);
-        } else {
-            io::info("leaf.");
-        }
-    }
-}
-
-
-lurch::result<bool>
-lurch::instance::database::restore_objects() {
-
-    result<std::string> root_guid = query_root_guid();
-    size_t total_restored_objects = 0;
-
-    if(!root_guid) {
-        root_guid = result<std::string>(object::generate_id());
-        auto res = store_object(
-            root_guid.value(),
-            std::nullopt,
-            "root",                             //alias
-            object_type::ROOT,
-            object_index::GENERIC_ROOT          //can be changed
-        );
-
-        if(!res) {
-            return error(res.error());          //propagate error, will throw after.
-        }
-
-    } else {
-        ++total_restored_objects;
-        io::success("restored root object: " + root_guid.value());
-    }
-
-    std::shared_ptr<object> root_ptr = inst->tree.create_object(
-        object_index::GENERIC_ROOT,
-        root_guid.value(),
-        std::nullopt
-    );
-
-    inst->tree.root = std::move(root_ptr);
-    inst->tree.increment_object_count();
-
-    restore_objects_r(std::dynamic_pointer_cast<owner>(inst->tree.root), total_restored_objects);
-
-    io::success("finished restoration.");
-    io::success("objects restored: " + std::to_string(total_restored_objects));
-
-    return { true };
-}
-
-

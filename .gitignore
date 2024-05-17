@@ -18,8 +18,7 @@
 *.key
 *.pem
 *.crt
-**/loot/
-**/loot/*
 cmake-build-*/
 **/.idea/
-
+**/fileman/
+**/fileman/*

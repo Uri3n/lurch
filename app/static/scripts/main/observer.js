@@ -20,7 +20,7 @@ function mutationCallback(mutationList, observer){
     mutationList.forEach(mutation => {
         if(mutation.type === 'childList'){
 
-            const placeholderImage = mutation.target.querySelector('img');
+            const placeholderImage = mutation.target.querySelector('.placeholder-image');
             
             if(placeholderImage !== null){
                 if(mutation.target.children.length === 1){

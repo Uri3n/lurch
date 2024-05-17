@@ -7,7 +7,10 @@ import {
     listElementDragStartCallback, 
     listElementDragEndCallback, 
     terminalMenuClickCallback,
-    keyDownCallback
+    keyDownCallback,
+    highlightElement,
+    unhighlightElement,
+    terminalDrop
 } from './ui.js';
 
 //-------------------------------------------------------------------------------------------
@@ -55,6 +58,34 @@ function main(){
 
     observeElement(document.querySelector('.terminal-instance'));
     observeElement(document.getElementById('notification-center'));
+
+
+    //
+    // init terminal file drag & drop
+    //
+
+    const terminal = document.querySelector('#terminal-container'); 
+    terminal.addEventListener('click', () => {
+        console.log('clicked!');
+    });
+    
+    const preventDefaultCallback = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+    };
+
+    ['dragenter', 'dragleave', 'drop'].forEach(eventName => {
+        terminal.addEventListener(eventName, preventDefaultCallback);
+        document.body.addEventListener(eventName, preventDefaultCallback);
+    });
+
+    terminal.addEventListener('dragenter', highlightElement);
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        terminal.addEventListener(eventName, unhighlightElement);
+    });
+
+    terminal.addEventListener('drop', terminalDrop);
 }
 
 main();

@@ -503,3 +503,21 @@ export async function keyDownCallback(event){
         clearInputContent();
     }
 }
+
+
+export function highlightElement(event) {
+    if (event.dataTransfer.types.includes('Files')) {
+        console.log('foo');
+    }
+    else {
+        console.log('bar');
+    }
+}
+
+export function unhighlightElement(event) {
+    console.log('unhighlight');
+}
+
+export function terminalDrop(event) {
+    console.log('foo');
+}

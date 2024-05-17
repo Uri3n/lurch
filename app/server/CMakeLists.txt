@@ -8,24 +8,38 @@ set(LINUX_VENDOR_DIR ${CMAKE_CURRENT_SOURCE_DIR}/vendor/linux)
 add_executable(server main.cpp
         vendor/sqlite/sqlite3.c
         vendor/sqlite/sqlite_modern_cpp.h
+
         objects/base/base.cpp
         objects/base/base.hpp
+
         util/argument_parser.cpp
         util/argument_parser.hpp
         util/common.hpp
         util/io.cpp
         util/io.hpp
-        components/instance.cpp
-        components/instance.hpp
-        components/database.cpp
-        components/router.cpp
-        components/object_tree.cpp
-        objects/agent/agent.cpp
-        objects/agent/agent.hpp
+
+        objects/agent/baphomet.cpp
+        objects/agent/baphomet.hpp
         objects/root/root.cpp
         objects/root/root.hpp
         objects/group/group.cpp
         objects/group/group.hpp
+
+        components/instance.cpp
+        components/instance.hpp
+
+        components/database/queries.cpp
+        components/database/restore_objects.cpp
+        components/database/fileman.cpp
+        components/database/misc.cpp
+
+        components/routing/endpoints.cpp
+        components/routing/misc.cpp
+        components/routing/websocket.cpp
+        components/routing/handlers.cpp
+
+        components/tree/send.cpp
+        components/tree/misc.cpp
 )
 
 target_compile_definitions(server PRIVATE CROW_ENABLE_SSL)

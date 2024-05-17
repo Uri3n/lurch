@@ -177,6 +177,18 @@ body {
     box-shadow: 0 0 10px #0066cc; 
 }
 
+.file-drop-icon {
+    position: absolute;
+    top:50%;
+    left:40%;
+    padding-bottom:8vh;
+    transform: translate(-50%, -40%);
+    max-height:70%;
+    width:auto;
+    opacity: 100%;
+    z-index: 9999;
+}
+
 .hidden-image{
     display: none !important;
 }
@@ -250,6 +262,7 @@ body {
 }
 
 .container-generic-flex-row{
+    position:relative;
     display:flex;
     flex-direction:row;
     width:100%;

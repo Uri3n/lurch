@@ -1,13 +1,12 @@
 
-
 let authToken = "";
 
 export async function fetchObjectChildren(guid){
 
     const endpoint = `/objects/getchildren/${encodeURIComponent(guid)}`; 
     const response = await fetch(endpoint, {
-        method: 'GET',
-        headers: {
+        method  : 'GET',
+        headers : {
             Authorization: "Bearer " + authToken
         }
     });
@@ -35,8 +34,8 @@ export async function fetchObjectData(guid){
     
     const endpoint = `/objects/getdata/${encodeURIComponent(guid)}`; 
     const response = await fetch(endpoint, {
-        method: 'GET',
-        headers: {
+        method  : 'GET',
+        headers : {
             Authorization: "Bearer " + authToken
         }
     });
@@ -55,8 +54,8 @@ export async function fetchObjectMessages(guid, index){
 
     const endpoint = `/objects/getmessages/${encodeURIComponent(guid)}/${index}`;
     const response = await fetch(endpoint, {
-        method: 'GET',
-        headers: {
+        method  : 'GET',
+        headers : {
             Authorization: "Bearer " + authToken
         }
     });
@@ -84,8 +83,8 @@ export async function sendObjectMessage(guid, message){
     
     const endpoint = `objects/send/${encodeURIComponent(guid)}`;
     const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
+        method  : 'POST',
+        headers : {
             Authorization: "Bearer " + authToken
         },
         body: message.trim()
@@ -98,6 +97,23 @@ export async function sendObjectMessage(guid, message){
 
     const plainText = await response.text();
     return plainText;
+}
+
+
+export async function uploadFile(guid, fileContent, extension) {
+
+    const endpoint = `objects/upload/${encodeURIComponent(guid)}/${encodeURIComponent(extension)}`;
+    const response = await fetch(endpoint, {
+        method  : 'POST',
+        headers : {
+            Authorization : 'Bearer ' + authToken 
+        },
+        body : fileContent
+    });
+
+    if(!response.ok) {
+        throw new Error(`error querying endpoint ${endpoint} :: ${response.status}`);
+    }
 }
 
 

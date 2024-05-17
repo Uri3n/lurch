@@ -10,7 +10,7 @@
 #include "../util/argument_parser.hpp"
 #include "../util/io.hpp"
 #include "../objects/base/base.hpp"
-#include "../objects/agent/agent.hpp"
+#include "../objects/agent/baphomet.hpp"
 #include "../objects/root/root.hpp"
 #include "../objects/group/group.hpp"
 #include <crow.h>
@@ -50,6 +50,7 @@ class instance {
     class database {
         private:
             std::mutex mtx;
+            std::mutex fileman_mtx;
             std::unique_ptr<sqlite::database> db = nullptr;
 
         public:
@@ -58,10 +59,20 @@ class instance {
             result<access_level> match_user(const std::string& username, const std::string& password);
             bool match_token(const std::string& token, access_level required_access);
 
-            static inline uint32_t hash_password(const std::string &password);
+            static uint32_t hash_password(const std::string &password);
             static std::string generate_token(size_t length = 25);
 
-            result<bool> store_object(const std::string& GUID, std::optional<std::string> parent, std::string alias, object_type type, object_index index);
+            result<std::filesystem::path> fileman_create(const std::string& raw_contents, const std::string& extension, const std::string& guid, bool is_binary);
+            result<std::stringstream> fileman_get_raw(const std::string& name, const std::string& guid);
+            result<std::vector<std::filesystem::path>> fileman_get_file_list(const std::string& guid);
+
+            bool fileman_delete_file(const std::string& name, const std::string& guid);
+            bool fileman_delete_all_files(const std::string& guid);
+
+            void fileman_wipe(const std::string& guid);
+            void fileman_wipe_all();
+
+            result<bool> store_object(const std::string& guid, std::optional<std::string> parent, std::string alias, object_type type, object_index index);
             result<bool> store_user(const std::string& username, const std::string& password, access_level access);
             result<bool> store_message(const std::string& guid, const std::string& sender,  const std::string& body);
             result<bool> store_token(const std::string& token, access_level access, const std::optional<std::string>& alias = std::nullopt, uint64_t expiration_time = 12);
@@ -121,6 +132,8 @@ class instance {
             bool handler_objects_getdata(std::string GUID, crow::response& res) const;
             bool handler_objects_getchildren(std::string GUID, crow::response& res) const;
             bool handler_objects_getmessages(std::string GUID, int message_index, crow::response& res) const;
+            bool handler_objects_upload(std::string GUID, const std::string& file_type, const crow::request& req, crow::response& res, access_level access) const;
+            bool handler_objects_download(std::string GUID, const std::string& file_name, const crow::request& req, crow::response& res) const;
 
             void run(std::string addr, uint16_t port, const std::optional<std::string>& ssl_cert, const std::optional<std::string>& ssl_key);
 
@@ -132,7 +145,9 @@ class instance {
         private:
             uint32_t max_object_count = 100;
             std::atomic_uint32_t curr_object_count = 0;
-            result<std::string> send_message_r(const std::shared_ptr<object>& current, const std::string& guid, const command& cmd, access_level access);
+
+            static std::pair<result<std::string>, bool> send_message_r(const std::shared_ptr<object>& current, const std::string& guid, const command& cmd, access_level access);
+            static std::pair<result<bool>, bool> upload_file_r(const std::shared_ptr<object>&, const std::string& guid, const std::string& file, const std::string& file_type, access_level access);
 
         public:
 
@@ -146,6 +161,7 @@ class instance {
 
             std::shared_ptr<object> create_object(object_index index, std::optional<std::string> guid, std::optional<std::weak_ptr<owner>> parent);
             result<std::string> send_message(const std::string& guid, const std::string& cmd_raw, access_level access);
+            bool upload_file(const std::string& guid, const std::string& file, const std::string& file_type, access_level access);
 
             object_tree() = default;
             ~object_tree() = default;

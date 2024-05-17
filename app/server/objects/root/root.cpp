@@ -5,8 +5,8 @@
 #include "root.hpp"
 #include "../../components/instance.hpp"
 
-std::string lurch::root::upload(const std::string &file, const std::string &extension) {
-    return "blabla";
+bool lurch::root::upload(const std::string &file, const std::string &extension) {
+    return true;
 }
 
 std::string
@@ -23,4 +23,8 @@ lurch::root::recieve(const command &cmd) {
     }
 
     return "";
+}
+
+std::string lurch::root::download(const std::string &name) {
+    return "fdsfsffffasdxc";
 }

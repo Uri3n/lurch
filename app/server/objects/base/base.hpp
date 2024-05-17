@@ -36,9 +36,10 @@ namespace lurch {
         result<bool> delete_child(const std::string& guid);
 
         virtual std::string recieve(const command& cmd) = 0;
-        virtual std::string upload(const std::string& file, const std::string& extension) = 0;
-        virtual ~owner() = default;
+        virtual bool upload(const std::string& file, const std::string& extension) = 0;
+        virtual std::string download(const std::string& name) = 0;
 
+        virtual ~owner() = default;
         owner(std::optional<std::weak_ptr<owner>> parent, instance* inst);
     };
 
@@ -48,9 +49,10 @@ namespace lurch {
         instance* inst;
 
         virtual std::string recieve(const command& cmd) = 0;
-        virtual std::string upload(const std::string& file, const std::string& extension) = 0;
-        virtual ~leaf() = default;
+        virtual bool upload(const std::string& file, const std::string& extension) = 0;
+        virtual std::string download(const std::string& name) = 0;
 
+        virtual ~leaf() = default;
         leaf(std::optional<std::weak_ptr<owner>> parent, instance* inst);
     };
 

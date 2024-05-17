@@ -10,11 +10,12 @@ void handle_kb_interrupt(int signal) {
 
 int main() {
 
-    lurch::instance inst;
     std::set_terminate(lurch::instance::handle_uncaught_exception);
     std::signal(SIGINT, handle_kb_interrupt);
 
-    inst.begin();
+    auto* inst = new lurch::instance;
+    inst->begin();
 
+    delete inst;
     return EXIT_SUCCESS;
 }

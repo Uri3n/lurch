@@ -109,6 +109,7 @@ body {
     height:55vh;
     justify-content:left;
     flex-direction:column;
+    transition: opacity 1s ease;
 }
 
 #terminal-input {
@@ -183,23 +184,48 @@ body {
     left:40%;
     padding-bottom:8vh;
     transform: translate(-50%, -40%);
-    max-height:70%;
+    max-height:60%;
     width:auto;
     opacity: 100%;
     z-index: 9999;
+    pointer-events: none !important;
+    opacity:0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.lowered-opacity {
+    opacity: 30%;
 }
 
 .hidden-image{
     display: none !important;
 }
 
+
+/* Many styles here are copied from .element-rgb-hover,
+   because I need to support multiple transitions on this element.
+*/
 .terminal-instance{
     display:flex;
     flex-direction:column;
+    
     height:100%;
     width:80%;
+    
     overflow:auto;
+    transition: opacity 0.3s ease-in-out, outline-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    
+    border-radius: 10px; 
+    outline: 2px solid transparent; 
+    outline-color:white;
+    box-shadow: 0 0 0 transparent; 
 }
+
+.terminal-instance:hover {
+    outline-color: #0066cc;
+    box-shadow: 0 0 10px #0066cc; 
+}
+
 
 .terminal-session{
     height:100%;
@@ -241,13 +267,6 @@ body {
     flex-direction:column;
     width:100% !important;
     height:fit-content !important;
-}
-
-.message-dot-icon{
-    display:flex;
-    width:5%;
-    height:fit-content;
-    padding-top: 4vh;
 }
 
 .message-body p{

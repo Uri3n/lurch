@@ -4,7 +4,8 @@ import {
     fetchObjectData, 
     fetchObjectChildren, 
     fetchObjectMessages, 
-    sendObjectMessage 
+    sendObjectMessage,
+    uploadFile
 } from "./fetch.js";  
 
 
@@ -137,18 +138,23 @@ export function listElementClickCallback(event){
 }
 
 
-export function listElementDragEndCallback(event){                                              // Checks whether dropped list element is inside of a "terminal instance".
+function isWithinBoundingRect(X, Y, element){
+
+    const boundingRect = element.getBoundingClientRect();
+    return (X >= boundingRect.left && X <= boundingRect.right &&
+           Y >= boundingRect.top && Y <= boundingRect.bottom);
+}
+
+
+export function listElementDragEndCallback(event){                                          // Checks whether dropped list element is inside of a "terminal instance".
     
     event.stopPropagation();
 
     const dropX = event.clientX;
     const dropY = event.clientY;
+    const terminal = document.querySelector('.terminal-instance');                      // Should only be one of these elements on the page at any time
 
-    const dropzoneRect = document.querySelector('.terminal-instance').getBoundingClientRect();  // Should only be one of these elements on the page at any time
-
-    if (dropX >= dropzoneRect.left && dropX <= dropzoneRect.right &&
-        dropY >= dropzoneRect.top && dropY <= dropzoneRect.bottom) {
-        
+    if (isWithinBoundingRect(dropX, dropY, terminal)) {
         try{
             const splitContent = event.target.textContent.trim().split(' ').filter(str => str !== '::');
             const guid = splitContent.splice(0, 1)[0];
@@ -164,7 +170,7 @@ export function listElementDragEndCallback(event){                              
 
 
 export function listElementDragStartCallback(event){
-    event.dataTransfer.setData('text/plain', 'Draggable List Element');                         //unused for now.
+    event.dataTransfer.setData('text/plain', 'Draggable List Element');                         //unused.
 }
 
 
@@ -292,6 +298,23 @@ function sessionExists(guid){
     });
 
     return exists;
+}
+
+
+function currentSessionGuid() {
+
+    const sessions = document.querySelectorAll('.terminal-session');
+    
+    if(sessions !== null) {
+        for(const session of sessions) {           
+            const guid = session.getAttribute('data-object-guid');
+            if(session.style.display !== 'none' && guid !== null) {
+                return guid;
+            }
+        }
+    }
+
+    return null;
 }
 
 
@@ -431,7 +454,7 @@ export async function startSession(guid, alias){
             newSession.lastChild.scrollIntoView({ behavior: "smooth" });
         } 
         catch(error) {
-            //-
+            //--
         }
     }
 }
@@ -461,6 +484,7 @@ export function forceEndSession(guid){
 }
 
 
+
 function isInputSelected(){
     const activeElement = document.activeElement;
     return activeElement !== null && activeElement.getAttribute('id') === 'terminal-input'; 
@@ -473,6 +497,7 @@ function currentInputContent(){
 function clearInputContent(){
     document.getElementById('terminal-input').value = '';
 }
+
 
 
 export async function keyDownCallback(event){
@@ -494,7 +519,6 @@ export async function keyDownCallback(event){
                     
                     catch(error) {
                         console.error('keyDownCallback():', error);
-                        appendNotification(`Invalid access level for object: ${guid}`, "bad");
                     }
                 }
             }
@@ -505,19 +529,87 @@ export async function keyDownCallback(event){
 }
 
 
-export function highlightElement(event) {
-    if (event.dataTransfer.types.includes('Files')) {
-        console.log('foo');
+export function terminalDragEnterCallback(event) {
+
+    event.stopPropagation();
+    event.preventDefault();
+
+    const dropZone = document.querySelector('.terminal-instance');
+    const filedrop = document.querySelector('.file-drop-icon');
+    
+    if(dropZone.style.opacity !== 0.3) {
+        dropZone.style.opacity = 0.3;
+    }
+
+    filedrop.style.opacity = 1;
+}
+
+
+export function terminalDragLeaveCallback(event) {
+
+    event.stopPropagation();
+    event.preventDefault();
+
+    const dropZone = document.querySelector('.terminal-instance');
+    const filedrop = document.querySelector('.file-drop-icon');
+    
+    dropZone.style.opacity = 1;
+    filedrop.style.opacity = 0;
+}
+
+
+export function dragoverCallback(event) {
+
+    const X = event.clientX;
+    const Y = event.clientY;
+    const terminal = document.querySelector('.terminal-instance');
+    const filedrop = document.querySelector('.file-drop-icon');
+
+    if(isWithinBoundingRect(X, Y, terminal) === true) {
+        console.log('within!');
+        terminal.style.opacity = 0.3;
+        filedrop.style.opacity = 1;
     }
     else {
-        console.log('bar');
+        console.log('not within!');
+        terminal.style.opacity = 1;
+        filedrop.style.opacity = 0;
     }
 }
 
-export function unhighlightElement(event) {
-    console.log('unhighlight');
-}
 
-export function terminalDrop(event) {
-    console.log('foo');
+export function terminalDropCallback(event) {
+
+    event.preventDefault();    
+    const sessionGuid = currentSessionGuid();
+
+    //
+    // if a file was dropped, send it to /objects/upload
+    //
+    
+    if(event.dataTransfer.types.includes('Files') && sessionGuid !== null) {
+        
+        const droppedFile = event.dataTransfer.files[0];
+        const reader = new FileReader();
+
+        reader.onload = async function(event) {
+            
+            try {
+                const arrayBuff = event.target.result;                                  // convert file to ArrayBuffer
+                const blob = new Blob([arrayBuff]);                                     // convert ArrayBuffer to blob
+                const extension = droppedFile.name.split('.').pop().toLowerCase();      // extract file extension
+                
+                if(extension === null || extension === "") {                            // ????
+                    throw new Error('no file extension.');
+                }
+
+                await uploadFile(sessionGuid, blob, extension);    
+            }
+            catch(error) {
+                console.error('terminalDropCallback(): ', error);
+            }                     
+        }
+
+        reader.readAsArrayBuffer(droppedFile);
+    }
 }

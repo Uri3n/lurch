@@ -71,7 +71,7 @@ lurch::instance::object_tree::send_message(const std::string& guid, const std::s
 }
 
 
-std::pair<lurch::result<bool>, bool>
+std::pair<lurch::result<std::filesystem::path>, bool>
 lurch::instance::object_tree::upload_file_r(
         const std::shared_ptr<object>& current,
         const std::string &guid,
@@ -100,7 +100,7 @@ lurch::instance::object_tree::upload_file_r(
         return { error("invalid object type"), false };
     }
 
-    std::pair<result<bool>, bool> result = { "object not found.",  true };
+    std::pair<result<std::filesystem::path>, bool> result = { error("object not found."),  true };
     if(owner_ptr) {
         for(auto child : owner_ptr->children) {
             result = upload_file_r(
@@ -121,7 +121,7 @@ lurch::instance::object_tree::upload_file_r(
 }
 
 
-bool
+lurch::result<std::filesystem::path>
 lurch::instance::object_tree::upload_file(
         const std::string &guid,
         const std::string &file,
@@ -132,6 +132,5 @@ lurch::instance::object_tree::upload_file(
     std::lock_guard<std::recursive_mutex> lock(tree_lock);
     const std::shared_ptr<object> root_ptr = root;
 
-    const auto [fst, snd] = upload_file_r(root_ptr, guid, file, file_type, access);
-    return fst.value_or(false);
+    return upload_file_r(root_ptr, guid, file, file_type, access).first;
 }

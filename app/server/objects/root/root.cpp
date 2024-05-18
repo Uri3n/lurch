@@ -5,11 +5,12 @@
 #include "root.hpp"
 #include "../../components/instance.hpp"
 
-bool lurch::root::upload(const std::string &file, const std::string &extension) {
-    return true;
+lurch::result<std::filesystem::path>
+lurch::root::upload(const std::string &file, const std::string &extension) {
+    return error("dfdsf");
 }
 
-std::string
+lurch::result<std::string>
 lurch::root::recieve(const command &cmd) {
 
     if(cmd.name == "shutdown") {
@@ -22,9 +23,5 @@ lurch::root::recieve(const command &cmd) {
         inst->shutdown_condition.notify_all();
     }
 
-    return "";
-}
-
-std::string lurch::root::download(const std::string &name) {
-    return "fdsfsffffasdxc";
+    return OBJECT_EMPTY_RESPONSE;
 }

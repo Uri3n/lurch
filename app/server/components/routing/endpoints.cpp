@@ -81,8 +81,17 @@ lurch::instance::router::run(
         res.code = 403;
 
         const auto token_context = inst->db.query_token_context(hdr_extract_token(req).value_or("-"));
-        if(token_context.has_value() && handler_objects_upload(GUID, file_type, req, res, token_context.value().second)) {
-            res.code = 200;
+        if(token_context.has_value()) {
+            if(handler_objects_upload(
+                GUID,
+                token_context.value().first,
+                file_type,
+                req,
+                res,
+                token_context.value().second
+            )) {
+                res.code = 200;
+            }
         }
 
         io::info("serving POST at endpoint: \"/objects/send\" :: " + std::to_string(res.code));

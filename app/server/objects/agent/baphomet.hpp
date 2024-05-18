@@ -14,9 +14,8 @@ private:
     std::queue<std::string> tasks;
 public:
 
-    bool upload(const std::string &file, const std::string &extension) override;
-    std::string recieve(const lurch::command &cmd) override;
-    std::string download(const std::string &name) override;
+    result<std::filesystem::path> upload(const std::string &file, const std::string &extension) override;
+    result<std::string> recieve(const lurch::command &cmd) override;
 
     baphomet(const std::optional<std::weak_ptr<owner>> &parent, instance* const root)
         : leaf(parent, root) {

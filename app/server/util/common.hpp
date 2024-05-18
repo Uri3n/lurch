@@ -43,6 +43,17 @@ namespace lurch {
         GOOD
     };
 
+    template<size_t num_extensions>
+    struct filetype_pair {
+        std::array<std::string_view, num_extensions> extensions;
+        std::string_view html;
+
+        consteval filetype_pair(
+            decltype(extensions) ext,
+            std::string_view html
+            ) : extensions(ext), html(html) {}
+    };
+
     struct token_context {
         std::string token;
         std::string alias;

@@ -39,10 +39,10 @@ export const templates = {
         const template = `<div class="terminal-instance-element">
                             <div class="message is-small">
                                 <div class="message-header">
-                                    <p>${headerContent.replace(/[<>]/g, '')}</p>
+                                    <p>${headerContent}</p>
                                 </div>
                                 <div class="message-body">
-                                    <p>${replacementContent.replace(/[<>]/g, '')}</p>
+                                    ${replacementContent}
                                 </div>
                             </div>
                         </div>`;

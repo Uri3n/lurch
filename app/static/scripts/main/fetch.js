@@ -100,15 +100,15 @@ export async function sendObjectMessage(guid, message){
 }
 
 
-export async function uploadFile(guid, fileContent, extension) {
-
+export async function uploadFile(guid, blob, extension) {
+    
     const endpoint = `objects/upload/${encodeURIComponent(guid)}/${encodeURIComponent(extension)}`;
     const response = await fetch(endpoint, {
         method  : 'POST',
         headers : {
             Authorization : 'Bearer ' + authToken 
         },
-        body : fileContent
+        body : blob
     });
 
     if(!response.ok) {

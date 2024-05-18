@@ -6,17 +6,16 @@
 
 #include "../../components/instance.hpp"
 
-bool lurch::baphomet::upload(const std::string &file, const std::string &extension) {
-    return true;
+lurch::result<std::filesystem::path>
+lurch::baphomet::upload(const std::string &file, const std::string &extension) {
+
+    return inst->db.fileman_create(file, extension, id, true);
 }
 
-std::string
+lurch::result<std::string>
 lurch::baphomet::recieve(const command &cmd) {
 
     inst->routing.send_ws_notification("this is a test message.", ws_notification_intent::NEUTRAL);
     return "Okay.";
 }
 
-std::string lurch::baphomet::download(const std::string &name) {
-    return "fdsfsdfs";
-}

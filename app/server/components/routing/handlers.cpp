@@ -47,27 +47,25 @@ lurch::instance::router::handler_objects_send(
     if(!req.body.empty() && req.body.size() < 200) {                                                    //check for a valid request
         const auto msg_result = inst->tree.send_message(GUID, req.body, user_access);                   //send the message to the object
         if(msg_result.has_value()) {
-            res.body = msg_result.value();
 
+            res.body = msg_result.value();
             io::success("successfully parsed command: " + req.body);
             io::success("responsible object: " + GUID);
 
-            inst->db.store_message(GUID, req.remote_ip_address, req.body);                              //we potentially need to store two messages here: client->server and server->client
-            send_ws_object_message_update(                                                              //send message update to websocket clients
-                req.body,
+            inst->post_message_interaction(
                 user_alias,
-                GUID
+                GUID,
+                msg_result.value().empty() ? std::nullopt : std::optional(msg_result.value()),
+                req.body
             );
-
-            if(!msg_result.value().empty()) {
-                inst->db.store_message(GUID, GUID, msg_result.value());                                 //object may decide to not return a message, in this case don't store or send anything.
-                send_ws_object_message_update(msg_result.value(), GUID, GUID);
-            }
 
             return true;
         }
-        res.code = 403;
-        return false;
+
+        send_ws_notification(
+            io::format_str("user {}: \nbad object access. \nerror: {}", user_alias, msg_result.error_or("?")),
+            ws_notification_intent::BAD
+        );
     }
 
     res.code = 400;
@@ -173,11 +171,12 @@ lurch::instance::router::handler_objects_getmessages(std::string GUID, const int
 bool
 lurch::instance::router::handler_objects_upload(
         std::string GUID,
+        const std::string& user_alias,
         const std::string &file_type,
         const crow::request &req,
         crow::response &res,
         const access_level access
-    ) const {
+    ) {
 
     if(req.body.empty()) {
         res.code = 400;
@@ -188,10 +187,27 @@ lurch::instance::router::handler_objects_upload(
         GUID = inst->db.query_root_guid().value_or(GUID);
     }
 
-    return inst->tree.upload_file(
-        GUID,
-        req.body,
-        file_type,
-        access
+    const auto upload_result = inst->tree.upload_file(GUID, req.body, file_type, access);
+    if(upload_result) {
+        inst->post_message_interaction(
+            user_alias,
+            GUID,
+            std::nullopt,
+            file_template(
+                upload_result.value().string(),
+                upload_result.value().filename().string(),
+                upload_result.value().extension().string()
+            )
+        );
+
+        return true;
+    }
+
+    send_ws_notification(
+        io::format_str("user {}:\nbad object upload.\nerror:{}", user_alias, upload_result.error_or("?")),
+        ws_notification_intent::BAD
     );
+
+    res.code = 403;
+    return false;
 }

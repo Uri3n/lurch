@@ -7,11 +7,14 @@
 #include <memory>
 #include <vector>
 #include "../../util/common.hpp"
+#include <filesystem>
 #include "../../util/io.hpp"
 #include <iomanip>
 #include <iostream>
 #include <random>
 #include <mutex>
+
+#define OBJECT_EMPTY_RESPONSE ""
 
 namespace lurch {
     class instance;
@@ -22,6 +25,7 @@ namespace lurch {
         access_level access = access_level::LOW;
 
         static std::string generate_id();
+
         virtual ~object();
         object() = default;
     };
@@ -35,9 +39,8 @@ namespace lurch {
         result<bool> create_child(object_index index, object_type type, const std::string& alias);
         result<bool> delete_child(const std::string& guid);
 
-        virtual std::string recieve(const command& cmd) = 0;
-        virtual bool upload(const std::string& file, const std::string& extension) = 0;
-        virtual std::string download(const std::string& name) = 0;
+        virtual result<std::string>             recieve(const command& cmd) = 0;
+        virtual result<std::filesystem::path>   upload(const std::string& file, const std::string& extension) = 0;
 
         virtual ~owner() = default;
         owner(std::optional<std::weak_ptr<owner>> parent, instance* inst);
@@ -48,9 +51,8 @@ namespace lurch {
         std::optional<std::weak_ptr<owner>> parent;
         instance* inst;
 
-        virtual std::string recieve(const command& cmd) = 0;
-        virtual bool upload(const std::string& file, const std::string& extension) = 0;
-        virtual std::string download(const std::string& name) = 0;
+        virtual result<std::string>             recieve(const command& cmd) = 0;
+        virtual result<std::filesystem::path>   upload(const std::string& file, const std::string& extension) = 0;
 
         virtual ~leaf() = default;
         leaf(std::optional<std::weak_ptr<owner>> parent, instance* inst);

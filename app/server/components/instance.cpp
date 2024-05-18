@@ -327,6 +327,24 @@ lurch::instance::init_config_data() {
 
 
 void
+lurch::instance::post_message_interaction(
+        const std::string &sender,
+        const std::string &object,
+        const std::optional<std::string> response,
+        const std::string &message_content
+    ) {
+
+    routing.send_ws_object_message_update(message_content, sender, object);
+    db.store_message(object, sender, message_content);
+
+    if(response.has_value()) {
+        routing.send_ws_object_message_update(response.value(), object, object);
+        db.store_message(object, object, response.value());
+    }
+}
+
+
+void
 lurch::instance::await_shutdown() {
 
     std::unique_lock<std::mutex> lock(mtx);

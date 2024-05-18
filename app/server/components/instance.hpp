@@ -23,8 +23,11 @@
 #include <openssl/x509v3.h>
 #include <cstdint>
 #include <memory>
+#include <string_view>
 #include <mutex>
+#include <array>
 #include <optional>
+#include <functional>
 #include <filesystem>
 #include <thread>
 #include <atomic>
@@ -112,6 +115,7 @@ class instance {
 
             static result<std::pair<std::string, std::string>> hdr_extract_credentials(const crow::request& req);
             static result<std::string> hdr_extract_token(const crow::request& req);
+            static std::string file_template(const std::string& uri_path, const std::string& file_name, const std::string& extension);
 
             void add_ws_connection(crow::websocket::connection* conn);
             void remove_ws_connection(crow::websocket::connection* conn);
@@ -132,8 +136,7 @@ class instance {
             bool handler_objects_getdata(std::string GUID, crow::response& res) const;
             bool handler_objects_getchildren(std::string GUID, crow::response& res) const;
             bool handler_objects_getmessages(std::string GUID, int message_index, crow::response& res) const;
-            bool handler_objects_upload(std::string GUID, const std::string& file_type, const crow::request& req, crow::response& res, access_level access) const;
-            bool handler_objects_download(std::string GUID, const std::string& file_name, const crow::request& req, crow::response& res) const;
+            bool handler_objects_upload(std::string GUID, const std::string& user_alias, const std::string& file_type, const crow::request& req, crow::response& res, access_level access);
 
             void run(std::string addr, uint16_t port, const std::optional<std::string>& ssl_cert, const std::optional<std::string>& ssl_key);
 
@@ -147,7 +150,7 @@ class instance {
             std::atomic_uint32_t curr_object_count = 0;
 
             static std::pair<result<std::string>, bool> send_message_r(const std::shared_ptr<object>& current, const std::string& guid, const command& cmd, access_level access);
-            static std::pair<result<bool>, bool> upload_file_r(const std::shared_ptr<object>&, const std::string& guid, const std::string& file, const std::string& file_type, access_level access);
+            static std::pair<result<std::filesystem::path>, bool> upload_file_r(const std::shared_ptr<object>&, const std::string& guid, const std::string& file, const std::string& file_type, access_level access);
 
         public:
 
@@ -161,7 +164,7 @@ class instance {
 
             std::shared_ptr<object> create_object(object_index index, std::optional<std::string> guid, std::optional<std::weak_ptr<owner>> parent);
             result<std::string> send_message(const std::string& guid, const std::string& cmd_raw, access_level access);
-            bool upload_file(const std::string& guid, const std::string& file, const std::string& file_type, access_level access);
+            result<std::filesystem::path> upload_file(const std::string& guid, const std::string& file, const std::string& file_type, access_level access);
 
             object_tree() = default;
             ~object_tree() = default;
@@ -181,6 +184,7 @@ public:
     static bool generate_self_signed_cert(const std::string& certfile_path, const std::string& keyfile_path, long certificate_version);
     static result<config_data> init_config_data();
 
+    void post_message_interaction(const std::string& sender, const std::string& object, std::optional<std::string> response, const std::string& message_content);
     void begin();
     void await_shutdown();
 

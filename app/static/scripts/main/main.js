@@ -8,10 +8,13 @@ import {
     listElementDragEndCallback, 
     terminalMenuClickCallback,
     keyDownCallback,
-    highlightElement,
-    unhighlightElement,
-    terminalDrop
+    terminalDragEnterCallback,
+    terminalDragLeaveCallback,
+    terminalDropCallback,
+    dragoverCallback
 } from './ui.js';
+
+
 
 //-------------------------------------------------------------------------------------------
 
@@ -61,31 +64,27 @@ function main(){
 
 
     //
-    // init terminal file drag & drop
+    // init terminal drag & drop
     //
 
-    const terminal = document.querySelector('#terminal-container'); 
-    terminal.addEventListener('click', () => {
-        console.log('clicked!');
-    });
-    
-    const preventDefaultCallback = (event) => {
+    const preventDefaults = (event) => {
         event.preventDefault();
-        event.stopPropagation();
     };
-
-    ['dragenter', 'dragleave', 'drop'].forEach(eventName => {
-        terminal.addEventListener(eventName, preventDefaultCallback);
-        document.body.addEventListener(eventName, preventDefaultCallback);
+    
+    ['drop', 'dragover', 'dragleave', 'dragenter'].forEach(eventName => {
+        document.body.addEventListener(eventName, preventDefaults);
     });
+     
 
-    terminal.addEventListener('dragenter', highlightElement);
-
-    ['dragleave', 'drop'].forEach(eventName => {
-        terminal.addEventListener(eventName, unhighlightElement);
+    document.querySelector('.terminal-instance').addEventListener('drop', terminalDropCallback);
+    document.body.addEventListener('dragover', dragoverCallback);
+    document.body.addEventListener('drop', () => {
+        console.log('fired');
+        const terminal = document.querySelector('.terminal-instance');
+        const filedrop = document.querySelector('.file-drop-icon');
+        terminal.style.opacity = 1;
+        filedrop.style.opacity = 0;
     });
-
-    terminal.addEventListener('drop', terminalDrop);
 }
 
 main();

@@ -15,7 +15,7 @@ int main() {
 
     auto* inst = new lurch::instance;
     inst->begin();
-
     delete inst;
+
     return EXIT_SUCCESS;
 }

@@ -24,6 +24,8 @@ add_executable(server main.cpp
         objects/root/root.hpp
         objects/group/group.cpp
         objects/group/group.hpp
+        objects/external/chatroom.cpp
+        objects/external/chatroom.hpp
 
         components/instance.cpp
         components/instance.hpp
@@ -40,6 +42,7 @@ add_executable(server main.cpp
 
         components/tree/send.cpp
         components/tree/misc.cpp
+        util/common.cpp
 )
 
 target_compile_definitions(server PRIVATE CROW_ENABLE_SSL)

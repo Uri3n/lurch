@@ -1,4 +1,4 @@
-import { deleteButtonCallback } from "./ui.js";
+import { deleteButtonCallback } from './callbacks.js';
 
 //-------------------------------------------------
 export const observer = new MutationObserver(mutationCallback);

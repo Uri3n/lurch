@@ -3,6 +3,7 @@
 //
 
 #include "group.hpp"
+#include "../../components/instance.hpp"
 
 lurch::result<std::filesystem::path>
 lurch::group::upload(const std::string &file, const std::string &extension) {

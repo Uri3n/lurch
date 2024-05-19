@@ -5,8 +5,6 @@
 #ifndef AGENT_HPP
 #define AGENT_HPP
 #include "../base/base.hpp"
-#include <queue>
-#include <iostream>
 
 namespace lurch {
 class baphomet final : public leaf {
@@ -17,7 +15,7 @@ public:
     result<std::filesystem::path> upload(const std::string &file, const std::string &extension) override;
     result<std::string> recieve(const lurch::command &cmd) override;
 
-    baphomet(const std::optional<std::weak_ptr<owner>> &parent, instance* const root)
+    explicit baphomet(const std::optional<std::weak_ptr<owner>> &parent, instance* const root)
         : leaf(parent, root) {
     }
 };

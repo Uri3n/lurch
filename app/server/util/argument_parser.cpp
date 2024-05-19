@@ -203,7 +203,23 @@ lurch::argument_parser::parse(std::string raw) {
 
 lurch::formatted_command&
 lurch::accepted_commands::add_command(const std::string& name) {
-	return commands.emplace_back(formatted_command(name));
+	if(!is_done) {
+		return commands.emplace_back(formatted_command(name));
+	}
+	return commands.front();
+}
+
+void
+lurch::accepted_commands::done() {
+	is_done = true;
+	if(!commands.empty()) {
+		commands.front().is_done = true;
+	}
+}
+
+bool
+lurch::accepted_commands::ready() const {
+	return is_done;
 }
 
 

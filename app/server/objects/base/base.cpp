@@ -31,7 +31,7 @@ lurch::object::generate_id() {
 
 lurch::object::~object() {
     if(!id.empty()) {
-        io::info("deleting object with GUID: " + id);
+        io::info("freeing object from memory: " + id);
     } else {
         io::failure("an object with no GUID is being deleted. Something is wrong.");
     }
@@ -55,7 +55,7 @@ lurch::owner::create_child(const object_index index, const object_type type, con
     children.emplace_back(child_ptr);
 
     io::success("created child under " + this->id);
-    return result<bool>(true);
+    return { true };
 }
 
 
@@ -78,7 +78,7 @@ lurch::owner::delete_child(const std::string &guid) {
             }
 
             inst->routing.send_ws_object_delete_update(guid);
-            return result<bool>(true);
+            return { true };
         }
     }
 

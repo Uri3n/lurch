@@ -9,6 +9,7 @@
 #include <vector>
 #include <iomanip>
 #include <sstream>
+#include <iostream>
 #include <map>
 #include <typeindex>
 #include <optional>
@@ -65,11 +66,11 @@ namespace lurch {
     struct formatted_command {
         const std::string name;
         std::vector<formatted_argument> args;
+        bool is_done = false;
 
-        //template functions must stay in headers.
         template<valid_argument T>
         formatted_command& arg(std::string long_form, std::string short_form, bool required) {
-            if(long_form.size() && short_form.size()) {
+            if(!is_done && long_form.size() && short_form.size()) {
                 args.emplace_back(formatted_argument(
                     long_form,
                     short_form,
@@ -88,6 +89,7 @@ namespace lurch {
     class accepted_commands {
     private:
         std::vector<formatted_command> commands;
+        bool is_done = false;
         bool match_flags(const lurch::command& passed, const formatted_command& to_compare);
     public:
 
@@ -110,6 +112,9 @@ namespace lurch {
 
         bool matches(const lurch::command& passed);
         formatted_command& add_command(const std::string& name);
+
+        void done();
+        bool ready() const;
 
         accepted_commands() = default;
     };

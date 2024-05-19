@@ -3,6 +3,7 @@
 //
 
 #include "../instance.hpp"
+#include "../../objects/external/chatroom.hpp"
 
 
 void
@@ -28,16 +29,24 @@ lurch::instance::object_tree::create_object(const object_index index, const std:
     switch(index) {
         case object_index::BAPHOMET:
             obj = std::make_shared<baphomet>(parent, this->inst);
-        obj->access = access_level::LOW;
-        break;
+            obj->access = access_level::LOW;
+            break;
+
         case object_index::GENERIC_GROUP:
             obj = std::make_shared<group>(parent, this->inst);
-        obj->access = access_level::MEDIUM;
-        break;
+            obj->access = access_level::MEDIUM;
+            break;
+
         case object_index::GENERIC_ROOT:
             obj = std::make_shared<lurch::root>(this->inst);
-        obj->access = access_level::HIGH;
-        break;
+            obj->access = access_level::HIGH;
+            break;
+
+        case object_index::GENERIC_CHATROOM:
+            obj = std::make_shared<chatroom>(parent, this->inst);
+            obj->access = access_level::MEDIUM;
+            break;
+
         default:
             break;
     }

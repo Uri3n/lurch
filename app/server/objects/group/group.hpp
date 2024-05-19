@@ -13,9 +13,11 @@ public:
     result<std::filesystem::path> upload(const std::string &file, const std::string &extension) override;
     result<std::string> recieve(const command &cmd) override;
 
-    group(const std::optional<std::weak_ptr<owner>> &parent, instance * const root)
+    explicit group(const std::optional<std::weak_ptr<owner>> &parent, instance * const root)
         : owner(parent, root) {
     }
+
+    ~group() override = default;
 };
 
 } // lurch

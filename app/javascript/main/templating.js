@@ -1,14 +1,5 @@
 import { observeElement } from './observer.js'; 
-
-import {
-    listElementClickCallback,
-    listElementDragStartCallback,
-    listElementDragEndCallback,
-    deleteButtonCallback,
-    terminalMenuClickCallback,
-    sessionScrollCallback
-} from './ui.js';
-
+import * as cb from './callbacks.js';
 
 
 export const templates = {
@@ -64,8 +55,8 @@ export const templates = {
         const parser = new DOMParser();
         const doc = parser.parseFromString(template, 'text/html');
 
-        doc.querySelector('li').addEventListener('click', terminalMenuClickCallback);
-        doc.querySelector('.delete').addEventListener('click', deleteButtonCallback);
+        doc.querySelector('li').addEventListener('click',       cb.terminalMenuClickCallback);
+        doc.querySelector('.delete').addEventListener('click',  cb.deleteButtonCallback);
 
         return doc.body.firstChild;
     },
@@ -80,7 +71,7 @@ export const templates = {
         const parser = new DOMParser();
         const element = parser.parseFromString(template, 'text/html').body.firstChild;
         
-        element.addEventListener('scroll', sessionScrollCallback);
+        element.addEventListener('scroll', cb.sessionScrollCallback);
         observeElement(element);
         
         return element;
@@ -93,12 +84,12 @@ export const templates = {
         const a = document.createElement('a');
     
         li.setAttribute('data-object-type', type);
-        li.addEventListener('click', listElementClickCallback);
+        li.addEventListener('click',            cb.listElementClickCallback);
         
         a.textContent = `${guid} :: ${alias}`
         a.setAttribute('draggable', 'true');
-        a.addEventListener('dragstart', listElementDragStartCallback);
-        a.addEventListener('dragend', listElementDragEndCallback);
+        a.addEventListener('dragstart',         cb.listElementDragStartCallback);
+        a.addEventListener('dragend',           cb.listElementDragEndCallback);
     
         li.appendChild(a);
         return li;
@@ -114,7 +105,7 @@ export const templates = {
 
         const parser = new DOMParser();
         const element = parser.parseFromString(template, 'text/html').body.firstChild;
-        element.querySelector('.delete').addEventListener('click', deleteButtonCallback);
+        element.querySelector('.delete').addEventListener('click', cb.deleteButtonCallback);
         
         return element;
     },
@@ -129,7 +120,7 @@ export const templates = {
 
         const parser = new DOMParser();
         const element = parser.parseFromString(template, 'text/html').body.firstChild;
-        element.querySelector('.delete').addEventListener('click', deleteButtonCallback);
+        element.querySelector('.delete').addEventListener('click', cb.deleteButtonCallback);
         
         return element;
     },
@@ -144,7 +135,7 @@ export const templates = {
 
         const parser = new DOMParser();
         const element = parser.parseFromString(template, 'text/html').body.firstChild;
-        element.querySelector('.delete').addEventListener('click', deleteButtonCallback);
+        element.querySelector('.delete').addEventListener('click', cb.deleteButtonCallback);
         
         return element;
     },

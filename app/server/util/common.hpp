@@ -8,6 +8,7 @@
 #include <ostream>
 #include <string>
 #include <iomanip>
+#include <optional>
 #include <utility>
 #include <vector>
 #include <utility>
@@ -119,16 +120,45 @@ namespace lurch {
             std::string name;
             std::vector<argument> arguments;
 
+            template<typename ...T>
+            struct param_getter {
+                std::tuple<std::optional<T>...> tup;
+                const command& cmd;
+
+                template<typename U>
+                std::optional<U> find_arg(const std::string& flag) const  {
+                    for(const auto &[flag_name, param] : cmd.arguments) {
+                        if(flag_name == flag) {
+                            return { std::get<U>(param) };
+                        }
+                    }
+
+                    return std::nullopt;
+                }
+
+                decltype(tup) done() {
+                    return tup;
+                }
+
+                template<typename U>
+                param_getter<T..., U> with(const std::string flag) const {
+                    auto new_tuple = std::tuple_cat(tup, std::make_tuple(find_arg<U>(flag)));
+                    return param_getter<T..., U>{new_tuple, cmd};
+                }
+
+                explicit param_getter(std::tuple<std::optional<T>...> tup, const command &cmd)
+                    : tup(tup), cmd(cmd) {}
+            };
+
             template<typename T>
-            T get(const std::string& long_form, const std::string& short_form) {
-                for(const auto&[flag_name, parameter] : this->arguments) {
-                    if(flag_name == long_form || flag_name == short_form) {
-                        //will throw std::bad_variant_access if this doesn't exist.
-                        return std::get<T>(parameter);
+            auto get(std::string name) -> param_getter<T> {
+                for(const auto &[flag_name, parameter] : arguments) {
+                    if(flag_name == name) {
+                        return param_getter<T>(std::make_tuple(std::get<T>(parameter)), *this);
                     }
                 }
 
-                throw std::runtime_error("Attempted access to non-existent flag in command " + this->name);
+                throw std::invalid_argument("command::get: flag not found: " + name);
             }
 
             friend std::ostream & operator<<(std::ostream &os, const command &obj) {
@@ -141,7 +171,16 @@ namespace lurch {
 
                 return os;
             }
+
+            bool operator==(const command& other) const {
+                return other.name == this->name;
+            }
+
+            bool operator==(const std::string& name) const {
+                return name == this->name;
+            }
     };
+
 
 }
 

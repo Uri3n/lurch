@@ -7,27 +7,19 @@
 bool
 lurch::instance::router::handler_verify(const crow::request &req, crow::response &res) const {
 
-    const auto result = hdr_extract_credentials(req);
+    std::string username;
 
-    if(result.has_value()) {
-        const auto [username, password] = result.value();
-        if(const auto user_result = inst->db.match_user(username, password)) {
+    const auto result = hdr_extract_credentials(req)
+        .and_then([&](std::pair<std::string,std::string> user_info) {
+            username = user_info.first;
+            return inst->db.match_user(user_info.first, user_info.second);
+        })
+        .and_then([&](access_level access){
+            res.body = database::generate_token();
+            return inst->db.store_token(res.body, access, username, 12);
+        });
 
-            const std::string auth_token = database::generate_token();
-            const auto store_auth_token = inst->db.store_token(auth_token, user_result.value(), username);
-
-            if(!store_auth_token) {
-                io::failure("Failed to store token!");
-                io::failure("error: " + store_auth_token.error_or("-"));
-                return false;
-            }
-
-            res.body = auth_token;
-            return true;
-        }
-    }
-
-    return false;
+    return result.has_value();
 }
 
 

@@ -23,6 +23,22 @@ lurch::instance::router::run(
         res.end();
     });
 
+    CROW_ROUTE(this->app, "/scripts/<string>/<string>")
+    .methods("GET"_method)([&](const crow::request& req, crow::response& res, std::string folder, std::string script_name) {
+
+        res.code = 404;
+        script_name = io::format_str("javascript/{}/{}", folder, script_name);
+
+        if(std::filesystem::exists(script_name)) {
+            const auto path = std::filesystem::path(script_name);
+            if(path.has_extension() && path.extension() == ".js") {
+                res.set_static_file_info(path.string());
+                res.code = 200;
+            }
+        }
+
+        res.end();
+    });
 
     CROW_ROUTE(this->app, "/isrunning")
     .methods("GET"_method)([&](const crow::request& req, crow::response& res) {

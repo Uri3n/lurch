@@ -1,15 +1,12 @@
 import { templates } from "./templating.js";
 
 import { 
-    fetchObjectData, 
     fetchObjectChildren, 
     fetchObjectMessages, 
-    sendObjectMessage,
-    uploadFile
 } from "./fetch.js";  
 
 
-function popInElement(element, scrollTo){
+export function popInElement(element, scrollTo){
 
     if(element.style.display !== 'none'){                           // element must be hidden initially for this to work
         console.error(`popInElement(): passed element: ${element}\n
@@ -27,14 +24,14 @@ function popInElement(element, scrollTo){
         });
 
         if(scrollTo){
-            element.scrollIntoView({behavior : 'smooth'});              // scroll towards the newly added element
+            element.scrollIntoView({behavior : 'smooth'});          // scroll towards the newly added element
         }
 
     }, 10);
 }
 
 
-function popOutElement(element) {
+export function popOutElement(element) {
 
     element.style.animation = 'popOut 0.3s ease';
     element.style.transition = 'opacity 0.3s ease';
@@ -45,7 +42,7 @@ function popOutElement(element) {
 }
 
 
-async function appendListChildren(element){
+export async function appendListChildren(element){
     try {
         const children = await fetchObjectChildren(element.querySelector('a').textContent.trim().split(" ")[0]);
         const childList = document.createElement('ul');
@@ -63,7 +60,7 @@ async function appendListChildren(element){
 }
 
 
-function deleteListChildren(element){
+export function deleteListChildren(element){
     const childList = element.querySelector('ul');
     if(childList !== null) {
         childList.remove();
@@ -84,7 +81,7 @@ export function deleteTerminalSession(guid){
 }
 
 
-function deselectListElement(element){
+export function deselectListElement(element){
     
     element.querySelector('a').classList.remove('is-active');
     Array.from(document.getElementById('object-icon-container').children).forEach(element => {
@@ -102,7 +99,7 @@ function deselectListElement(element){
 }
 
 
-function selectListElement(element){
+export function selectListElement(element){
     
     const typeAttr = element.getAttribute('data-object-type');
     console.assert(typeAttr !== null, 'selectListElement(): null "data-object-type"!');
@@ -125,52 +122,11 @@ function selectListElement(element){
 }
 
 
-export function listElementClickCallback(event){
-    event.stopPropagation();
-
-    if(event.currentTarget.querySelector('a').classList.contains('is-active')){
-        deselectListElement(event.currentTarget);
-    }
-
-    else {
-        selectListElement(event.currentTarget);
-    }
-}
-
-
-function isWithinBoundingRect(X, Y, element){
+export function isWithinBoundingRect(X, Y, element){
 
     const boundingRect = element.getBoundingClientRect();
     return (X >= boundingRect.left && X <= boundingRect.right &&
            Y >= boundingRect.top && Y <= boundingRect.bottom);
-}
-
-
-export function listElementDragEndCallback(event){                                          // Checks whether dropped list element is inside of a "terminal instance".
-    
-    event.stopPropagation();
-
-    const dropX = event.clientX;
-    const dropY = event.clientY;
-    const terminal = document.querySelector('.terminal-instance');                      // Should only be one of these elements on the page at any time
-
-    if (isWithinBoundingRect(dropX, dropY, terminal)) {
-        try{
-            const splitContent = event.target.textContent.trim().split(' ').filter(str => str !== '::');
-            const guid = splitContent.splice(0, 1)[0];
-            const alias = splitContent.join(' ');
-        
-            startSession(guid, alias);
-        }
-        catch(error){
-            console.error('listElementDragEndCallback(): ', error);
-        }        
-    }
-}
-
-
-export function listElementDragStartCallback(event){
-    event.dataTransfer.setData('text/plain', 'Draggable List Element');                         //unused.
 }
 
 
@@ -232,7 +188,7 @@ export function appendListElement(guid, parent, alias, type){
 }
 
 
-function selectTerminalSession(guid){
+export function selectTerminalSession(guid){
 
     const sessions = document.querySelectorAll('.terminal-session');
     if(guid !== null && sessions !== null){
@@ -249,27 +205,7 @@ function selectTerminalSession(guid){
 }
 
 
-export function deleteButtonCallback(event){
-
-    event.stopPropagation();
-    let parent = event.target.parentElement;
-
-    do {
-        if(parent.classList.contains('deletable-parent')){
-            const guid = parent.getAttribute('data-object-guid'); //this only applies to the delete buttons found on the right-hand session menu
-            if(guid !== null){
-                deleteTerminalSession(guid);
-            }
-            
-            popOutElement(parent);
-        }
-
-        parent = parent.parentElement;
-    } while(parent);
-}
-
-
-function selectTerminalMenuElement(guid){
+export function selectTerminalMenuElement(guid){
 
     Array.from(document.querySelector('#terminal-menu .menu-list').children).forEach(element => {
 
@@ -287,7 +223,7 @@ function selectTerminalMenuElement(guid){
 }
 
 
-function sessionExists(guid){
+export function sessionExists(guid){
 
     let exists = false;
 
@@ -301,7 +237,7 @@ function sessionExists(guid){
 }
 
 
-function currentSessionGuid() {
+export function currentSessionGuid() {
 
     const sessions = document.querySelectorAll('.terminal-session');
     
@@ -367,50 +303,6 @@ export function appendMessage(body, sender, recipient){
                 }
             }
         });
-    }
-}
-
-
-export function terminalMenuClickCallback(event){
-    
-    event.stopPropagation();
-    const guid = event.currentTarget.getAttribute('data-object-guid');
-    
-    selectTerminalSession(guid);
-    selectTerminalMenuElement(guid);
-}
-
-
-export async function sessionScrollCallback(event){
-    
-    event.stopPropagation();
-    
-    const session = event.target;
-    let msgIndex = parseInt(session.getAttribute('data-message-index'), 10);
-    const guid = session.getAttribute('data-object-guid');
-
-    if(event.target.scrollTop === 0 && msgIndex !== null && guid !== null){
-        try {
-
-            const messages = await fetchObjectMessages(guid, msgIndex.toString());            
-
-            for(const message of messages) {
-
-                const messageElement = templates.terminalMessage(message.sender, message.body) 
-                messageElement.style.display = 'none';
-                popInElement(messageElement, false);
-                
-                session.prepend(messageElement);
-                msgIndex++;
-            }
-        } 
-        catch(error) {
-            console.error('sessionScrollCallback():',error);
-        }
-        finally {
-            session.setAttribute('data-message-index', msgIndex.toString());
-            console.log('Message Index:', session.getAttribute('data-message-index'));
-        }
     }
 }
 
@@ -484,132 +376,15 @@ export function forceEndSession(guid){
 }
 
 
-
-function isInputSelected(){
+export function isInputSelected(){
     const activeElement = document.activeElement;
     return activeElement !== null && activeElement.getAttribute('id') === 'terminal-input'; 
 }
 
-function currentInputContent(){
+export function currentInputContent(){
     return document.getElementById('terminal-input').value.trim();
 }
 
-function clearInputContent(){
+export function clearInputContent(){
     document.getElementById('terminal-input').value = '';
-}
-
-
-
-export async function keyDownCallback(event){
-    
-    if(event.key === 'Enter' && isInputSelected()){
-        
-        const sessions = document.querySelectorAll('.terminal-session');
-        const messageContent = currentInputContent();
-        
-        if(sessions !== null && messageContent.length > 0){
-            for(const session of sessions){
-                
-                const guid = session.getAttribute('data-object-guid');
-                if(session.style.display !== 'none' && guid !== null){
-                    
-                    try {
-                        await sendObjectMessage(guid, messageContent);
-                    }
-                    
-                    catch(error) {
-                        console.error('keyDownCallback():', error);
-                    }
-                }
-            }
-        }
-
-        clearInputContent();
-    }
-}
-
-
-export function terminalDragEnterCallback(event) {
-
-    event.stopPropagation();
-    event.preventDefault();
-
-    const dropZone = document.querySelector('.terminal-instance');
-    const filedrop = document.querySelector('.file-drop-icon');
-    
-    if(dropZone.style.opacity !== 0.3) {
-        dropZone.style.opacity = 0.3;
-    }
-
-    filedrop.style.opacity = 1;
-}
-
-
-export function terminalDragLeaveCallback(event) {
-
-    event.stopPropagation();
-    event.preventDefault();
-
-    const dropZone = document.querySelector('.terminal-instance');
-    const filedrop = document.querySelector('.file-drop-icon');
-    
-    dropZone.style.opacity = 1;
-    filedrop.style.opacity = 0;
-}
-
-
-export function dragoverCallback(event) {
-
-    const X = event.clientX;
-    const Y = event.clientY;
-    const terminal = document.querySelector('.terminal-instance');
-    const filedrop = document.querySelector('.file-drop-icon');
-
-    if(isWithinBoundingRect(X, Y, terminal) === true) {
-        console.log('within!');
-        terminal.style.opacity = 0.3;
-        filedrop.style.opacity = 1;
-    }
-    else {
-        console.log('not within!');
-        terminal.style.opacity = 1;
-        filedrop.style.opacity = 0;
-    }
-}
-
-
-export function terminalDropCallback(event) {
-
-    event.preventDefault();    
-    const sessionGuid = currentSessionGuid();
-
-    //
-    // if a file was dropped, send it to /objects/upload
-    //
-    
-    if(event.dataTransfer.types.includes('Files') && sessionGuid !== null) {
-        
-        const droppedFile = event.dataTransfer.files[0];
-        const reader = new FileReader();
-
-        reader.onload = async function(event) {
-            
-            try {
-                const arrayBuff = event.target.result;                                  // convert file to ArrayBuffer
-                const blob = new Blob([arrayBuff]);                                     // convert ArrayBuffer to blob
-                const extension = droppedFile.name.split('.').pop().toLowerCase();      // extract file extension
-                
-                if(extension === null || extension === "") {                            // ????
-                    throw new Error('no file extension.');
-                }
-
-                await uploadFile(sessionGuid, blob, extension);    
-            }
-            catch(error) {
-                console.error('terminalDropCallback(): ', error);
-            }                     
-        }
-
-        reader.readAsArrayBuffer(droppedFile);
-    }
 }

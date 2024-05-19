@@ -13,15 +13,43 @@ lurch::root::upload(const std::string &file, const std::string &extension) {
 lurch::result<std::string>
 lurch::root::recieve(const command &cmd) {
 
-    if(cmd.name == "shutdown") {
+    static accepted_commands commands;
 
+    if(!commands.ready()) {
+        commands.add_command("shutdown")
+            .arg<empty>("--wipe-files", "-wf", false);
+
+        commands.add_command("add_user")
+            .arg<std::string>("--username", "-u", true)
+            .arg<std::string>("--password", "-p", true)
+            .arg<bool>("--grant-admin", "-a", true);
+
+        commands.add_command("remove_user")
+            .arg<std::string>("--username", "-u", true);
+
+        commands.add_command("create_chatroom")
+            .arg<std::string>("--type", "-u", false);
+
+        commands.add_command("help")
+            .arg<std::string>("--command", "-c", false);
+
+        commands.done();
+    }
+
+    if(!commands.matches(cmd)) {
+        return error("invalid command or argument.");
+    }
+
+    if(cmd == "shutdown") {
         {
             std::lock_guard<std::mutex> lock(inst->mtx);
             inst->shutdown = true;
+            inst->shutdown_condition.notify_all();
         }
 
-        inst->shutdown_condition.notify_all();
+        return { "yay" };
     }
 
-    return OBJECT_EMPTY_RESPONSE;
+
+    return error("fdsfsdfds");
 }

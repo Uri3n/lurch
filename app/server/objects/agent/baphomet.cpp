@@ -3,7 +3,6 @@
 //
 
 #include "baphomet.hpp"
-
 #include "../../components/instance.hpp"
 
 lurch::result<std::filesystem::path>

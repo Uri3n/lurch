@@ -1,29 +1,13 @@
 ﻿import {observeElement, addDeleteButtonHandlers} from './observer.js';
 import {startWebsocket} from './ws.js';
 import { setToken } from './fetch.js';
-
-import { 
-    listElementClickCallback, 
-    listElementDragStartCallback, 
-    listElementDragEndCallback, 
-    terminalMenuClickCallback,
-    keyDownCallback,
-    terminalDragEnterCallback,
-    terminalDragLeaveCallback,
-    terminalDropCallback,
-    dragoverCallback
-} from './ui.js';
-
+import * as cb from './callbacks.js';
 
 
 //-------------------------------------------------------------------------------------------
 
 
 function main(){
-
-    //
-    // store in-memory auth token
-    //
 
     const token = document.querySelector('body').getAttribute('data-temp-token');
     document.querySelector('body').removeAttribute('data-temp-token');
@@ -36,9 +20,9 @@ function main(){
 
     const rootListElement = document.getElementById('object-menu').querySelector('.menu-list li');
     
-    rootListElement.addEventListener('click', listElementClickCallback);
-    rootListElement.querySelector('a').addEventListener('dragstart', listElementDragStartCallback);
-    rootListElement.querySelector('a').addEventListener('dragend', listElementDragEndCallback);
+    rootListElement.addEventListener('click',                           cb.listElementClickCallback);
+    rootListElement.querySelector('a').addEventListener('dragstart',    cb.listElementDragStartCallback);
+    rootListElement.querySelector('a').addEventListener('dragend',      cb.listElementDragEndCallback);
 
 
     //
@@ -52,7 +36,7 @@ function main(){
     // submit field event listener
     //
 
-    document.addEventListener('keydown', keyDownCallback);
+    document.addEventListener('keydown', cb.keyDownCallback);
 
 
     //
@@ -64,27 +48,24 @@ function main(){
 
 
     //
-    // init terminal drag & drop
+    // init drag & drop
     //
 
-    const preventDefaults = (event) => {
-        event.preventDefault();
-    };
-    
     ['drop', 'dragover', 'dragleave', 'dragenter'].forEach(eventName => {
-        document.body.addEventListener(eventName, preventDefaults);
+        document.body.addEventListener(eventName, (event) => {
+            event.preventDefault();
+        });
     });
-     
 
-    document.querySelector('.terminal-instance').addEventListener('drop', terminalDropCallback);
-    document.body.addEventListener('dragover', dragoverCallback);
     document.body.addEventListener('drop', () => {
-        console.log('fired');
         const terminal = document.querySelector('.terminal-instance');
         const filedrop = document.querySelector('.file-drop-icon');
         terminal.style.opacity = 1;
         filedrop.style.opacity = 0;
     });
+
+    document.querySelector('.terminal-instance').addEventListener('drop', cb.terminalDropCallback);
+    document.body.addEventListener('dragover', cb.dragoverCallback);
 }
 
 main();

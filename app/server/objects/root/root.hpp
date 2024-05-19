@@ -14,6 +14,7 @@ public:
     result<std::string> recieve(const command &cmd) override;
 
     explicit root(instance* inst) : owner(std::nullopt, inst) {}
+    ~root() override = default;
 };
 
 } // lurch

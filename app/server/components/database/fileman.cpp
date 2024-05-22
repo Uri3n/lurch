@@ -26,7 +26,7 @@ lurch::instance::database::fileman_create(const std::string &raw_contents, const
         extension
     );
 
-    if(fs::exists(unique)) {
+    if(exists(unique)) {
         return error("already exists."); //this will literally never happen. But who knows
     }
 

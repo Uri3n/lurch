@@ -26,15 +26,16 @@ export const templates = {
 
             replacementContent += content[i];
         }
-
+        
+        // I know the pre element looks ghetto lowe it tho
         const template = `<div class="terminal-instance-element">
                             <div class="message is-small">
                                 <div class="message-header">
                                     <p>${headerContent}</p>
                                 </div>
-                                <div class="message-body">
-                                    ${replacementContent}
-                                </div>
+                                <pre class="message-body">
+${replacementContent}                                                   
+                                </pre>
                             </div>
                         </div>`;
 

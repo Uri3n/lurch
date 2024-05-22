@@ -28,6 +28,7 @@ function socketMessage(event) {
             case "object-delete":
                 deleteListElement(json["guid"]);
                 forceEndSession(json["guid"]);
+                appendNotification(`${json["guid"]}:\nobject has been deleted.`);
                 break;
 
             case "object-create":

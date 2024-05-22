@@ -124,31 +124,48 @@ export function deleteButtonCallback(event){
 }
 
 
-export function listElementDragEndCallback(event){                                          // Checks whether dropped list element is inside of a "terminal instance".
+export function listElementDragEndCallback(event){                                          
     
     event.stopPropagation();
 
     const dropX = event.clientX;
     const dropY = event.clientY;
-    const terminal = document.querySelector('.terminal-instance');                          // Should only be one of these elements on the page at any time
+    
+    const terminal = document.querySelector('.terminal-instance');                          
+    const inputElement = document.getElementById('terminal-input');
+    
+    let splitContent;
+    let guid;
+    let alias;
 
-    if (ui.isWithinBoundingRect(dropX, dropY, terminal)) {
-        try{
-            const splitContent = event.target.textContent.trim().split(' ').filter(str => str !== '::');
-            const guid = splitContent.splice(0, 1)[0];
-            const alias = splitContent.join(' ');
-        
-            ui.startSession(guid, alias);
+
+    try{
+        splitContent = event.target.textContent.trim().split(' ').filter(str => str !== '::');
+        guid = splitContent.splice(0, 1)[0];
+        alias = splitContent.join(' ');
+    }
+    catch(error){
+        console.error('listElementDragEndCallback(): ', error);
+    }     
+
+
+    if (ui.isWithinBoundingRect(dropX, dropY, terminal)) {                                                  
+        ui.startSession(guid, alias);
+    }
+
+    else if(ui.isWithinBoundingRect(dropX, dropY, inputElement)) {                                          
+        if(inputElement.value.length > 0 && inputElement.value.charAt(inputElement.value.length - 1) !== ' ') {
+            inputElement.value += ' ';
         }
-        catch(error){
-            console.error('listElementDragEndCallback(): ', error);
-        }        
+
+        inputElement.value += `"${guid}"`;
+        inputElement.focus();
     }
 }
 
 
 export function listElementDragStartCallback(event){
-    event.dataTransfer.setData('text/plain', 'Draggable List Element');                         //unused.
+    event.dataTransfer.setData('text/plain', 'Draggable List Element');                                     //unused.
 }
 
 

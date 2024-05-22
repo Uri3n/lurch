@@ -28,9 +28,6 @@ lurch::instance::database::match_user(const std::string& username, const std::st
 
         throw std::runtime_error("user does not exist.");
     }
-    catch(const sqlite::sqlite_exception& e) {
-        return error(io::format_str("{} :: {}", e.get_sql(), e.what()));
-    }
     catch(const std::exception& e) {
         return error(e.what());
     }
@@ -75,11 +72,8 @@ lurch::instance::database::store_user(const std::string &username, const std::st
             << static_cast<int32_t>(access);
 
     }
-    catch(const sqlite::sqlite_exception& e) {
-        return error(io::format_str("exception: {} SQL: {}", e.what(), e.get_sql()));
-    }
-    catch(...) {
-        return error("unknown exception encountered");
+    catch(const std::exception& e) {
+        return error(io::format_str("exception: {}", e.what()));
     }
 
     return { true };
@@ -174,8 +168,8 @@ lurch::instance::database::store_message(const std::string& guid, const std::str
             << sender
             << body;
     }
-    catch(const sqlite::sqlite_exception& e) {
-        return error(io::format_str("exception: {} SQL: {}", e.what(), e.get_sql()));
+    catch(const std::exception& e) {
+        return error(io::format_str("exception: {}", e.what()));
     }
     catch(...) {
         return error("unknown exception encountered");
@@ -220,11 +214,8 @@ lurch::instance::database::delete_object(const std::string &guid) {
     try {
         *this->db << "delete from objects where guid = ?;" << guid;
     }
-    catch (const sqlite::sqlite_exception& e) {
-        return error(io::format_str("exception: {} SQL: {}", e.what(), e.get_sql()));
-    }
-    catch(...) {
-        return error("unknown exception encountered");
+    catch (const std::exception& e) {
+        return error(io::format_str("exception: {}", e.what()));
     }
 
     return { true };
@@ -236,13 +227,16 @@ lurch::instance::database::delete_user(const std::string &username) {
 
     std::lock_guard<std::mutex> lock(this->mtx);
     try {
+        size_t count = 0;
+        *this->db << "select count(*) as user_count from users where username = ?" << username >> count;
+        if(!count) {
+            throw std::runtime_error("user does not exist.");
+        }
+
         *this->db << "delete from users where username = ?;" << username;
     }
-    catch (const sqlite::sqlite_exception& e) {
-        return error(io::format_str("exception: {} SQL: {}", e.what(), e.get_sql()));
-    }
-    catch(...) {
-        return error("unknown exception encountered");
+    catch(const std::exception& e) {
+        return error(e.what());
     }
 
     return { true };
@@ -362,9 +356,6 @@ lurch::instance::database::query_object_children(const std::string &guid){
         }
 
     }
-    catch (const sqlite::sqlite_exception& e) {
-        return error(io::format_str("exception: {} SQL: {}", e.what(), e.get_sql()));
-    }
     catch(const std::exception& e) {
         return error(e.what());
     }
@@ -404,9 +395,6 @@ lurch::instance::database::query_object_data(const std::string &guid) {
         throw std::runtime_error("object does not exist.");
 
     }
-    catch (const sqlite::sqlite_exception& e) {
-        return error(io::format_str("exception: {} SQL: {}", e.what(), e.get_sql()));
-    }
     catch(const std::exception& e) {
         return error(e.what());
     }
@@ -445,9 +433,6 @@ lurch::instance::database::query_object_messages(const std::string &guid, const 
         if(messages.empty()) {
             throw std::runtime_error("no messages found.");
         }
-    }
-    catch (const sqlite::sqlite_exception& e) {
-        return error(io::format_str("exception: {} SQL: {}", e.what(), e.get_sql()));
     }
     catch(const std::exception& e) {
         return error(e.what());
@@ -489,9 +474,6 @@ lurch::instance::database::query_root_guid() {
         throw std::runtime_error("root GUID does not exist.");
 
     }
-    catch (const sqlite::sqlite_exception& e) {
-        return error(io::format_str("exception: {} SQL: {}", e.what(), e.get_sql()));
-    }
     catch(const std::exception& e) {
         return error(e.what());
     }
@@ -512,9 +494,6 @@ lurch::instance::database::query_token_context(const std::string &token) {
         }
 
         throw std::runtime_error("token does not exist.");
-    }
-    catch (const sqlite::sqlite_exception& e) {
-        return error(io::format_str("exception: {} SQL: {}", e.what(), e.get_sql()));
     }
     catch(const std::exception& e) {
         return error(e.what());

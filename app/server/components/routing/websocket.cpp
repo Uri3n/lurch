@@ -101,10 +101,10 @@ lurch::instance::router::send_ws_object_message_update(const std::string &body, 
 
 void
 lurch::instance::router::send_ws_object_create_update(
-    const std::string &guid,
-    std::string parent, const
-    std::string& alias,
-    const object_type type
+        const std::string &guid,
+        std::string parent, const
+        std::string& alias,
+        const object_type type
     ) {
 
     const auto root_guid = inst->db.query_root_guid();

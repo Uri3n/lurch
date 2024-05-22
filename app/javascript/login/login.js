@@ -1,39 +1,29 @@
 
+function popInElement(element){
+    
+    if(element.style.visibility === 'hidden') {
+        element.style.visibility = 'visible';                  
+        element.style.animation = 'popIn 0.3s ease';                
+        
+        element.addEventListener('animationend', () => {
+            element.style.animation = 'none';
+        }, {once:true});
+    }
+}
 
-function appendErrorNotification(msg){
-    
-    msg = msg.split("").filter(char => char !== "<").join("");
 
-    const notification = document.createElement('div');
-    notification.classList.add('notification', 'is-danger', 'deletable-parent');
-    notification.innerHTML = `
-        <button class="delete"></button>                     
-        ${msg}
-    `;
-    
-    
-    //Delete existing notification if one exists
-    document.querySelectorAll('.notification').forEach((element) => {
-        element.remove();
-    });
+function popOutElement(element) {
 
-    document.getElementById('login-container').prepend(notification);
-
-    // ensure notification is deleted when button is clicked
-    document.querySelectorAll('.delete').forEach((element) => {
-        element.addEventListener('click', () => {
-            let parent = element.parentElement;
-    
-            do {
-                if (parent.classList.contains('deletable-parent')) {
-                    parent.remove();
-                    return;
-                }
-    
-                parent = parent.parentElement;
-            } while (parent);
-        });
-    });
+    if(element.style.visibility === 'visible') {
+        element.style.animation = 'popOut 0.3s ease';    
+        element.style.transition = 'opacity 0.3s ease';
+        
+        element.addEventListener('animationend', () => {
+            element.style.animation = 'none';
+            element.style.transition = 'none';              
+            element.style.visibility = 'hidden';    
+        }, {once:true});
+    }
 }
 
 
@@ -78,13 +68,23 @@ async function loadMain(token) {
     document.close();
 }
 
+
+function appendErrorNotification(msg){
+    
+    const notification = document.querySelector('.notification');
+    notification.querySelector('p').textContent = msg.split("").filter(char => char !== "<").join(""); //let me cook
+    popInElement(notification);
+}
+
+
 async function submitCredentials(){
 
     const username = document.getElementById('username').value.trim()
     const password = document.getElementById('password').value.trim();
 
     if(username.length === 0 || password.length === 0){
-        appendErrorNotification("empty username or password!");
+        appendErrorNotification("Empty username or password!");
+        return;
     }
 
     try {
@@ -93,6 +93,7 @@ async function submitCredentials(){
     }
     catch(error) {
         console.error('submitCredentials():', error);
+        appendErrorNotification('Invalid username or password.')
     }
 }
 
@@ -108,4 +109,18 @@ document.addEventListener('keydown', (event) => {
             submitCredentials();
         }
     }
-})
+});
+
+
+document.querySelector('.delete').addEventListener('click', (event) => {
+    let parent = event.target.parentElement;
+
+    do {
+        if (parent.classList.contains('deletable-parent')) {
+            popOutElement(parent);
+            return;
+        }
+
+        parent = parent.parentElement;
+    } while (parent);
+});

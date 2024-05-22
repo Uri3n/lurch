@@ -23,6 +23,12 @@ lurch::argument_parser::safe_to_double(const std::string token) {
 lurch::result<int64_t>
 lurch::argument_parser::safe_to_signed_integer(const std::string token) {
 
+	for(const char& c : token) {
+		if(!isdigit(c)) {
+			return error("failed.");
+		}
+	}
+
 	int64_t i = 0;
 
 	try { i = std::stoll(token); }
@@ -126,9 +132,12 @@ lurch::argument_parser::get_quoted_string(const std::vector<std::string>& tokens
 		}
 	}
 
-	if (quoted_string.empty() || quoted_string.back() != '\"') {
+	if (quoted_string.size() < 2 || quoted_string.back() != '\"' || quoted_string.front() != '\"') {
 		return {};
 	}
+
+	quoted_string.pop_back();
+	quoted_string.erase(0,1);
 
 	return std::make_pair(quoted_string, (index - start) + 1);
 }
@@ -137,7 +146,7 @@ lurch::argument_parser::get_quoted_string(const std::vector<std::string>& tokens
 lurch::result<lurch::command>
 lurch::argument_parser::parse(std::string raw) {
 
-	lurch::command cmd;
+	command cmd;
 	argument cur_argument = {.parameter = std::monostate()};
 
 	strip_whitespace(raw);
@@ -202,9 +211,9 @@ lurch::argument_parser::parse(std::string raw) {
 
 
 lurch::formatted_command&
-lurch::accepted_commands::add_command(const std::string& name) {
+lurch::accepted_commands::add_command(const std::string& name, const std::string& description) {
 	if(!is_done) {
-		return commands.emplace_back(formatted_command(name));
+		return commands.emplace_back(formatted_command(name, description));
 	}
 	return commands.front();
 }
@@ -215,6 +224,30 @@ lurch::accepted_commands::done() {
 	if(!commands.empty()) {
 		commands.front().is_done = true;
 	}
+}
+
+
+std::string
+lurch::accepted_commands::help() const {
+
+	std::string buffer;
+	for(const auto& command : commands) {
+		buffer += command.name + '\n';
+		buffer += command.description + "\n\n";
+		for(const auto& argument : command.args) {
+			buffer += ("  " + io::format_str("{:<15}", argument.long_form));
+			buffer += ("  " + io::format_str("{:<5}", argument.short_form));
+			buffer += ("  required: " + io::format_str("{:<5}", argument.required ? "true" : "false"));
+			buffer += "\n";
+		}
+		buffer += "\n";
+	}
+
+	if(buffer.size() > 2) {
+		buffer.erase(buffer.size() - 3, 2);
+	}
+
+	return buffer;
 }
 
 bool

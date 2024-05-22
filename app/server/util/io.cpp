@@ -65,6 +65,9 @@ lurch::io::type_to_str(const object_type type) {
         case object_type::EXTERNAL:
             return "external";
 
+        case object_type::GENERIC:
+            return "generic";
+
         default:
             return "unknown";
     }

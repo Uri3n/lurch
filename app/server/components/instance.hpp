@@ -151,6 +151,7 @@ class instance {
 
             static std::pair<result<std::string>, bool> send_message_r(const std::shared_ptr<object>& current, const std::string& guid, const command& cmd, access_level access);
             static std::pair<result<std::filesystem::path>, bool> upload_file_r(const std::shared_ptr<object>&, const std::string& guid, const std::string& file, const std::string& file_type, access_level access);
+            static std::pair<result<access_level>, bool> lookup_access_level_r(const std::shared_ptr<object>& current, const std::string& guid);
 
         public:
 
@@ -161,6 +162,7 @@ class instance {
             void set_max_object_count(uint32_t count);
             uint32_t get_max_object_count() const;
             void increment_object_count();
+            result<access_level> lookup_access_level(std::string& guid) const;
 
             std::shared_ptr<object> create_object(object_index index, std::optional<std::string> guid, std::optional<std::weak_ptr<owner>> parent);
             result<std::string> send_message(const std::string& guid, const std::string& cmd_raw, access_level access);

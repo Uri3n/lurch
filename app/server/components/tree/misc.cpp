@@ -57,3 +57,36 @@ lurch::instance::object_tree::create_object(const object_index index, const std:
 
     return obj;
 }
+
+
+std::pair<lurch::result<lurch::access_level>, bool>
+lurch::instance::object_tree::lookup_access_level_r(const std::shared_ptr<object> &current, const std::string &guid) {
+
+    if(current->id == guid) {
+        return { current->access, false };
+    }
+
+    std::pair<result<access_level>, bool> res = { error("object not found."), true };
+    if(const auto owner_ptr = dynamic_cast<owner*>(current.get())) {
+        for(auto child : owner_ptr->children) {
+            res = lookup_access_level_r(child, guid);
+            if(res.second == false) {
+                break;
+            }
+        }
+    }
+
+    return res;
+}
+
+
+lurch::result<lurch::access_level>
+lurch::instance::object_tree::lookup_access_level(std::string &guid) const {
+
+    if(guid == "root") {
+        guid = inst->db.query_root_guid().value_or(guid);
+    }
+
+    const auto root_ptr = root;
+    return lookup_access_level_r(root_ptr, guid).first;
+}

@@ -55,22 +55,6 @@ lurch::instance::object_tree::send_message_r(
 }
 
 
-lurch::result<std::string>
-lurch::instance::object_tree::send_message(const std::string& guid, const std::string& cmd_raw, const access_level access) {
-
-    const result<command> cmd = argument_parser::parse(cmd_raw);
-    const std::shared_ptr<object> root_ptr = root;
-
-    std::lock_guard<std::recursive_mutex> lock(tree_lock); //lock tree
-    return send_message_r(
-        root_ptr,
-        guid,
-        cmd.value_or(command{.name = cmd_raw}),
-        access
-    ).first;
-}
-
-
 std::pair<lurch::result<std::filesystem::path>, bool>
 lurch::instance::object_tree::upload_file_r(
         const std::shared_ptr<object>& current,
@@ -118,6 +102,22 @@ lurch::instance::object_tree::upload_file_r(
     }
 
     return result;
+}
+
+
+lurch::result<std::string>
+lurch::instance::object_tree::send_message(const std::string& guid, const std::string& cmd_raw, const access_level access) {
+
+    const result<command> cmd = argument_parser::parse(cmd_raw);
+    const std::shared_ptr<object> root_ptr = root;
+
+    std::lock_guard<std::recursive_mutex> lock(tree_lock); //lock tree
+    return send_message_r(
+        root_ptr,
+        guid,
+        cmd.value_or(command{.name = cmd_raw}),
+        access
+    ).first;
 }
 
 

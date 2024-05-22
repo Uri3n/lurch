@@ -269,11 +269,11 @@ body {
     height:fit-content !important;
 }
 
-.message-body p{
-    height:auto;
-    overflow:hidden;
-    word-wrap: break-word;
-    white-space: normal;
+.message-body {
+    padding-bottom: 0;
+    padding-right: 0;
+    overflow:auto;
+    scrollbar-width: none;
 }
 
 .terminal-instance-element .message-header p {

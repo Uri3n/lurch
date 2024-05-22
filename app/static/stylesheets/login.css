@@ -1,0 +1,66 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 100vh;
+    overflow:hidden;
+}
+
+.login-container {
+    position:relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    column-gap: 2vh;
+    z-index: 999999 !important;
+}
+
+.above-login-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999999 !important;
+}
+
+.logo {
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform: translate(-50%, -50%);
+    max-height:30vh;
+    max-width:30vh;
+    z-index: 1 !important;
+    pointer-events: none;
+}
+
+.control {
+    margin-bottom: 1vh;
+}
+
+@keyframes popIn {
+    0% {
+        transform: scale(0); 
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes popOut {
+    0% {
+        transform: scale(1); 
+        opacity: 1; 
+    }
+    100% {
+        transform: scale(0.5); 
+        opacity: 0; 
+    }
+}

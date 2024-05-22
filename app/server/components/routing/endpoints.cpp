@@ -79,11 +79,16 @@ lurch::instance::router::run(
     CROW_ROUTE(this->app, "/objects/send/<string>")
     .methods("POST"_method)([&](const crow::request& req, crow::response& res, std::string GUID){
 
-        res.code = 403;
-        if(const auto result = inst->db.query_token_context(hdr_extract_token(req).value_or("-"))) {
-            if(handler_objects_send(GUID, req, res, result.value().first, result.value().second)) {
-                res.code = 200;
-            }
+        const auto success = hdr_extract_token(req)
+            .and_then([&](std::string token) {
+                return inst->db.query_token_context(token);
+            })
+            .and_then([&](std::pair<std::string, access_level> ctx) {
+                return result<bool>(handler_objects_send(GUID, req, res, ctx.first, ctx.second));
+            });
+
+        if(success && success.value() == true) {
+            res.code = 200;
         }
 
         io::info("serving POST at endpoint: \"/objects/send\" :: " + std::to_string(res.code));
@@ -95,19 +100,23 @@ lurch::instance::router::run(
     .methods("POST"_method)([&](const crow::request& req, crow::response& res, std::string GUID, std::string file_type){
 
         res.code = 403;
+        const auto success = hdr_extract_token(req)
+            .and_then([&](std::string token) {
+                return inst->db.query_token_context(token);
+            })
+            .and_then([&](std::pair<std::string, access_level> ctx) {
+                return result<bool>(handler_objects_upload(
+                    GUID,
+                    ctx.first,
+                    file_type,
+                    req,
+                    res,
+                    ctx.second
+                ));
+            });
 
-        const auto token_context = inst->db.query_token_context(hdr_extract_token(req).value_or("-"));
-        if(token_context.has_value()) {
-            if(handler_objects_upload(
-                GUID,
-                token_context.value().first,
-                file_type,
-                req,
-                res,
-                token_context.value().second
-            )) {
-                res.code = 200;
-            }
+        if(success && success.value() == true) {
+            res.code = 200;
         }
 
         io::info("serving POST at endpoint: \"/objects/send\" :: " + std::to_string(res.code));
@@ -144,8 +153,27 @@ lurch::instance::router::run(
     CROW_ROUTE(this->app, "/objects/getmessages/<string>/<int>")
     .methods("GET"_method)([&](const crow::request& req, crow::response& res, std::string GUID, int index){
 
+        auto minimum_access = access_level::HIGH;
         res.code = 403;
-        if(verify_token(req, access_level::MEDIUM) && handler_objects_getmessages(GUID, index, res)) {
+
+        const auto success = inst->tree.lookup_access_level(GUID)
+            .and_then([&](access_level object_access) {
+                minimum_access = object_access;
+                return hdr_extract_token(req);
+            })
+            .and_then([&](std::string token) {
+                return inst->db.query_token_context(token);
+            })
+            .and_then([&](std::pair<std::string, access_level> ctx) {
+                if(ctx.second >= minimum_access) {
+                    res.code = 200;
+                    return result<bool>(handler_objects_getmessages(GUID, index, res));
+                }
+
+                return result<bool>(error("bad access level"));
+            });
+
+        if(success && success.value() == true) {
             res.code = 200;
         }
 

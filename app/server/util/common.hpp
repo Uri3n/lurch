@@ -28,7 +28,8 @@ namespace lurch {
         GROUP,
         AGENT,
         EXTERNAL,
-        ROOT
+        ROOT,
+        GENERIC
     };
 
     enum class object_index : int64_t {
@@ -126,9 +127,9 @@ namespace lurch {
                 const command& cmd;
 
                 template<typename U>
-                std::optional<U> find_arg(const std::string& flag) const  {
+                std::optional<U> find_arg(const std::string& long_form, const std::string& short_form) const  {
                     for(const auto &[flag_name, param] : cmd.arguments) {
-                        if(flag_name == flag) {
+                        if(long_form == flag_name || short_form == flag_name) {
                             return { std::get<U>(param) };
                         }
                     }
@@ -141,8 +142,8 @@ namespace lurch {
                 }
 
                 template<typename U>
-                param_getter<T..., U> with(const std::string flag) const {
-                    auto new_tuple = std::tuple_cat(tup, std::make_tuple(find_arg<U>(flag)));
+                param_getter<T..., U> with(const std::string long_form, const std::string short_form) const {
+                    auto new_tuple = std::tuple_cat(tup, std::make_tuple(find_arg<U>(long_form, short_form)));
                     return param_getter<T..., U>{new_tuple, cmd};
                 }
 
@@ -151,14 +152,14 @@ namespace lurch {
             };
 
             template<typename T>
-            auto get(std::string name) -> param_getter<T> {
+            param_getter<T> get(const std::string long_form, const std::string short_form) const {
                 for(const auto &[flag_name, parameter] : arguments) {
-                    if(flag_name == name) {
+                    if(long_form == flag_name || short_form == flag_name) {
                         return param_getter<T>(std::make_tuple(std::get<T>(parameter)), *this);
                     }
                 }
 
-                throw std::invalid_argument("command::get: flag not found: " + name);
+                return param_getter<T>(std::make_tuple(std::nullopt), *this);
             }
 
             friend std::ostream & operator<<(std::ostream &os, const command &obj) {

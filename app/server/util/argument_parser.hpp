@@ -14,6 +14,7 @@
 #include <typeindex>
 #include <optional>
 #include "common.hpp"
+#include "io.hpp"
 
 
 using empty = std::monostate;
@@ -65,6 +66,7 @@ namespace lurch {
 
     struct formatted_command {
         const std::string name;
+        const std::string description;
         std::vector<formatted_argument> args;
         bool is_done = false;
 
@@ -82,7 +84,8 @@ namespace lurch {
             return *this;
         }
 
-        formatted_command(const std::string& name) : name(name) {}
+        formatted_command(const std::string& name, const std::string& description)
+            : name(name), description(description) {}
     };
 
 
@@ -93,7 +96,7 @@ namespace lurch {
         bool match_flags(const lurch::command& passed, const formatted_command& to_compare);
     public:
 
-        // I can't define a friend function in a .cpp file. Lol.
+        // I can't define a friend function in a .cpp file?? Lol.
         friend std::ostream& operator<<(std::ostream &os, const accepted_commands &obj) {
             os << std::boolalpha << "commands: \n";
             for(const auto& command : obj.commands) {
@@ -111,9 +114,10 @@ namespace lurch {
         }
 
         bool matches(const lurch::command& passed);
-        formatted_command& add_command(const std::string& name);
+        formatted_command& add_command(const std::string& name, const std::string& description);
 
         void done();
+        std::string help() const;
         bool ready() const;
 
         accepted_commands() = default;

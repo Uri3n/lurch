@@ -15,7 +15,15 @@
 #include <variant>
 #include <typeindex>
 
+#define LURCH_MAX_TOKEN_LENGTH 37
+
 namespace lurch {
+
+    template<typename T>
+    using result = std::expected<T, std::string>;
+    using error = std::unexpected<std::string>;
+
+    using argument_parameter = std::variant<int64_t, double, bool, std::string, std::monostate>;
 
     enum class access_level : int32_t {
         LOW,
@@ -62,6 +70,13 @@ namespace lurch {
         access_level access = access_level::LOW;
     };
 
+    struct full_token_data {
+        std::string token;
+        std::string expiration;
+        std::string alias;
+        access_level access = access_level::LOW;
+    };
+
     struct config_data {
         std::string bindaddr;
         uint16_t port;
@@ -70,17 +85,16 @@ namespace lurch {
         std::string key_path;
     };
 
-    template<typename T>
-    using result = std::expected<T, std::string>;
-    using error = std::unexpected<std::string>;
-
-    using argument_parameter = std::variant<int64_t, double, bool, std::string, std::monostate>;
-
     struct argument {
         std::string flag_name;
         argument_parameter parameter;
     };
 
+    struct search_ctx {
+        result<std::string> response;
+        bool keep_going;
+        access_level obj_access;
+    };
 
     template<typename T> requires std::is_invocable_v<T>
     class defer_wrapper {
@@ -121,6 +135,7 @@ namespace lurch {
             std::string name;
             std::vector<argument> arguments;
 
+
             template<typename ...T>
             struct param_getter {
                 std::tuple<std::optional<T>...> tup;
@@ -151,6 +166,7 @@ namespace lurch {
                     : tup(tup), cmd(cmd) {}
             };
 
+
             template<typename T>
             param_getter<T> get(const std::string long_form, const std::string short_form) const {
                 for(const auto &[flag_name, parameter] : arguments) {
@@ -172,6 +188,7 @@ namespace lurch {
 
                 return os;
             }
+
 
             bool operator==(const command& other) const {
                 return other.name == this->name;

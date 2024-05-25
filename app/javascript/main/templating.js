@@ -20,7 +20,7 @@ export const templates = {
                 k = 0;
             }
 
-            if( k > 0 && k % 100 === 0 ){
+            if( k > 0 && k % 125 === 0 ){
                 replacementContent += '\n';
             }
 

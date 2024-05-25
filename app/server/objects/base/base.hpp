@@ -16,6 +16,7 @@
 #include <queue>
 #include <iostream>
 
+#define AGENT_DELIMITING_CHAR '!'
 #define OBJECT_EMPTY_RESPONSE ""
 
 namespace lurch {

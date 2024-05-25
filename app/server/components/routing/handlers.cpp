@@ -29,49 +29,29 @@ lurch::instance::router::handler_objects_send(
     crow::response& res,
     const std::string& user_alias,
     const access_level user_access
-) {
+) const {
 
     if(GUID == "root") {
         GUID = inst->db.query_root_guid().value_or(GUID);
     }
 
-    if(!req.body.empty() && req.body.size() < 200) {                                                    //check for a valid request
-        const auto msg_result = inst->tree.send_message(GUID, req.body, user_access);                   //send the message to the object
-        if(msg_result.has_value()) {
-
-            res.body = msg_result.value();
-            io::success("successfully parsed command: " + req.body);
-            io::success("responsible object: " + GUID);
-
-            inst->post_message_interaction(
-                user_alias,
-                GUID,
-                msg_result.value().empty() ? std::nullopt : std::optional(msg_result.value()),
-                req.body
-            );
-
-            return true;
-        }
-
-        //
-        // TODO: remove redundant code
-        //
-
-        inst->post_message_interaction(
-            user_alias,
-            GUID,
-            std::nullopt,
-            req.body
-        );
-
-        send_ws_notification(
-            io::format_str("user {}: \nbad object access. \nerror: {}", user_alias, msg_result.error_or("?")),
-            ws_notification_intent::BAD
-        );
+    if(req.body.empty() || req.body.size() > 4096) {                                                        //check for a valid request
+        return false;
     }
 
-    res.code = 400;
-    return false;
+    const auto msg_result = inst->tree.send_message(GUID, req.body, user_access);                           //send the message to the object
+    const access_level required_access = inst->tree.lookup_access_level(GUID).value_or(access_level::LOW);
+
+    res.body = msg_result.value_or(std::string());
+    inst->post_message_interaction(
+        user_alias,
+        GUID,
+        msg_result.value_or(msg_result.error()),
+        req.body,
+        required_access
+    );
+
+    return msg_result.has_value();
 }
 
 
@@ -178,7 +158,7 @@ lurch::instance::router::handler_objects_upload(
         const std::string &file_type,
         const crow::request &req,
         crow::response &res,
-        const access_level access
+        const access_level user_access
     ) {
 
     if(req.body.empty()) {
@@ -190,7 +170,7 @@ lurch::instance::router::handler_objects_upload(
         GUID = inst->db.query_root_guid().value_or(GUID);
     }
 
-    return inst->tree.upload_file(GUID, req.body, file_type, access)
+    return inst->tree.upload_file(GUID, req.body, file_type, user_access)
         .or_else([&](std::string err) {
             send_ws_notification(
                 io::format_str("user {}:\nbad object upload.\nerror:{}", user_alias, err),
@@ -209,7 +189,8 @@ lurch::instance::router::handler_objects_upload(
                     pth.string(),
                     pth.filename().string(),
                     pth.extension().string()
-                )
+                ),
+                user_access
             );
 
             return result<bool>(true);

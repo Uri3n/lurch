@@ -48,7 +48,6 @@ lurch::instance::router::run(
         res.end();
     });
 
-
     CROW_ROUTE(this->app, "/verify")
     .methods("POST"_method)([&](const crow::request& req, crow::response& res) {
 
@@ -79,6 +78,7 @@ lurch::instance::router::run(
     CROW_ROUTE(this->app, "/objects/send/<string>")
     .methods("POST"_method)([&](const crow::request& req, crow::response& res, std::string GUID){
 
+        res.code = 400;
         const auto success = hdr_extract_token(req)
             .and_then([&](std::string token) {
                 return inst->db.query_token_context(token);
@@ -119,7 +119,7 @@ lurch::instance::router::run(
             res.code = 200;
         }
 
-        io::info("serving POST at endpoint: \"/objects/send\" :: " + std::to_string(res.code));
+        io::info("serving POST at endpoint: \"/objects/upload\" :: " + std::to_string(res.code));
         res.end();
     });
 
@@ -191,7 +191,7 @@ lurch::instance::router::run(
         remove_ws_connection(&conn);
     })
     .onmessage([&](crow::websocket::connection& conn, const std::string& data, bool is_binary) {
-        if(!is_binary && verify_ws_user(&conn, data)) {
+        if(verify_ws_user(&conn, data)) {
             io::success("authenticated websocket connection via token.");
         }
         else {

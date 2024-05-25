@@ -42,7 +42,6 @@ add_executable(server main.cpp
 
         components/tree/send.cpp
         components/tree/misc.cpp
-        util/common.cpp
 )
 
 target_compile_definitions(server PRIVATE CROW_ENABLE_SSL)

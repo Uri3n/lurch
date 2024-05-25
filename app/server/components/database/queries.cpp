@@ -313,15 +313,14 @@ lurch::instance::database::query_object_type(const std::string &guid) {
     try {
         for(auto&& row : *this->db << "select type from objects where guid = ?" << guid) {
             int64_t q_object_type = 0;
-
             row >> q_object_type;
             return static_cast<object_type>(q_object_type);
         }
 
-        throw std::exception();
+        throw std::runtime_error("object does not exist.");
     }
-    catch (const sqlite::sqlite_exception& e) {
-        return error(io::format_str("exception: {} SQL: {}", e.what(), e.get_sql()));
+    catch (const std::exception& e) {
+        return error(e.what());
     }
     catch(...) {
         return error("unknown exception encountered");
@@ -442,6 +441,40 @@ lurch::instance::database::query_object_messages(const std::string &guid, const 
     }
 
     return messages;
+}
+
+
+lurch::result<std::vector<lurch::full_token_data>>
+lurch::instance::database::query_full_token_list() {
+
+    std::lock_guard<std::mutex> lock(this->mtx);
+    std::vector<full_token_data> tokens;
+
+    try {
+        for(auto&& row : *this->db << "select token,datetime(expiration_time, 'unixepoch'),alias,access_level from tokens") {
+            std::string q_token;
+            std::string q_datetime;
+            std::string q_alias;
+            int32_t q_access;
+
+            row >> q_token >> q_datetime >> q_alias >> q_access;
+            tokens.emplace_back(full_token_data {
+                .token = q_token,
+                .expiration = q_datetime,
+                .alias = q_alias,
+                .access = static_cast<access_level>(q_access),
+            });
+        }
+
+        if(tokens.empty()) {
+            throw std::runtime_error("no tokens exist.");
+        }
+
+        return tokens;
+    }
+    catch(const std::exception& e) {
+        return error(e.what());
+    }
 }
 
 

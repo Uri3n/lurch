@@ -13,14 +13,16 @@
 #include "../objects/agent/baphomet.hpp"
 #include "../objects/root/root.hpp"
 #include "../objects/group/group.hpp"
+#include "../../objects/external/chatroom.hpp"
+
 #include <crow.h>
-#include <optional>
 #include <openssl/bio.h>
 #include <openssl/err.h>
 #include <openssl/ssl.h>
 #include <openssl/pem.h>
 #include <openssl/x509.h>
 #include <openssl/x509v3.h>
+
 #include <cstdint>
 #include <memory>
 #include <string_view>
@@ -30,6 +32,7 @@
 #include <functional>
 #include <filesystem>
 #include <thread>
+#include <optional>
 #include <atomic>
 
 #if defined(_MSVC_STL_VERSION) && defined(_MSVC_LANG)
@@ -90,6 +93,7 @@ class instance {
             result<array_of_children> query_object_children(const std::string& guid);
             result<object_data> query_object_data(const std::string& guid);
             result<std::vector<object_message>> query_object_messages(const std::string& guid, int message_index);
+            result<std::vector<full_token_data>> query_full_token_list();
 
             result<bool> initialize(instance* inst, const std::optional<std::string >& initial_user, const std::optional<std::string>& initial_password);
             result<bool> restore_objects();
@@ -103,7 +107,7 @@ class instance {
     class router {
         private:
             struct {
-                std::vector<std::pair<crow::websocket::connection*, bool>> connections;
+                std::vector<std::pair<crow::websocket::connection*, std::optional<access_level>>> connections;
                 std::mutex lock;
             } websockets;
 
@@ -121,22 +125,19 @@ class instance {
             void remove_ws_connection(crow::websocket::connection* conn);
             bool verify_ws_user(crow::websocket::connection* conn, const std::string& data);
 
-            void send_ws_data(const std::string& data, bool is_binary);
-            void send_ws_text(const std::string& data);
-            void send_ws_binary(const std::string& data);
-
-            void send_ws_object_message_update(const std::string& body, const std::string& sender, std::string recipient);
+            void send_ws_data(const std::string& data, bool is_binary,std::optional<access_level> required_access);
+            void send_ws_object_message_update(const std::string& body, const std::string& sender, std::string recipient, access_level required_access);
             void send_ws_object_create_update(const std::string& guid, std::string parent, const std::string& alias, object_type type);
             void send_ws_object_delete_update(const std::string& guid);
             void send_ws_notification(const std::string& message, ws_notification_intent intent);
 
             /* handler functions should NOT call crow::response::end, or set the response code. */
             bool handler_verify(const crow::request& req, crow::response& res) const;
-            bool handler_objects_send(std::string GUID, const crow::request& req, crow::response& res, const std::string& user_alias, access_level user_access);
+            bool handler_objects_send(std::string GUID, const crow::request& req, crow::response& res, const std::string& user_alias, access_level user_access) const;
             bool handler_objects_getdata(std::string GUID, crow::response& res) const;
             bool handler_objects_getchildren(std::string GUID, crow::response& res) const;
             bool handler_objects_getmessages(std::string GUID, int message_index, crow::response& res) const;
-            bool handler_objects_upload(std::string GUID, const std::string& user_alias, const std::string& file_type, const crow::request& req, crow::response& res, access_level access);
+            bool handler_objects_upload(std::string GUID, const std::string& user_alias, const std::string& file_type, const crow::request& req, crow::response& res, access_level user_access);
 
             void run(std::string addr, uint16_t port, const std::optional<std::string>& ssl_cert, const std::optional<std::string>& ssl_key);
 
@@ -186,7 +187,7 @@ public:
     static bool generate_self_signed_cert(const std::string& certfile_path, const std::string& keyfile_path, long certificate_version);
     static result<config_data> init_config_data();
 
-    void post_message_interaction(const std::string& sender, const std::string& object, std::optional<std::string> response, const std::string& message_content);
+    void post_message_interaction(const std::string& sender, const std::string& object, const std::optional<std::string>& response, const std::string& message_content, access_level required_access);
     void begin();
     void await_shutdown();
 

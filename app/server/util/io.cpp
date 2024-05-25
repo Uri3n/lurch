@@ -73,6 +73,23 @@ lurch::io::type_to_str(const object_type type) {
     }
 }
 
+
+std::string
+lurch::io::access_to_str(const access_level access) {
+
+    switch(access) {
+        case access_level::LOW:
+            return "LOW";
+        case access_level::MEDIUM:
+            return "MEDIUM";
+        case access_level::HIGH:
+            return "HIGH";
+        default:
+            return "?";
+    }
+}
+
+
 void
 lurch::io::success(const std::string& str) {
     std::cout << '|' << std::setw(TEXT_WIDTH) << std::left << str << '|' << \
@@ -157,6 +174,23 @@ lurch::io::prompt_for(const std::string prompt) {
 
     std::cout << termcolor::reset << std::flush;
     return input;
+}
+
+
+void
+lurch::crow_custom_logger::log(std::string message, crow::LogLevel lvl) {
+    std::cout << "GOT LOG: " << message << std::endl;
+}
+
+lurch::crow_custom_logger::crow_custom_logger(const std::string &log_file_name) {
+    log_file = std::ofstream(log_file_name, std::ios::app);
+    if(!log_file.is_open()) {
+        throw std::runtime_error("could not open/create log file.");
+    }
+}
+
+lurch::crow_custom_logger::~crow_custom_logger() {
+    log_file.close();
 }
 
 

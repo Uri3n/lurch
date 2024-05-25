@@ -328,17 +328,18 @@ lurch::instance::init_config_data() {
 
 void
 lurch::instance::post_message_interaction(
-        const std::string &sender,
-        const std::string &object,
-        const std::optional<std::string> response,
-        const std::string &message_content
+        const std::string& sender,
+        const std::string& object,
+        const std::optional<std::string>& response, //can be changed to just std::string
+        const std::string& message_content,
+        const access_level required_access
     ) {
 
-    routing.send_ws_object_message_update(message_content, sender, object);
+    routing.send_ws_object_message_update(message_content, sender, object, required_access);
     db.store_message(object, sender, message_content);
 
-    if(response.has_value()) {
-        routing.send_ws_object_message_update(response.value(), object, object);
+    if(response && !response->empty()) {
+        routing.send_ws_object_message_update(response.value(), object, object, required_access);
         db.store_message(object, object, response.value());
     }
 }

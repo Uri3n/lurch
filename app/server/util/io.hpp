@@ -9,6 +9,8 @@
 #include <string>
 #include <vector>
 #include <iomanip>
+#include <filesystem>
+#include <crow.h>
 #include "common.hpp"
 #include "../vendor/termcolor.hpp"
 
@@ -40,8 +42,10 @@ public:
         return output;
     }
 
-    static bool yesno(const std::string& question);
     static std::string type_to_str(object_type type);
+    static std::string access_to_str(access_level access);
+
+    static bool yesno(const std::string& question);
     static void success(const std::string& str);
     static void failure(const std::string& str);
     static void info(const std::string& str);
@@ -53,6 +57,16 @@ public:
     static void print_banner();
     static std::string prompt_for(std::string prompt);
 };
+
+class crow_custom_logger final : public crow::ILogHandler {
+private:
+    std::ofstream log_file;
+public:
+    void log(std::string message, crow::LogLevel lvl) override;
+    explicit crow_custom_logger(const std::string& log_file_name);
+    ~crow_custom_logger();
+};
+
 
 } // lurch
 

@@ -150,7 +150,7 @@ class instance {
             uint32_t max_object_count = 100;
             std::atomic_uint32_t curr_object_count = 0;
 
-            static std::pair<result<std::string>, bool> send_message_r(const std::shared_ptr<object>& current, const std::string& guid, const command& cmd, access_level access);
+            static search_ctx send_message_r(const std::shared_ptr<object>& current, const std::string& guid, const command& cmd, access_level access);
             static std::pair<result<std::filesystem::path>, bool> upload_file_r(const std::shared_ptr<object>&, const std::string& guid, const std::string& file, const std::string& file_type, access_level access);
             static std::pair<result<access_level>, bool> lookup_access_level_r(const std::shared_ptr<object>& current, const std::string& guid);
 
@@ -166,7 +166,7 @@ class instance {
             result<access_level> lookup_access_level(std::string& guid) const;
 
             std::shared_ptr<object> create_object(object_index index, std::optional<std::string> guid, std::optional<std::weak_ptr<owner>> parent);
-            result<std::string> send_message(const std::string& guid, const std::string& cmd_raw, access_level access);
+            search_ctx send_message(const std::string& guid, const std::string& cmd_raw, access_level access);
             result<std::filesystem::path> upload_file(const std::string& guid, const std::string& file, const std::string& file_type, access_level access);
 
             object_tree() = default;

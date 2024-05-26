@@ -11,6 +11,6 @@ lurch::chatroom::upload(const std::string &file, const std::string &extension) {
 }
 
 lurch::result<std::string>
-lurch::chatroom::recieve(const command &cmd) {
+lurch::chatroom::recieve(const command &cmd, bool& log_if_error) {
     return OBJECT_EMPTY_RESPONSE;
 }

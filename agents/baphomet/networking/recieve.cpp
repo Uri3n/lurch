@@ -6,7 +6,7 @@
 #include <iostream>
 
 bool
-recieve_file(
+networking::recieve_file(
         _In_ const HINTERNET hConnect,
         _In_ const std::string &object_guid,
         _In_ const std::string &file_name,

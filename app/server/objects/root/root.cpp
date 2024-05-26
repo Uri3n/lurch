@@ -113,7 +113,7 @@ lurch::root::upload(const std::string &file, const std::string &extension) {
 
 
 lurch::result<std::string>
-lurch::root::recieve(const command &cmd) {
+lurch::root::recieve(const command &cmd, bool& log_if_error) {
 
     static accepted_commands commands;
 
@@ -142,7 +142,6 @@ lurch::root::recieve(const command &cmd) {
     if(!commands.matches(cmd)) {
         return error("invalid command or argument.");
     }
-
 
     if(cmd == "shutdown") {
         inst->routing.send_ws_notification("Server is shutting down...", ws_notification_intent::NEUTRAL);

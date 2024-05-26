@@ -21,7 +21,7 @@ public:
 
     static result<std::string> delimit_command(const std::vector<std::string>& strings);
     result<std::filesystem::path> upload(const std::string &file, const std::string &extension) override;
-    result<std::string> recieve(const lurch::command &cmd) override;
+    result<std::string> recieve(const lurch::command &cmd, bool& log_if_error) override;
 
     explicit baphomet(const std::optional<std::weak_ptr<owner>> &parent, instance* const root)
         : leaf(parent, root) {

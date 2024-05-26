@@ -5,7 +5,7 @@
 #include "init.hpp"
 
 bool
-open_session(
+networking::open_session(
         _Out_ HINTERNET& hSession,
         _In_ const std::wstring& user_agent
 ) {
@@ -23,7 +23,7 @@ open_session(
 
 
 bool
-open_connection(
+networking::open_connection(
         _In_ const std::wstring& address,
         _In_ const INTERNET_PORT port,
         _In_ const HINTERNET hSession,

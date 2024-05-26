@@ -16,4 +16,16 @@ add_library(baphomet SHARED main.cpp
         networking/recieve.hpp
         obfuscation/sleep.cpp
         obfuscation/sleep.hpp
+        tasking/basic/filesystem.cpp
+        tasking/basic/filesystem.hpp
+        util/io.cpp
+        util/io.hpp
+        tasking/basic/shell.cpp
+        tasking/basic/shell.hpp
+        reconaissance/screenshot.cpp
+        reconaissance/screenshot.hpp
+        reconaissance/basic.cpp
+        reconaissance/basic.hpp
+        reconaissance/procenum.cpp
+        reconaissance/procenum.hpp
 )

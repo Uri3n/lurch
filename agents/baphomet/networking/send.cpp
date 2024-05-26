@@ -5,7 +5,7 @@
 #include "send.hpp"
 
 bool
-upload_file(
+networking::upload_file(
 		_In_ const HINTERNET hConnect,
 		_In_ const std::string& object_guid,
 		_In_ const HANDLE hFile,
@@ -195,7 +195,7 @@ upload_file(
 
 
 bool
-send_object_message(
+networking::send_object_message(
 		_In_ const HINTERNET hConnect,
 		_In_ const std::string& object_guid,
 		_In_ const std::string& object_message,

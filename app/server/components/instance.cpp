@@ -71,7 +71,7 @@ lurch::instance::begin() {
     db.delete_old_tokens();
 
 
-    std::cout << std::endl << io::format_str( "Attempting bind to: {}:{}", config.value().bindaddr, std::to_string(config.value().port)) << std::endl;
+    io::info(io::format_str( "\nAttempting bind to: {}:{}", config.value().bindaddr, std::to_string(config.value().port)));
     std::thread worker([&] {
 
         std::set_terminate(handle_uncaught_exception);

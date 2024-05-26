@@ -11,6 +11,6 @@ lurch::group::upload(const std::string &file, const std::string &extension) {
 }
 
 lurch::result<std::string>
-lurch::group::recieve(const lurch::command &cmd) {
+lurch::group::recieve(const lurch::command &cmd, bool& log_if_error) {
    return error("This command sucks:" + cmd.name);
 }

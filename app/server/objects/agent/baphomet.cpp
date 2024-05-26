@@ -151,7 +151,7 @@ lurch::baphomet::upload(const std::string &file, const std::string &extension) {
 
 
 lurch::result<std::string>
-lurch::baphomet::recieve(const command &cmd) {
+lurch::baphomet::recieve(const command &cmd, bool& log_if_error) {
 
     static accepted_commands commands;
 
@@ -229,7 +229,8 @@ lurch::baphomet::recieve(const command &cmd) {
     }
 
     if(cmd == "get_task") {
-        return { get_task() };
+        log_if_error = false;
+        return get_task();
     }
 
     if(cmd == "complete_task") {

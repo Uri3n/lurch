@@ -6,6 +6,9 @@
 #define COMMON_HPP
 #include <string>
 
+#define CLOSE_HANDLE(HANDLE) if(HANDLE != nullptr){CloseHandle(HANDLE);}
+#define FREE_HEAP_BUFFER(BUFFER) if(BUFFER != nullptr){HeapFree(GetProcessHeap(), 0, BUFFER);}
+
 #define PS_REQUEST_BREAKAWAY                    1
 #define PS_NO_DEBUG_INHERIT                     2
 #define PS_INHERIT_HANDLES                      4

@@ -6,52 +6,51 @@
 
 
 
-std::pair<lurch::result<std::string>, bool>
+lurch::search_ctx
 lurch::instance::object_tree::send_message_r(
-    const std::shared_ptr<object>& current,
-    const std::string &guid,
-    const command& cmd,
-    const access_level access
+        const std::shared_ptr<object>& current,
+        const std::string &guid,
+        const command& cmd,
+        const access_level access
     ) {
 
-
+    search_ctx curr_ctx;
     const auto owner_ptr = dynamic_cast<owner*>(current.get());
     const auto leaf_ptr = dynamic_cast<leaf*>(current.get());
 
     if(current->id == guid) {
+        curr_ctx.keep_going = false;
+        curr_ctx.obj_access = current->access;
 
         if(access < current->access) {
-            return { error("invalid access level"), false };
+            curr_ctx.response = error("invalid access level.");
         }
 
         if(owner_ptr) {
-            return { owner_ptr->recieve(cmd) , false };
+            curr_ctx.response = owner_ptr->recieve(cmd, curr_ctx.log_if_error);
         }
 
         if(leaf_ptr) {
-            return { leaf_ptr->recieve(cmd), false };
+            curr_ctx.response = leaf_ptr->recieve(cmd, curr_ctx.log_if_error);
         }
-
-        return { error("invalid object type"), false };
     }
 
-    std::pair<result<std::string>, bool> result = { error("object not found"), true };
-    if(owner_ptr) {
+    if(owner_ptr && curr_ctx.keep_going) {
         for(std::shared_ptr<object> child : owner_ptr->children) {
-            result = send_message_r(
+            curr_ctx = send_message_r(
                 child,
                 guid,
                 cmd,
                 access
             );
 
-            if(result.second == false) {
+            if(curr_ctx.keep_going == false) {
                 break;
             }
         }
     }
 
-    return result;
+    return curr_ctx;
 }
 
 
@@ -105,7 +104,7 @@ lurch::instance::object_tree::upload_file_r(
 }
 
 
-lurch::result<std::string>
+lurch::search_ctx
 lurch::instance::object_tree::send_message(const std::string& guid, const std::string& cmd_raw, const access_level access) {
 
     const result<command> cmd = argument_parser::parse(cmd_raw);
@@ -117,7 +116,7 @@ lurch::instance::object_tree::send_message(const std::string& guid, const std::s
         guid,
         cmd.value_or(command{.name = cmd_raw}),
         access
-    ).first;
+    );
 }
 
 

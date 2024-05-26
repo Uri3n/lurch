@@ -9,13 +9,15 @@
 #include <string>
 #include "../util/common.hpp"
 
-bool recieve_file(
-    _In_ const HINTERNET hConnect,
-    _In_ const std::string& object_guid,
-    _In_ const std::string& file_name,
-    _In_ const std::string& session_token,
-    _In_ const bool is_https,
-    _Out_ std::string& file_buffer
-);
+namespace networking {
+    bool recieve_file(
+        _In_ const HINTERNET hConnect,
+        _In_ const std::string& object_guid,
+        _In_ const std::string& file_name,
+        _In_ const std::string& session_token,
+        _In_ const bool is_https,
+        _Out_ std::string& file_buffer
+    );
+}
 
 #endif //RECIEVE_HPP

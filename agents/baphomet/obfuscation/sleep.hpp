@@ -10,7 +10,10 @@
 #include "../util/structs.hpp"
 #include "../util/common.hpp"
 
-void baphomet_sleep(uint32_t sleep_time);
+namespace obfus {
+    void sleep(uint32_t sleep_time);
+}
+
 void init_rc4_key(USTRING* pKey);
 uint8_t* get_implant_base_address();
 

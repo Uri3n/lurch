@@ -39,19 +39,19 @@ lurch::instance::router::handler_objects_send(
         return false;
     }
 
-    const auto msg_result = inst->tree.send_message(GUID, req.body, user_access);                           //send the message to the object
-    const access_level required_access = inst->tree.lookup_access_level(GUID).value_or(access_level::LOW);
+    const auto [response, obj_access, keep_going, log_if_error] = inst->tree.send_message(GUID, req.body, user_access);
+    if(response || log_if_error) {
+        inst->post_message_interaction(
+            user_alias,
+            GUID,
+            response.value_or(response.error()),
+            req.body,
+            obj_access
+        );
+    }
 
-    res.body = msg_result.value_or(std::string());
-    inst->post_message_interaction(
-        user_alias,
-        GUID,
-        msg_result.value_or(msg_result.error()),
-        req.body,
-        required_access
-    );
-
-    return msg_result.has_value();
+    res.body = response.value_or(std::string());
+    return response.has_value();
 }
 
 

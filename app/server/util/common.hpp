@@ -92,8 +92,9 @@ namespace lurch {
 
     struct search_ctx {
         result<std::string> response;
-        bool keep_going;
-        access_level obj_access;
+        access_level obj_access = access_level::LOW;
+        bool keep_going = true;
+        bool log_if_error = true;
     };
 
     template<typename T> requires std::is_invocable_v<T>

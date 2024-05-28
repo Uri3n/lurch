@@ -11,9 +11,6 @@
 #define RTL_MAX_DRIVE_LETTERS 32
 
 
-
-
-
 typedef struct _BASE_RELOCATION_ENTRY {
 	WORD	Offset : 12;
 	WORD	Type : 4;

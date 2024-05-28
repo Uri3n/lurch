@@ -5,8 +5,9 @@
 #ifndef COMMON_HPP
 #define COMMON_HPP
 #include <string>
+#include <winternl.h>
 
-#define CLOSE_HANDLE(HANDLE) if(HANDLE != nullptr){CloseHandle(HANDLE);}
+#define CLOSE_HANDLE(HANDLE) if(HANDLE != nullptr && HANDLE != INVALID_HANDLE_VALUE){CloseHandle(HANDLE);}
 #define FREE_HEAP_BUFFER(BUFFER) if(BUFFER != nullptr){HeapFree(GetProcessHeap(), 0, BUFFER);}
 
 #define PS_REQUEST_BREAKAWAY                    1

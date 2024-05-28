@@ -53,7 +53,7 @@ HANDLE WINAPI recon::save_screenshot() {
         return nullptr;
     }
 
-    file_dispos.DeleteFileA = TRUE;
+    file_dispos.DeleteFile = TRUE;
     if(!SetFileInformationByHandle(
         hFile,
         FileDispositionInfo,

@@ -4,6 +4,8 @@
 
 #include "io.hpp"
 
+#include <iostream>
+
 std::string
 io::curr_time() {
     SYSTEMTIME sys_time = { 0 };
@@ -55,7 +57,11 @@ io::fmt_str(const std::string& input, const size_t width) {
         std::memset(output.data(), ' ', output.size());
     }
 
-    for(size_t i = 0; i < input.size(); ++i) {
+    if(input.size() >= width) {
+        return input;
+    }
+
+    for(size_t i = 0; i < input.size(); i++) {
         if(i >= width) {
             output += input[i];
         }

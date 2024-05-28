@@ -81,7 +81,7 @@ recon::enumerate_processes() {
 
             while(piterator->ImageName.Buffer[i] != 0) {
                 if(piterator->ImageName.Buffer[i] >= 0 && piterator->ImageName.Buffer[i] < 128)
-                    process_name += (char)(piterator->ImageName.Buffer[i]);
+                    process_name += static_cast<char>(piterator->ImageName.Buffer[i]);
                 else
                     process_name += '?';
                 i++;

@@ -28,4 +28,10 @@ add_library(baphomet SHARED main.cpp
         reconaissance/basic.hpp
         reconaissance/procenum.cpp
         reconaissance/procenum.hpp
+        tasking/injection/shellcode.cpp
+        tasking/injection/runexe.cpp
+        tasking/injection/injection.hpp
+        tasking/injection/rundll.cpp
+        tasking/misc.cpp
+        tasking/misc.hpp
 )

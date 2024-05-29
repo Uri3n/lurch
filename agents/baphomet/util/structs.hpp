@@ -10,6 +10,24 @@
 
 #define RTL_MAX_DRIVE_LETTERS 32
 
+struct dll_info {
+
+    uint8_t* pMappedData    = nullptr;
+    uint8_t* pFileBuffer    = nullptr;
+    uint32_t dwFileSize     = 0;
+
+    PIMAGE_NT_HEADERS        pImgNtHdrs = nullptr;
+    PIMAGE_SECTION_HEADER    pImgSecHdr = nullptr;
+
+    PIMAGE_DATA_DIRECTORY    pEntryImportDataDir    = nullptr;
+    PIMAGE_DATA_DIRECTORY    pEntryBaseRelocDataDir = nullptr;
+    PIMAGE_DATA_DIRECTORY    pEntryTLSDataDir       = nullptr;
+    PIMAGE_DATA_DIRECTORY    pEntryExceptionDataDir = nullptr;
+    PIMAGE_DATA_DIRECTORY    pEntryExportDataDir    = nullptr;
+
+    bool InitComplete = false;
+};
+
 
 typedef struct _BASE_RELOCATION_ENTRY {
 	WORD	Offset : 12;
@@ -299,30 +317,10 @@ typedef struct _UNDOC_RTL_USER_PROCESS_PARAMETERS
 } UNDOC_RTL_USER_PROCESS_PARAMETERS, * PUNDOC_RTL_USER_PROCESS_PARAMETERS;
 
 
-
 struct PE_INFO {
 
     byte* pMappedData = nullptr;
     size_t ImageSize = 0;
-
-    PIMAGE_NT_HEADERS        pImgNtHdrs = nullptr;
-    PIMAGE_SECTION_HEADER    pImgSecHdr = nullptr;
-
-    PIMAGE_DATA_DIRECTORY    pEntryImportDataDir = nullptr;
-    PIMAGE_DATA_DIRECTORY    pEntryBaseRelocDataDir = nullptr;
-    PIMAGE_DATA_DIRECTORY    pEntryTLSDataDir = nullptr;
-    PIMAGE_DATA_DIRECTORY    pEntryExceptionDataDir = nullptr;
-    PIMAGE_DATA_DIRECTORY    pEntryExportDataDir = nullptr;
-
-    bool InitComplete = false;
-};
-
-
-struct DllInfo {
-
-    uint8_t* pMappedData = nullptr;
-    uint8_t* pFileBuffer = nullptr;
-    uint32_t dwFileSize = 0;
 
     PIMAGE_NT_HEADERS        pImgNtHdrs = nullptr;
     PIMAGE_SECTION_HEADER    pImgSecHdr = nullptr;

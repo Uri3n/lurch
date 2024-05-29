@@ -96,15 +96,26 @@ std::string recon::whoami() {
     //
 
     result += "SECURITY IDENTIFIERS:\n\n";
-    result += io::fmt_str("Name", 63);
-    result += io::fmt_str("Type", 18);
-    result += io::fmt_str("Value", 14);
-    result += io::fmt_str("Attributes", 52);
-    result += '\n';
-    result += WHOAMI_SID_DIVIDING_CHARS;
-    result += '\n';
 
     for(size_t i = 0; i < ptokeninfo->SidCount; i++) {
+
+        if(i == 0) {
+            result += io::fmt_str("Username", 24);
+            result += io::fmt_str("SID", 45);
+            result += '\n';
+            result += WHOAMI_USERNAME_DIVIDING_CHARS;
+            result += '\n';
+        }
+
+        if(i == 1) {
+            result += io::fmt_str("Name", 63);
+            result += io::fmt_str("SID", 18);
+            result += io::fmt_str("Value", 14);
+            result += io::fmt_str("Attributes", 52);
+            result += '\n';
+            result += WHOAMI_SID_DIVIDING_CHARS;
+            result += '\n';
+        }
 
         SID_AND_ATTRIBUTES sid_and_attributes = ptokeninfo->Sids[i];
         status = pconversion_func(
@@ -157,108 +168,48 @@ std::string recon::whoami() {
             return io::win32_failure("whoami", "LookupAccountSidA");
         }
 
+
         if(account_name_buffer_size && domain_name_buffer_size) {
-            std::string full_name = (domain_name.append("\\") + account_name);
-            result += io::fmt_str(full_name, 65);
+            std::string full_name = (domain_name.append("\\") + account_name);              // Name
+            result += io::fmt_str(full_name, i == 0 ? 26 : 65);
         }
         else {
-            result += io::fmt_str("???", 63);
+            result += io::fmt_str("Well-Known SID", 63);
         }
 
 
-        //
-        // translate SID type.
-        //
-
-        switch(sid_type) {
-            case SidTypeUser:
-                result += io::fmt_str("User", 18);
-                break;
-            case SidTypeGroup:
-                result += io::fmt_str("Group", 18);
-                break;
-            case SidTypeDomain:
-                result += io::fmt_str("Domain", 18);
-                break;
-            case SidTypeAlias:
-                result += io::fmt_str("Alias", 18);
-                break;
-            case SidTypeWellKnownGroup:
-                result += io::fmt_str("Well-Known Group", 18);
-                break;
-            case SidTypeComputer:
-                result += io::fmt_str("Computer", 18);
-                break;
-            case SidTypeDeletedAccount:
-                result += io::fmt_str("Deleted Account", 18);
-                break;
-            case SidTypeLabel:
-                result += io::fmt_str("Label", 18);
-                break;
-            case SidTypeLogonSession:
-                result += io::fmt_str("Logon Session", 18);
-                break;
-            default:
-                result += io::fmt_str("Unknown", 18);
-                break;
+        if(i > 0) {
+            result += io::fmt_str(get_sid_type(sid_type),18);                               // Type
         }
-
 
         std::string ansi_sid;
         for(size_t j = 0; us_sid.Buffer[j] != L'\0'; j++) {
             if(us_sid.Buffer[j] >= 0 && us_sid.Buffer[j] < 128) {
-                ansi_sid += static_cast<char>(us_sid.Buffer[j]);
+                ansi_sid += static_cast<char>(us_sid.Buffer[j]);                            // SID
             } else {
                 ansi_sid += "?";
             }
         }
 
-        result += io::fmt_str(ansi_sid + ' ', 14);
+        result += io::fmt_str(ansi_sid + ' ', i == 0 ? 45 : 14);
         std::memset(us_sid.Buffer, 0, 72 * sizeof(wchar_t));
 
-
-        //
-        // SID attributes.
-        //
-
-        std::string attribute_str;
-        if(sid_and_attributes.Attributes & SE_GROUP_ENABLED)
-            attribute_str += "Enabled, ";
-
-        if(sid_and_attributes.Attributes & SE_GROUP_ENABLED_BY_DEFAULT)
-            attribute_str += "Enabled By Default, ";
-
-        if(sid_and_attributes.Attributes & SE_GROUP_INTEGRITY)
-            attribute_str += "Integrity, ";
-
-        if(sid_and_attributes.Attributes & SE_GROUP_LOGON_ID)
-            attribute_str += "Logon ID, ";
-
-        if(sid_and_attributes.Attributes & SE_GROUP_MANDATORY)
-            attribute_str += "Mandatory, ";
-
-        if(sid_and_attributes.Attributes & SE_GROUP_OWNER)
-            attribute_str += "Owner, ";
-
-        if(sid_and_attributes.Attributes & SE_GROUP_RESOURCE)
-            attribute_str += "Resource, ";
-
-        if(sid_and_attributes.Attributes & SE_GROUP_USE_FOR_DENY_ONLY)
-            attribute_str += "Deny Only, ";
-
-        if(attribute_str.size() >= 2) {
-            attribute_str.erase(attribute_str.size() - 2);
-        }
-        else {
-            attribute_str += "No Attributes.";
+        if(i == 0) {                                                                        // In case of first iteration, continue.
+            result += "\n\n";
+            continue;
         }
 
-        result += io::fmt_str(attribute_str, 52);
+
+        result += io::fmt_str(get_sid_group_attributes(sid_and_attributes.Attributes), 52); // Attributes.
         result += '\n';
     }
 
 
-    result += "\n\nPRIVILEGES INFORMATION:\n";
+    //
+    // Get privilege information and state.
+    //
+
+    result += "\n\nPRIVILEGES INFORMATION:\n\n";
     result += io::fmt_str("Name", 30);
     result += io::fmt_str("State", 9);
     result += '\n';
@@ -298,6 +249,75 @@ std::string recon::whoami() {
 
     return result;
 }
+
+
+std::string
+recon::get_sid_type(const SID_NAME_USE sid_type) {
+
+    switch(sid_type) {
+        case SidTypeUser:
+            return "User";
+        case SidTypeGroup:
+            return "Group";
+        case SidTypeDomain:
+            return "Domain";
+        case SidTypeAlias:
+            return "Alias";
+        case SidTypeWellKnownGroup:
+            return "Well-Known Group";
+        case SidTypeComputer:
+            return "Computer";
+        case SidTypeDeletedAccount:
+            return "Deleted Account";
+        case SidTypeLabel:
+            return "Label";
+        case SidTypeLogonSession:
+            return "Logon Session";
+        default:
+            return "Unknown";
+    }
+}
+
+
+std::string
+recon::get_sid_group_attributes(const uint32_t attr_mask) {
+
+    std::string attribute_str;
+
+    if(attr_mask & SE_GROUP_ENABLED)
+        attribute_str += "Enabled, ";
+
+    if(attr_mask & SE_GROUP_ENABLED_BY_DEFAULT)
+        attribute_str += "Enabled By Default, ";
+
+    if(attr_mask & SE_GROUP_INTEGRITY)
+        attribute_str += "Integrity, ";
+
+    if(attr_mask & SE_GROUP_LOGON_ID)
+        attribute_str += "Logon ID, ";
+
+    if(attr_mask & SE_GROUP_MANDATORY)
+        attribute_str += "Mandatory, ";
+
+    if(attr_mask & SE_GROUP_OWNER)
+        attribute_str += "Owner, ";
+
+    if(attr_mask & SE_GROUP_RESOURCE)
+        attribute_str += "Resource, ";
+
+    if(attr_mask & SE_GROUP_USE_FOR_DENY_ONLY)
+        attribute_str += "Deny Only, ";
+
+    if(attribute_str.size() >= 2) {
+        attribute_str.erase(attribute_str.size() - 2);
+    }
+    else {
+        attribute_str += "No Attributes.";
+    }
+
+    return attribute_str;
+}
+
 
 
 bool

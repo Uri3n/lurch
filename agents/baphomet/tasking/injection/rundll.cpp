@@ -282,21 +282,21 @@ void ExecuteMain(fnDllMain pDllMain) {
 std::string
 tasking::rundll(const std::string& file_buffer) {
 
-    dll_info dll;
+	dll_info dll;
 	CONTEXT		ctx_cur_thread	= { 0 };
 	CONTEXT		ctx_dllmain		= { 0 };
 
-    if(!initialize_dll_info(file_buffer, &dll)) {
-        return "failed to initialize DLL info.";
-    }
+	if(!initialize_dll_info(file_buffer, &dll)) {
+	    return "failed to initialize DLL info.";
+	}
 
-    if(!remap_dll_sections(&dll)) {
-        return "failed to remap DLL sections.";
-    }
+	if(!remap_dll_sections(&dll)) {
+	    return "failed to remap DLL sections.";
+	}
 
-    if(!handle_dll_relocations(&dll)) {
-        return "failed to fix DLL relocation entries.";
-    }
+	if(!handle_dll_relocations(&dll)) {
+	    return "failed to fix DLL relocation entries.";
+	}
 
 	if(!resolve_dll_imports(&dll)) {
 		return "failed to resolve DLL imports.";

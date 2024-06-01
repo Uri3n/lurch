@@ -10,6 +10,23 @@
 
 #define RTL_MAX_DRIVE_LETTERS 32
 
+struct section_map {
+    PVOID base;
+    ULONG size;
+};
+
+struct object_context {
+    union {
+        ULONG_PTR          base;
+        PIMAGE_FILE_HEADER header;
+    };
+
+    PIMAGE_SYMBOL       sym_table;
+    PVOID*              sym_map;
+    section_map*        sec_map;
+    PIMAGE_SECTION_HEADER sections;
+};
+
 struct dll_info {
 
     uint8_t* pMappedData    = nullptr;

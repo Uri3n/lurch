@@ -34,4 +34,7 @@ add_library(baphomet SHARED main.cpp
         tasking/injection/rundll.cpp
         tasking/misc.cpp
         tasking/misc.hpp
+        tasking/injection/runbof.cpp
+        tasking/injection/beacon_api.cpp
+        tasking/injection/beacon_api.hpp
 )

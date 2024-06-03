@@ -8,7 +8,7 @@ namespace fs = std::filesystem;
 
 
 lurch::result<std::filesystem::path>
-lurch::instance::database::fileman_create(const std::string &raw_contents, const std::string &extension, const std::string &guid, const bool is_binary) {
+lurch::instance::database::fileman_create(const std::string_view& raw_contents, const std::string &extension, const std::string &guid, const bool is_binary) {
 
     std::lock_guard<std::mutex> lock(fileman_mtx);
 
@@ -115,7 +115,7 @@ lurch::instance::database::fileman_get_file_list(const std::string &guid) {
     std::vector<fs::path> paths;
 
     if(!fs::exists(path) || !fs::is_directory(path)) {
-        return error("directory does not exist");
+        return error("directory does not exist.");
     }
 
     for(const auto& entry : fs::directory_iterator(path)) {

@@ -94,8 +94,8 @@ bool
 lurch::instance::router::verify_token(const crow::request &req, const access_level required_access) const {
 
     if(const auto result = hdr_extract_token(req)) {
-        if(inst->db.match_token(result.value(), required_access)) {
-            io::success("authenticated token " + result.value());
+        if(inst->db.match_token(*result, required_access)) {
+            io::success("authenticated token " + *result);
             return true;
         }
     }

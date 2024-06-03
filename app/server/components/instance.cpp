@@ -39,7 +39,7 @@ lurch::instance::begin() {
         initial_password = io::prompt_for("Please specify an initial password:");
         std::cout << std::endl;
 
-        if(initial_password.value().empty() || initial_user.value().empty()) {
+        if(initial_password->empty() || initial_user->empty()) {
             throw std::runtime_error("No default username or password provided.");
         }
     }
@@ -71,22 +71,22 @@ lurch::instance::begin() {
     db.delete_old_tokens();
 
 
-    io::info(io::format_str( "\nAttempting bind to: {}:{}", config.value().bindaddr, std::to_string(config.value().port)));
+    io::info(io::format_str( "\nAttempting bind to: {}:{}", config->bindaddr, std::to_string(config->port)));
     std::thread worker([&] {
 
         std::set_terminate(handle_uncaught_exception);
-        if(config.value().use_https) {
+        if(config->use_https) {
             routing.run(
-                config.value().bindaddr,
-                config.value().port,
-                config.value().cert_path,
-                config.value().key_path
+                config->bindaddr,
+                config->port,
+                config->cert_path,
+                config->key_path
             );
         }
         else {
             routing.run(
-                config.value().bindaddr,
-                config.value().port,
+                config->bindaddr,
+                config->port,
                 std::nullopt,
                 std::nullopt
             );
@@ -339,8 +339,8 @@ lurch::instance::post_message_interaction(
     db.store_message(object, sender, message_content);
 
     if(response && !response->empty()) {
-        routing.send_ws_object_message_update(response.value(), object, object, required_access);
-        db.store_message(object, object, response.value());
+        routing.send_ws_object_message_update(*response, object, object, required_access);
+        db.store_message(object, object, *response);
     }
 }
 

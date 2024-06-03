@@ -25,6 +25,7 @@ export function dragoverCallback(event) {
 export function terminalDropCallback(event) {
 
     event.preventDefault();    
+    ui.focusInputElement();
     const sessionGuid = ui.currentSessionGuid();
 
     //
@@ -151,6 +152,7 @@ export function listElementDragEndCallback(event){
 
     if (ui.isWithinBoundingRect(dropX, dropY, terminal)) {                                                  
         ui.startSession(guid, alias);
+        inputElement.focus();
     }
 
     else if(ui.isWithinBoundingRect(dropX, dropY, inputElement)) {                                          

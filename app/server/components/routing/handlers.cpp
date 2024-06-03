@@ -93,7 +93,7 @@ lurch::instance::router::handler_objects_getchildren(std::string GUID, crow::res
     result<array_of_children> children = inst->db.query_object_children(GUID);
     if(children) {
         res.body = '[';
-        for(const auto &[guid, alias, type, index] : children.value()) {
+        for(const auto &[guid, alias, type, index] : *children) {
             crow::json::wvalue json;
 
             json["guid"] = guid;
@@ -127,7 +127,7 @@ lurch::instance::router::handler_objects_getmessages(std::string GUID, const int
     if(query_result.has_value()) {
 
         res.body = '[';
-        for(const auto &[sender, body, timestamp] : query_result.value()) {
+        for(const auto &[sender, body, timestamp] : *query_result) {
             crow::json::wvalue json;
             json["sender"] = sender;
             json["body"] = body;

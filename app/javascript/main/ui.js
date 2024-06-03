@@ -71,12 +71,39 @@ export function deleteListChildren(element){
 export function deleteTerminalSession(guid){
     
     const sessions = document.querySelectorAll('.terminal-session');
+    let previousGuid = null;
+    let currentGuid  = null;
+    let removed      = false;
+
     if(sessions !== null){
-        sessions.forEach(session => {
-            if(session.getAttribute('data-object-guid') === guid){
+        for(const session of sessions) {
+            currentGuid = session.getAttribute('data-object-guid');
+            if(currentGuid === guid) {
                 session.remove();
+                removed = true;
+                break;
             }
-        });
+
+            previousGuid = currentGuid;
+        }
+
+        //
+        // if there's a session that's before the one we just removed, select it.
+        // if the one we just removed was the first one, select the new first one.
+        //
+
+        if(removed) {
+            const first = document.querySelector('.terminal-session');
+
+            if(previousGuid !== null) {
+                selectTerminalSession(previousGuid);
+                selectTerminalMenuElement(previousGuid); 
+            }
+            else if(first !== null){
+                selectTerminalSession(first.getAttribute('data-object-guid'));
+                selectTerminalMenuElement(first.getAttribute('data-object-guid'));
+            }
+        }
     }
 }
 
@@ -387,4 +414,8 @@ export function currentInputContent(){
 
 export function clearInputContent(){
     document.getElementById('terminal-input').value = '';
+}
+
+export function focusInputElement() {
+    document.getElementById('terminal-input').focus();
 }

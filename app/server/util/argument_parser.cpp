@@ -9,7 +9,17 @@
 lurch::result<double>
 lurch::argument_parser::safe_to_double(const std::string token) {
 
-	if (token.find('.') == std::string::npos) {
+	bool has_period = false;
+	for(const char& c : token) {
+		if(!isdigit(c) && c != '-' && c != '.') {
+			return error("failed.");
+		}
+		if(c == '.') {
+			has_period = true;
+		}
+	}
+
+	if(!has_period) {
 		return error("failed.");
 	}
 
@@ -24,7 +34,7 @@ lurch::result<int64_t>
 lurch::argument_parser::safe_to_signed_integer(const std::string token) {
 
 	for(const char& c : token) {
-		if(!isdigit(c)) {
+		if(!isdigit(c) && c != '-') {
 			return error("failed.");
 		}
 	}
@@ -55,11 +65,11 @@ lurch::argument_parser::infer_parameter_type(const std::string token) {
 		return param_bool.value();
 	}
 
-	else if (param_double) {
+	if (param_double) {
 		return param_double.value();
 	}
 
-	else if (param_i64) {
+	if (param_i64) {
 		return param_i64.value();
 	}
 

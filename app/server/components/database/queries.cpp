@@ -388,7 +388,7 @@ lurch::instance::database::query_object_data(const std::string &guid) {
                     };
 
         if(data.has_value()) {
-            return data.value();
+            return *data;
         }
 
         throw std::runtime_error("object does not exist.");

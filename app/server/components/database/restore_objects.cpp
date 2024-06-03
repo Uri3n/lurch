@@ -16,7 +16,7 @@ lurch::instance::database::restore_objects_r(std::shared_ptr<owner> object, size
     }
 
     io::info(std::string("number of children: ") + std::to_string(children.value().size()) );
-    for(const auto &[guid, alias, type, index] : children.value()) {
+    for(const auto &[guid, alias, type, index] : *children) {
         std::shared_ptr<lurch::object> child_ptr = inst->tree.create_object(
             index,
             guid,
@@ -45,7 +45,7 @@ lurch::instance::database::restore_objects() {
     if(!root_guid) {
         root_guid = result<std::string>(object::generate_id());
         auto res = store_object(
-            root_guid.value(),
+            *root_guid,
             std::nullopt,
             "root",                             //alias
             object_type::ROOT,
@@ -58,12 +58,12 @@ lurch::instance::database::restore_objects() {
 
     } else {
         ++total_restored_objects;
-        io::success("restored root object: " + root_guid.value());
+        io::success("restored root object: " + *root_guid);
     }
 
     std::shared_ptr<object> root_ptr = inst->tree.create_object(
         object_index::GENERIC_ROOT,
-        root_guid.value(),
+        *root_guid,
         std::nullopt
     );
 

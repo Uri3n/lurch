@@ -5,6 +5,42 @@
 #include "root.hpp"
 #include "../../components/instance.hpp"
 
+namespace lurch {
+    accepted_commands root::commands;
+}
+
+void
+lurch::root::init_commands() {
+
+    if(!commands.ready()) {
+        commands.add_command("shutdown", "shuts down the teamserver.")
+            .arg<empty>("--wipe-files", "-wf", false);
+
+        commands.add_command("add_user", "adds a new user to the database.")
+            .arg<std::string>("--username", "-u", true)
+            .arg<std::string>("--password", "-p", true)
+            .arg<bool>("--grant-admin", "-a", true);
+
+        commands.add_command("remove_user", "removes a user from the database.")
+            .arg<std::string>("--username", "-u", true);
+
+        commands.add_command("remove_child", "deletes a specified child given it's GUID.")
+            .arg<std::string>("--guid", "-g", true);
+
+        commands.add_command("generate_token", "generates an arbitrary access token with a specified expiration time.")
+            .arg<std::string>("--alias", "-a", true)
+            .arg<int64_t>("--access-level", "-al", true)
+            .arg<int64_t>("--expiration-hours", "-e", false);
+
+        commands.add_command("help", "display this help message.");
+        commands.add_command("create_chatroom", "creates a new chatroom object as a child.");
+        commands.add_command("tokens", "displays existing session tokens and their context.");
+
+        commands.done();
+    }
+}
+
+
 void
 lurch::root::shutdown(const bool wipe_files) const {
 
@@ -17,6 +53,38 @@ lurch::root::shutdown(const bool wipe_files) const {
         inst->shutdown = true;
         inst->shutdown_condition.notify_all();
     }
+}
+
+
+lurch::result<std::string>
+lurch::root::generate_token(const command &cmd) const {
+
+    const auto [alias, access, expiration] =
+        cmd.get<std::string>("--alias", "-a")
+            .with<int64_t>("--access-level", "-al")
+            .with<int64_t>("--expiration-hours", "-e")
+            .done();
+
+    if(*access > 2 || *access < 0) {
+        return "invalid access level provided. Value must be 0 - 2.";
+    }
+
+    if(expiration.has_value() && (*expiration > 8765 || *expiration < 0)) {
+        return "expiration in hours must be less than one year, and greater than zero.";
+    }
+
+    const std::string new_token = inst->db.generate_token();
+    return inst->db.store_token(new_token, static_cast<access_level>(*access), *alias, expiration.value_or(12))
+        .and_then([&](const bool _) {
+            return result<std::string>(
+                io::format_str("Successfully created token {} with access level {}.",
+                    new_token,
+                    io::access_to_str(static_cast<access_level>(*access))
+                ));
+        })
+        .or_else([&](std::string err) {
+            return result<std::string>(error(err));
+        });
 }
 
 
@@ -36,7 +104,7 @@ lurch::root::create_chatroom(const command &cmd) {
 lurch::result<std::string>
 lurch::root::remove_child(const command &cmd) {
 
-    const std::string guid = std::get<0>(cmd.get<std::string>("--guid", "-g").done()).value();
+    const std::string guid = *std::get<0>(cmd.get<std::string>("--guid", "-g").done());
     return delete_child(guid)
         .and_then([&](const bool _) {
             return result<std::string>("successfully deleted child.");
@@ -56,9 +124,9 @@ lurch::root::add_user(const command& cmd) const {
             .with<bool>("--grant-admin", "-a")
             .done();
 
-    return inst->db.store_user(username.value(), password.value(), (grant_admin.value() ? access_level::HIGH : access_level::MEDIUM))
+    return inst->db.store_user(*username, *password, (*grant_admin ? access_level::HIGH : access_level::MEDIUM))
         .and_then([&](const bool _) {
-            inst->routing.send_ws_notification(io::format_str("created new user:\n {}", username.value()), ws_notification_intent::GOOD);
+            inst->routing.send_ws_notification(io::format_str("created new user:\n {}", *username), ws_notification_intent::GOOD);
             return result<std::string>("success.");
         })
         .or_else([&](std::string err) {
@@ -88,7 +156,7 @@ lurch::root::get_tokens() const {
         buff += io::format_str("{:<40} {:<23} {:<23} {:<6}", "Token", "Expiration", "Alias", "Access Level") + '\n';
         buff += io::format_str("{:=<40} {:=<23} {:=<23} {:=<6}", "=", "=", "=", "=") + '\n';
 
-        for(const auto&[token, expiration, alias, access] : tokens_res.value()) {
+        for(const auto&[token, expiration, alias, access] : *tokens_res) {
             buff += io::format_str(
                 "{:<40} {:<23} {:<23} {:<6}",
                 token,
@@ -115,28 +183,8 @@ lurch::root::upload(const std::string &file, const std::string &extension) {
 lurch::result<std::string>
 lurch::root::recieve(const command &cmd, bool& log_if_error) {
 
-    static accepted_commands commands;
-
     if(!commands.ready()) {
-        commands.add_command("shutdown", "shuts down the teamserver.")
-            .arg<empty>("--wipe-files", "-wf", false);
-
-        commands.add_command("add_user", "adds a new user to the database.")
-            .arg<std::string>("--username", "-u", true)
-            .arg<std::string>("--password", "-p", true)
-            .arg<bool>("--grant-admin", "-a", true);
-
-        commands.add_command("remove_user", "removes a user from the database.")
-            .arg<std::string>("--username", "-u", true);
-
-        commands.add_command("remove_child", "deletes a specified child given it's GUID.")
-            .arg<std::string>("--guid", "-g", true);
-
-        commands.add_command("help", "display this help message.");
-        commands.add_command("create_chatroom", "creates a new chatroom object as a child.");
-        commands.add_command("tokens", "displays existing session tokens and their context.");
-
-        commands.done();
+        init_commands();
     }
 
     if(!commands.matches(cmd)) {
@@ -154,7 +202,7 @@ lurch::root::recieve(const command &cmd, bool& log_if_error) {
     }
 
     if(cmd == "remove_user") {
-        return remove_user(std::get<0>(cmd.get<std::string>("--username", "-u").done()).value());
+        return remove_user(*std::get<0>(cmd.get<std::string>("--username", "-u").done()));
     }
 
     if(cmd == "remove_child") {
@@ -171,6 +219,10 @@ lurch::root::recieve(const command &cmd, bool& log_if_error) {
 
     if(cmd == "help") {
         return { commands.help() };
+    }
+
+    if(cmd == "generate_token") {
+        return generate_token(cmd);
     }
 
 

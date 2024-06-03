@@ -68,7 +68,7 @@ class instance {
             static uint32_t hash_password(const std::string &password);
             static std::string generate_token(size_t length = 25);
 
-            result<std::filesystem::path> fileman_create(const std::string& raw_contents, const std::string& extension, const std::string& guid, bool is_binary);
+            result<std::filesystem::path> fileman_create(const std::string_view& raw_contents, const std::string& extension, const std::string& guid, bool is_binary);
             result<std::stringstream> fileman_get_raw(const std::string& name, const std::string& guid);
             result<std::vector<std::filesystem::path>> fileman_get_file_list(const std::string& guid);
 

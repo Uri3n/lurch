@@ -4,8 +4,8 @@
 
 #ifndef MAIN_HPP
 #define MAIN_HPP
-#include <iostream>
 #include <windows.h>
+#include <vector>
 #include <cstdint>
 #include <winhttp.h>
 #include "networking/init.hpp"

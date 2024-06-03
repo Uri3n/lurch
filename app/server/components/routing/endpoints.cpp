@@ -87,7 +87,7 @@ lurch::instance::router::run(
                 return result<bool>(handler_objects_send(GUID, req, res, ctx.first, ctx.second));
             });
 
-        if(success && success.value() == true) {
+        if(success && *success == true) {
             res.code = 200;
         }
 
@@ -115,7 +115,7 @@ lurch::instance::router::run(
                 ));
             });
 
-        if(success && success.value() == true) {
+        if(success && *success == true) {
             res.code = 200;
         }
 
@@ -173,7 +173,7 @@ lurch::instance::router::run(
                 return result<bool>(error("bad access level"));
             });
 
-        if(success && success.value() == true) {
+        if(success && *success == true) {
             res.code = 200;
         }
 
@@ -205,7 +205,7 @@ lurch::instance::router::run(
     try {
         if(ssl_cert.has_value() && ssl_key.has_value()) {
             this->app
-            .ssl_file(ssl_cert.value(), ssl_key.value())
+            .ssl_file(*ssl_cert, *ssl_key)
             .bindaddr(addr)
             .port(port)
             .multithreaded()

@@ -61,7 +61,7 @@ tasking::ls() {
 }
 
 std::string
-tasking::cd(const std::string &directory) {
+tasking::cd(const std::string& directory) {
 
     char new_directory[MAX_PATH] = { 0 };
     if(!SetCurrentDirectoryA(directory.c_str())) {

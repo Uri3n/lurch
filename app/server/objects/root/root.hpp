@@ -4,14 +4,19 @@
 
 #ifndef ROOT_HPP
 #define ROOT_HPP
+#include "../../util/argument_parser.hpp"
 #include "../base/base.hpp"
 
 namespace lurch {
 class root final : public owner {
+private:
+    static accepted_commands commands;
 public:
 
     void shutdown(bool wipe_files) const;
+    static void init_commands();
 
+    result<std::string> generate_token(const command& cmd) const;
     result<std::string> create_chatroom(const command& cmd);
     result<std::string> remove_child(const command& cmd);
     result<std::string> add_user(const command& cmd) const;

@@ -57,7 +57,7 @@ lurch::instance::router::send_ws_data(
     for(const auto& [conn, verified] : websockets.connections) {
         if(verified) {
             try {
-                if(required_access.value_or(verified.value()) <= verified.value()) {
+                if(required_access.value_or(*verified) <= *verified) {
                     if(is_binary) {
                         conn->send_binary(data);
                     }
@@ -85,7 +85,7 @@ lurch::instance::router::send_ws_object_message_update(
 
 
     const auto root_guid = inst->db.query_root_guid();
-    if(root_guid.has_value() && root_guid.value() == recipient) {
+    if(root_guid.has_value() && *root_guid == recipient) {
         recipient = "root";
     }
 

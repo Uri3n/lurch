@@ -5,15 +5,12 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_library(baphomet SHARED main.cpp
         main.hpp
-        networking/send.cpp
-        networking/send.hpp
+        networking/http/send.cpp
         util/structs.hpp
         util/function_ptrs.hpp
         util/common.hpp
-        networking/init.cpp
-        networking/init.hpp
-        networking/recieve.cpp
-        networking/recieve.hpp
+        networking/http/init.cpp
+        networking/http/recieve.cpp
         obfuscation/sleep.cpp
         obfuscation/sleep.hpp
         tasking/basic/filesystem.cpp
@@ -23,18 +20,18 @@ add_library(baphomet SHARED main.cpp
         tasking/basic/shell.cpp
         tasking/basic/shell.hpp
         reconaissance/screenshot.cpp
-        reconaissance/screenshot.hpp
         reconaissance/basic.cpp
-        reconaissance/basic.hpp
         reconaissance/procenum.cpp
-        reconaissance/procenum.hpp
-        tasking/injection/shellcode.cpp
-        tasking/injection/runexe.cpp
+        tasking/injection/shellcode/shellcode.cpp
+        tasking/injection/exe/runexe.cpp
         tasking/injection/injection.hpp
-        tasking/injection/rundll.cpp
-        tasking/misc.cpp
-        tasking/misc.hpp
-        tasking/injection/runbof.cpp
-        tasking/injection/beacon_api.cpp
-        tasking/injection/beacon_api.hpp
+        tasking/injection/dll/rundll.cpp
+        tasking/misc/misc.cpp
+        tasking/misc/misc.hpp
+        tasking/injection/bof/runbof.cpp
+        tasking/injection/bof/beacon_api.cpp
+        tasking/injection/bof/beacon_api.hpp
+        util/macro.hpp
+        networking/http/http.hpp
+        reconaissance/reconaissance.hpp
 )

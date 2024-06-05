@@ -27,7 +27,6 @@ add_executable(server main.cpp
         objects/external/chatroom.cpp
         objects/external/chatroom.hpp
 
-        components/instance.cpp
         components/instance.hpp
 
         components/database/queries.cpp
@@ -42,6 +41,11 @@ add_executable(server main.cpp
 
         components/tree/send.cpp
         components/tree/misc.cpp
+
+        components/instance/instance.cpp
+        components/instance/misc.cpp
+        components/instance/ssl.cpp
+        components/instance/config.cpp
 )
 
 target_compile_definitions(server PRIVATE CROW_ENABLE_SSL)
@@ -56,5 +60,5 @@ if(WIN32)
 endif()
 
 if(UNIX)
-    target_include_directories(server PRIVATE vendor/linux)
+    target_include_directories(server PRIVATE vendor/linux) #unfinished
 endif()

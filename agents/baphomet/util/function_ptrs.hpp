@@ -24,7 +24,6 @@ typedef LPVOID(WINAPI* fnVirtualAlloc)(
 	DWORD  flProtect
 );
 
-
 typedef BOOL(WINAPI* fnVirtualProtect)(
 
 	LPVOID lpAddress,
@@ -33,7 +32,6 @@ typedef BOOL(WINAPI* fnVirtualProtect)(
 	PDWORD lpflOldProtect
 );
 
-
 typedef NTSTATUS(NTAPI* fnNtFlushInstructionCache)(
 
 	_In_ HANDLE ProcessHandle,
@@ -41,14 +39,12 @@ typedef NTSTATUS(NTAPI* fnNtFlushInstructionCache)(
 	_In_ SIZE_T Length
 );
 
-
 typedef NTSTATUS(NTAPI* fnRtlConvertSidToUnicodeString)(
 
 	PUNICODE_STRING UnicodeString,
 	PSID            Sid,
 	BOOLEAN         AllocateDestinationString
 );
-
 
 typedef NTSTATUS(NTAPI* fnNtQuerySystemInformation)(
 
@@ -58,7 +54,6 @@ typedef NTSTATUS(NTAPI* fnNtQuerySystemInformation)(
 	PULONG                   ReturnLength
 );
 
-
 typedef NTSTATUS(NTAPI* fnNtQueryInformationProcess)(
 
 	_In_ HANDLE ProcessHandle,
@@ -67,7 +62,6 @@ typedef NTSTATUS(NTAPI* fnNtQueryInformationProcess)(
 	_In_ ULONG ProcessInformationLength,
 	_Out_opt_ PULONG ReturnLength
 );
-
 
 typedef NTSTATUS(NTAPI* fnNtCreateThreadEx)(
 
@@ -84,7 +78,6 @@ typedef NTSTATUS(NTAPI* fnNtCreateThreadEx)(
 	_In_opt_ void* AttributeList
 );
 
-
 typedef NTSTATUS(NTAPI* fnNtSetIoCompletion)(
 
 	_In_ HANDLE IoCompletionHandle,
@@ -93,7 +86,6 @@ typedef NTSTATUS(NTAPI* fnNtSetIoCompletion)(
 	_In_ NTSTATUS IoStatus,
 	_In_ ULONG_PTR IoStatusInformation
 );
-
 
 typedef NTSTATUS(NTAPI* fnNtCreateSection)(
 
@@ -105,7 +97,6 @@ typedef NTSTATUS(NTAPI* fnNtCreateSection)(
 	_In_ ULONG AllocationAttributes,
 	_In_opt_ HANDLE FileHandle
 );
-
 
 typedef NTSTATUS(NTAPI* fnNtCreateProcessEx)(
 

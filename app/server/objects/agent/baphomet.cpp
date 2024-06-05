@@ -287,8 +287,6 @@ lurch::baphomet::delimit_command(const std::vector<std::string> &strings) {
 }
 
 
-
-
 lurch::result<std::filesystem::path>
 lurch::baphomet::upload(const std::string &file, const std::string &extension) {
 

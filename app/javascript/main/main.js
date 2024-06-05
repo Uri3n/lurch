@@ -3,7 +3,6 @@ import {startWebsocket} from './ws.js';
 import { setToken } from './fetch.js';
 import * as cb from './callbacks.js';
 
-
 //-------------------------------------------------------------------------------------------
 
 
@@ -66,6 +65,7 @@ function main(){
 
     document.querySelector('.terminal-instance').addEventListener('drop', cb.terminalDropCallback);
     document.body.addEventListener('dragover', cb.dragoverCallback);
+
 }
 
 main();

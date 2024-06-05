@@ -2,11 +2,10 @@
 // Created by diago on 2024-05-24.
 //
 
-#include "recieve.hpp"
-#include <iostream>
+#include "http.hpp"
 
 bool
-networking::recieve_file(
+networking::http::recieve_file(
         _In_ const HINTERNET hConnect,
         _In_ const std::string &object_guid,
         _In_ const std::string &file_name,

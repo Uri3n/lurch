@@ -43,15 +43,15 @@ extern "C" {
  * For PRIMITIVE types the underlying type
  * determines the behaviour if items is NULL.
  *
- * Otherwise templates must contain a single
+ * Otherwise templating must contain a single
  * template and the type is treated in the
  * same way as the type specified in the template.
  *
- * For SEQUENCE types the templates field points
+ * For SEQUENCE types the templating field points
  * to the members, the size field is the
  * structure size.
  *
- * For CHOICE types the templates field points
+ * For CHOICE types the templating field points
  * to each possible member (typically a union)
  * and the 'size' field is the offset of the
  * selector.
@@ -604,7 +604,7 @@ struct ASN1_ITEM_st {
     long utype;                 /* underlying type */
     const ASN1_TEMPLATE *templates; /* If SEQUENCE or CHOICE this contains
                                      * the contents */
-    long tcount;                /* Number of templates if SEQUENCE or CHOICE */
+    long tcount;                /* Number of templating if SEQUENCE or CHOICE */
     const void *funcs;          /* further data and type-specific functions */
     /* funcs can be ASN1_PRIMITIVE_FUNCS*, ASN1_EXTERN_FUNCS*, or ASN1_AUX* */
     long size;                  /* Structure size (usually) */

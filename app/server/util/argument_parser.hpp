@@ -21,7 +21,6 @@ using empty = std::monostate;
 
 namespace lurch {
 
-
     class argument_parser {
     private:
     public:

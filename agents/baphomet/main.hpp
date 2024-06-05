@@ -8,20 +8,13 @@
 #include <vector>
 #include <cstdint>
 #include <winhttp.h>
-#include "networking/init.hpp"
-#include "networking/send.hpp"
-#include "networking/recieve.hpp"
+#include "networking/http/http.hpp"
 #include "obfuscation/sleep.hpp"
 #include "util/io.hpp"
-#include "tasking/misc.hpp"
+#include "tasking/misc/misc.hpp"
 #include "tasking/basic/filesystem.hpp"
 #include "tasking/basic/shell.hpp"
 #include "tasking/injection/injection.hpp"
-#include "reconaissance/basic.hpp"
-#include "reconaissance/screenshot.hpp"
-#include "reconaissance/procenum.hpp"
-
-
-
+#include "reconaissance/reconaissance.hpp"
 
 #endif //MAIN_HPP

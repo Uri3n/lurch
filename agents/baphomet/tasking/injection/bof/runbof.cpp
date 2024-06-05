@@ -2,9 +2,15 @@
 // Created by diago on 2024-05-31.
 //
 
-#include "injection.hpp"
+#include "../injection.hpp"
 #include "beacon_api.hpp"
 
+//
+// TODO:
+// - arguments for bofs
+// - some sections, like .text, may appear twice. We NEED to make sure that
+//   we skip these a second time if we encounter them.
+//
 
 uint32_t
 tasking::object_virtual_size(object_context* ctx) {
@@ -102,7 +108,6 @@ tasking::object_execute(object_context* ctx, const char* entry, unsigned char* a
 }
 
 
-
 void*
 tasking::resolve_object_symbol(const char* symbol) {
 
@@ -167,7 +172,6 @@ tasking::resolve_object_symbol(const char* symbol) {
         }
     }
 
-    //std::println("resolved symbol \"{}\" @ {}", symbol, resolved_func);
     return resolved_func;
 }
 
@@ -178,31 +182,37 @@ tasking::object_relocation(const uint32_t type, void* needs_relocating, void* se
     switch(type) {
         case IMAGE_REL_AMD64_REL32:
             *(uint32_t*)needs_relocating = (*(uint32_t*)(needs_relocating)) + (unsigned long)(PTR_TO_U64(section_base) - PTR_TO_U64(needs_relocating) - sizeof(UINT32));
-        break;
+            break;
 
         case IMAGE_REL_AMD64_REL32_1:
             *(uint32_t*)needs_relocating = (*(uint32_t*)(needs_relocating)) + (unsigned long)(PTR_TO_U64(section_base) - PTR_TO_U64(needs_relocating) - sizeof(UINT32) - 1);
-        break;
+            break;
 
         case IMAGE_REL_AMD64_REL32_2:
             *(uint32_t*)needs_relocating = (*(uint32_t*)(needs_relocating)) + (unsigned long)(PTR_TO_U64(section_base) - PTR_TO_U64(needs_relocating) - sizeof(UINT32) - 2);
-        break;
+            break;
 
         case IMAGE_REL_AMD64_REL32_3:
             *(uint32_t*)needs_relocating = (*(uint32_t*)(needs_relocating)) + (unsigned long)(PTR_TO_U64(section_base) - PTR_TO_U64(needs_relocating) - sizeof(UINT32) - 3);
-        break;
+            break;
 
         case IMAGE_REL_AMD64_REL32_4:
             *(uint32_t*)needs_relocating = (*(uint32_t*)(needs_relocating)) + (unsigned long)(PTR_TO_U64(section_base) - PTR_TO_U64(needs_relocating) - sizeof(UINT32) - 4);
-        break;
+            break;
 
         case IMAGE_REL_AMD64_REL32_5:
             *(uint32_t*)needs_relocating = (*(uint32_t*)(needs_relocating)) + (unsigned long)(PTR_TO_U64(section_base) - PTR_TO_U64(needs_relocating) - sizeof(UINT32) - 5);
-        break;
+            break;
+
+        /*
+        case IMAGE_REL_AMD64_ADDR32NB:
+            *(uint32_t*)needs_relocating = (*(uint32_t*)(needs_relocating)) + (unsigned long)(PTR_TO_U64(section_base) - PTR_TO_U64(needs_relocating) - sizeof(UINT32));
+            break;
+        */
 
         case IMAGE_REL_AMD64_ADDR64:
             *(uint64_t*)needs_relocating = (*(uint64_t*)(needs_relocating)) + PTR_TO_U64(section_base);
-        break;
+            break;
 
         default: break;
     }

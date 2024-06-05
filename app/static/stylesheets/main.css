@@ -1,9 +1,17 @@
+/* Elements */
 
 * {
     margin: 0;
     padding: 0;
     display: flex;
     font-family: 'Cascadia Mono', Consolas, monospace, 'Cascadia Code', Arial !important;
+}
+
+html {
+    /* 
+    dumb issue. Empty scroilbar will appear on the side of the page if I don't do this. 
+    */
+    scrollbar-width: none; 
 }
 
 head{
@@ -21,6 +29,7 @@ body {
 }
 
 
+/* IDs */
 
 #object-container {
     display: flex;
@@ -99,7 +108,7 @@ body {
 }
 
 #notification-center .notification {
-    margin-bottom: 1.5vh !important;
+    margin-bottom: 22px !important;
     width: 91% !important;
     text-overflow: hidden;
 }
@@ -109,17 +118,20 @@ body {
     height:55vh;
     justify-content:left;
     flex-direction:column;
-    transition: opacity 1s ease;
+    transition: opacity 1s ease, height 0.5s ease-in-out;
 }
 
 #terminal-input {
     width: 100%;
+    scrollbar-width: none;
     outline: none;
+    resize:none;
     caret: block;
     height: 10%;
     border: none;
     font-size: 16px;
     justify-self:flex-end;
+    transition: height 0.5s ease-in-out, width 0.5s ease-in-out;
 }
 
 #terminal-menu {
@@ -164,11 +176,12 @@ body {
 
 
 
-/* all four main boxes on the page should have this. provides soft blue glow effect when hovered. */
+/* Classes */
+
 .element-rgb-hover {
     border-radius: 10px; 
     outline: 2px solid transparent; 
-    outline-color:white;
+    outline-color:rgb(67, 75, 88);
     transition: outline-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
     box-shadow: 0 0 0 transparent; 
 }
@@ -213,11 +226,14 @@ body {
     width:80%;
     
     overflow:auto;
-    transition: opacity 0.3s ease-in-out, outline-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    transition: opacity         0.3s ease-in-out, 
+                outline-color   0.2s ease-in-out, 
+                box-shadow      0.2s ease-in-out,
+                width           0.5s ease-in-out;
     
     border-radius: 10px; 
     outline: 2px solid transparent; 
-    outline-color:white;
+    outline-color:rgb(67, 75, 88);
     box-shadow: 0 0 0 transparent; 
 }
 
@@ -255,8 +271,8 @@ body {
 .terminal-instance-element{
     display:flex;
     flex-direction:row;
-    width:96%;
-    padding-left:2%;
+    width:100%;
+    padding-right:2%;
     height:fit-content;
     padding-top: 1.5vh;
     padding-bottom: 1vh;
@@ -269,6 +285,14 @@ body {
     height:fit-content !important;
 }
 
+.message-span {
+    width:100%;
+    padding-left:0.5vw;
+    color: hsl( 221deg , 14% , 71% );
+    font-weight:bolder;
+    font-size:larger;
+}
+
 .message-body {
     padding-bottom: 0;
     padding-right: 0;
@@ -276,7 +300,7 @@ body {
     scrollbar-width: none;
 }
 
-.terminal-instance-element .message-header p {
+.terminal-instance-element .message-header p { /* unused */
     color: rgb(58, 189, 255);
 }
 
@@ -302,6 +326,7 @@ body {
 }
 
 
+/* Animations */
 
 @keyframes popIn {
     0% {
@@ -320,5 +345,43 @@ body {
     100% {
         transform: scale(0.5); 
         opacity: 0; 
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 100;
+    }
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes terminalContainerTopExtend {
+    to {
+        margin-top:0;
+        height:90vh;
+    }
+}
+
+@keyframes terminalContainerTopShrink {
+    to {
+        margin-top:45vh;
+        height:55vh;
+    }
+}
+
+@keyframes notificationAdjust {
+    to {
+        margin-top:0;
     }
 }

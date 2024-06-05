@@ -4566,7 +4566,7 @@ typedef struct sqlite3_context sqlite3_context;
 **
 ** ^(In the SQL statement text input to [sqlite3_prepare_v2()] and its variants,
 ** literals may be replaced by a [parameter] that matches one of following
-** templates:
+** templating:
 **
 ** <ul>
 ** <li>  ?
@@ -4576,7 +4576,7 @@ typedef struct sqlite3_context sqlite3_context;
 ** <li>  $VVV
 ** </ul>
 **
-** In the templates above, NNN represents an integer literal,
+** In the templating above, NNN represents an integer literal,
 ** and VVV represents an alphanumeric identifier.)^  ^The values of these
 ** parameters (also called "host parameter names" or "SQL parameters")
 ** can be set using the sqlite3_bind_*() routines defined here.

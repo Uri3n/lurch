@@ -17,8 +17,8 @@
 #define TEXT_WIDTH 70
 #define PERIOD_FILLER_WIDTH 20
 
-#define BLUE_TEXT(str) termcolor::bright_cyan << str << termcolor::reset
-#define RED_TEXT(str) termcolor::red << str << termcolor::reset
+#define BLUE_TEXT(str)  termcolor::bright_cyan << str << termcolor::reset
+#define RED_TEXT(str)   termcolor::red << str << termcolor::reset
 #define GREEN_TEXT(str) termcolor::green << str << termcolor::reset
 
 namespace lurch {
@@ -58,14 +58,15 @@ public:
     static std::string prompt_for(std::string prompt);
 };
 
-class crow_custom_logger final : public crow::ILogHandler {
-private:
-    std::ofstream log_file;
-public:
-    void log(std::string message, crow::LogLevel lvl) override;
-    explicit crow_custom_logger(const std::string& log_file_name);
-    ~crow_custom_logger();
-};
+    /* Unused. */
+    class crow_custom_logger final : public crow::ILogHandler {
+    private:
+        std::ofstream log_file;
+    public:
+        void log(std::string message, crow::LogLevel lvl) override;
+        explicit crow_custom_logger(const std::string& log_file_name);
+        ~crow_custom_logger();
+    };
 
 
 } // lurch

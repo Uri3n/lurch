@@ -1,45 +1,10 @@
+import * as transitions from './transitions.js';
 import { templates } from "./templating.js";
 
 import { 
     fetchObjectChildren, 
     fetchObjectMessages, 
 } from "./fetch.js";  
-
-
-export function popInElement(element, scrollTo){
-
-    if(element.style.display !== 'none'){                           // element must be hidden initially for this to work
-        console.error(`popInElement(): passed element: ${element}\n
-                       without display set to "none".`);
-        return;
-    }
-
-    setTimeout(() => {
-        
-        element.style.display = 'flex';                             // small delay to ensure element is loaded
-        element.style.animation = 'popIn 0.3s ease';                // play "pop in" animation
-        
-        element.addEventListener('animationend', () => {
-            element.style.animation = 'none';
-        });
-
-        if(scrollTo){
-            element.scrollIntoView({behavior : 'smooth'});          // scroll towards the newly added element
-        }
-
-    }, 10);
-}
-
-
-export function popOutElement(element) {
-
-    element.style.animation = 'popOut 0.3s ease';
-    element.style.transition = 'opacity 0.3s ease';
-    
-    element.addEventListener('animationend', () => {
-        element.remove();
-    });
-}
 
 
 export async function appendListChildren(element){
@@ -294,7 +259,11 @@ export function appendNotification(body, intent){
         case "bad":
             notification = templates.badNotification(body);
             break;
-    
+        
+        case "neutral":
+            notification = templates.neutralNotification(body);
+            break;
+
         default:
             notification = templates.neutralNotification(body);
             break;
@@ -303,7 +272,7 @@ export function appendNotification(body, intent){
     notification.style.display = 'none';
     notificationCenter.appendChild(notification);
     
-    popInElement(notification, true);
+    transitions.popInElement(notification, true);
 }
 
 
@@ -318,7 +287,7 @@ export function appendMessage(body, sender, recipient){
                 
                 terminalMessage.style.display = 'none';                                 
                 session.appendChild(terminalMessage);                                   
-                popInElement(terminalMessage, true);
+                transitions.popInElement(terminalMessage, true);
 
                 
                 try {
@@ -331,6 +300,30 @@ export function appendMessage(body, sender, recipient){
             }
         });
     }
+}
+
+
+export function shuffleNotifications(elementToRemove, sibling) {
+
+    const removedHeight = elementToRemove.offsetHeight;
+    const removedMargin = window.getComputedStyle(elementToRemove).marginBottom.replace('px','');
+
+    elementToRemove.remove();
+
+    if(!sibling) {
+        return;
+    }
+    
+    
+    sibling.style.marginTop = String(parseInt(removedHeight,10) + parseInt(removedMargin,10)) + 'px';
+    sibling.style.animation = 'notificationAdjust 0.2s ease-in-out';
+    
+    sibling.addEventListener('animationend', () => {
+        
+        sibling.style.animation = 'none';
+        sibling.style.marginTop = 0;
+    
+    }, { once: true });
 }
 
 
@@ -418,4 +411,83 @@ export function clearInputContent(){
 
 export function focusInputElement() {
     document.getElementById('terminal-input').focus();
+}
+
+
+export function isTerminalFullscreened() {
+    const fullscreen = document.getElementById('terminal-container').getAttribute('data-is-fullscreen');
+    return fullscreen !== null && fullscreen !== undefined && fullscreen === 'true';
+}
+
+export function fullscreenTerminalSession() {
+
+    const terminalInstance  = document.querySelector('.terminal-instance');
+    const terminalContainer = document.getElementById('terminal-container');
+    const terminalMenu      = document.getElementById('terminal-menu');
+    const objectContainer   = document.getElementById('object-container'); 
+    const terminalInput     = document.getElementById('terminal-input');
+
+    if(isTerminalFullscreened() === true) {
+        console.warn('Attempted to fullscreen terminal window while already fullscreened.');
+        return;
+    }
+
+
+    transitions.fadeOutElement(terminalMenu,    { disableDisplay : true });
+    transitions.fadeOutElement(objectContainer, { disableDisplay : true, callback : () => {
+        
+        terminalContainer.style.marginTop   = '45vh';
+        terminalInstance.style.width        = '100%';
+        terminalInput.style.flexGrow        = '1';
+        
+        terminalInstance.addEventListener('transitionend', () => {
+            terminalContainer.style.animation = 'terminalContainerTopExtend 0.5s ease-in-out';
+            terminalContainer.addEventListener('animationend', () => {
+                
+                terminalContainer.style.animation   = 'none';
+                terminalContainer.style.marginTop   = 0;
+                terminalContainer.style.height      = '90vh';
+            
+            },{ once: true });
+        },{ once: true });
+    }});
+
+    terminalContainer.setAttribute('data-is-fullscreen', 'true');
+}
+
+
+export function minimizeTerminalFullscreen() {
+    
+    const terminalInstance  = document.querySelector('.terminal-instance');
+    const terminalContainer = document.getElementById('terminal-container');
+    const terminalMenu      = document.getElementById('terminal-menu');
+    const objectContainer   = document.getElementById('object-container'); 
+    const terminalInput     = document.getElementById('terminal-input');
+
+    if(isTerminalFullscreened() === false) {
+        console.warn('Attempted to minimize terminal window while not fullscreened.');
+        return;
+    }
+
+
+    terminalContainer.style.animation = 'terminalContainerTopShrink 0.5s ease-in-out';
+    terminalContainer.addEventListener('animationend', () => {
+       
+        terminalContainer.style.animation   = 'none';
+        terminalContainer.style.marginTop   = '45vh';
+        terminalContainer.style.height      = '55vh';
+
+        terminalInstance.style.width = '80%';
+        terminalInput.style.flexGrow = '0';
+
+        terminalInstance.addEventListener('transitionend', () => {
+            
+            terminalContainer.style.marginTop = 0;
+            transitions.fadeInElement(terminalMenu);
+            transitions.fadeInElement(objectContainer);
+
+        }, { once: true });
+    },{ once: true });
+
+    terminalContainer.setAttribute('data-is-fullscreen', 'false');
 }

@@ -43,12 +43,12 @@
 
 
     <!-- Contains terminal windows (instances) and righthand menu -->
-    <div id="terminal-container">
+    <div id="terminal-container" data-is-fullscreen="false">
         
         <div class="container-generic-flex-row">
             <img src="static/assets/icon_filedrop.png" class="file-drop-icon">
             <div class="terminal-instance">
-                <img src="static/assets/ui_empty_sessions.png" class="placeholder-image" style="display:none;">
+                <img src="static/assets/ui_empty_sessions.png" class="placeholder-image" draggable="false">
             </div>
 
             <div id="terminal-menu" class="menu element-rgb-hover">
@@ -59,7 +59,7 @@
             </div>
         </div>
 
-        <input id="terminal-input" spellcheck="false" class="input is-normal element-rgb-hover" type="text" placeholder="Input Goes Here...">
+        <textarea id="terminal-input" data-gramm="false" spellcheck="false" class="input is-normal element-rgb-hover" type="text" placeholder="Input Goes Here..."></textarea>
 
     </div>
 </body>

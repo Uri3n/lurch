@@ -2,10 +2,10 @@
 // Created by diago on 2024-05-24.
 //
 
-#include "send.hpp"
+#include "http.hpp"
 
 bool
-networking::upload_file(
+networking::http::upload_file(
 		_In_ const HINTERNET hConnect,
 		_In_ const std::string& object_guid,
 		_In_ HANDLE hFile,
@@ -211,7 +211,7 @@ networking::upload_file(
 
 
 bool
-networking::send_object_message(
+networking::http::send_object_message(
 		_In_ const HINTERNET hConnect,
 		_In_ const std::string& object_guid,
 		_In_ const std::string& object_message,

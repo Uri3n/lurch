@@ -2,10 +2,10 @@
 // Created by diago on 2024-05-24.
 //
 
-#include "init.hpp"
+#include "http.hpp"
 
 bool
-networking::open_session(
+networking::http::open_session(
         _Out_ HINTERNET& hSession,
         _In_ const std::wstring& user_agent
 ) {
@@ -21,9 +21,8 @@ networking::open_session(
     return hSession != nullptr;
 }
 
-
 bool
-networking::open_connection(
+networking::http::open_connection(
         _In_ const std::wstring& address,
         _In_ const INTERNET_PORT port,
         _In_ const HINTERNET hSession,

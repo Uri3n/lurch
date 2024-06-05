@@ -2,10 +2,7 @@
 // Created by diago on 2024-05-25.
 //
 
-#include "basic.hpp"
-
-#include <iostream>
-
+#include "reconaissance.hpp"
 
 std::string recon::whoami() {
 

@@ -10,7 +10,7 @@
 #include "../../util/io.hpp"
 #include "../../util/function_ptrs.hpp"
 #include "../../util/structs.hpp"
-#include "../misc.hpp"
+#include "../misc/misc.hpp"
 
 #define LURCH_IMAGE_NOT_AT_BASE 0x40000003L
 

@@ -30,9 +30,7 @@ export const templates = {
         // I know the pre element looks ghetto lowe it tho
         const template = `<div class="terminal-instance-element">
                             <div class="message is-small">
-                                <div class="message-header">
-                                    <p>${headerContent}</p>
-                                </div>
+                                <span class="message-span">${headerContent}</span>
                                 <pre class="message-body">
 ${replacementContent}                                                   
                                 </pre>

@@ -1,6 +1,7 @@
-import * as ui from './ui.js'
-import * as req from './fetch.js';
-import { templates } from './templating.js';
+import * as ui          from './ui.js'
+import * as req         from './fetch.js';
+import * as transitions from './transitions.js';
+import { templates }    from './templating.js';
 
 
 
@@ -77,7 +78,7 @@ export async function sessionScrollCallback(event){
 
                 const messageElement = templates.terminalMessage(message.sender, message.body) 
                 messageElement.style.display = 'none';
-                ui.popInElement(messageElement, false);
+                transitions.popInElement(messageElement, false);
                 
                 session.prepend(messageElement);
                 msgIndex++;
@@ -111,16 +112,37 @@ export function deleteButtonCallback(event){
 
     do {
         if(parent.classList.contains('deletable-parent')){
-            const guid = parent.getAttribute('data-object-guid');                           //this only applies to the delete buttons 
-                                                                                            //found on the right-hand session menu
+
+            //
+            // Element is a session menu element. End the session.
+            //
+
+            const guid = parent.getAttribute('data-object-guid');                           
             if(guid !== null){
                 ui.deleteTerminalSession(guid);
+                transitions.popOutElement(parent, true);
             }
             
-            ui.popOutElement(parent);
+            
+            //
+            // Element to be deleted is a notification. 
+            // Delete this one, and shuffle the rest down to fit.
+            //
+
+            else if(parent.classList.contains('notification')) {
+                transitions.fadeOutElement(parent, {disableOpacity : true});
+                ui.shuffleNotifications(parent, parent.nextElementSibling);
+            }
+
+            else {
+                console.error('deleteButtonCallback(): unknown deletable-parent found.');
+            }
+
+            break;
         }
 
         parent = parent.parentElement;
+
     } while(parent);
 }
 
@@ -186,7 +208,19 @@ export function listElementClickCallback(event){
 
 export async function keyDownCallback(event){
     
-    if(event.key === 'Enter' && ui.isInputSelected()){
+    const inputSubmission = (
+        event.key === 'Enter'   && 
+        !event.shiftKey         &&
+        !event.ctrlKey          &&
+        ui.isInputSelected());
+
+    const inputFullscreen = 
+        event.key === 'Enter'   &&
+        event.ctrlKey           &&
+        !event.shiftKey;
+
+
+    if(inputSubmission){
         
         const sessions = document.querySelectorAll('.terminal-session');
         const messageContent = ui.currentInputContent();
@@ -209,5 +243,13 @@ export async function keyDownCallback(event){
         }
 
         ui.clearInputContent();
+    }
+
+    else if(inputFullscreen) {
+        if(ui.isTerminalFullscreened()) {
+            ui.minimizeTerminalFullscreen();
+        } else {
+            ui.fullscreenTerminalSession();
+        }
     }
 }

@@ -199,8 +199,6 @@ namespace lurch {
                 return name == this->name;
             }
     };
-
-
 }
 
 #endif //COMMON_HPP

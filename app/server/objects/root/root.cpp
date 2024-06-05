@@ -48,11 +48,8 @@ lurch::root::shutdown(const bool wipe_files) const {
         inst->db.fileman_wipe_all();
     }
 
-    {
-        std::lock_guard<std::mutex> lock (inst->mtx);
-        inst->shutdown = true;
-        inst->shutdown_condition.notify_all();
-    }
+    inst->log.write("Server is shutting down...", log_type::INFO, log_noise::NOISY);
+    inst->set_shutdown_condition();
 }
 
 
@@ -126,11 +123,10 @@ lurch::root::add_user(const command& cmd) const {
 
     return inst->db.store_user(*username, *password, (*grant_admin ? access_level::HIGH : access_level::MEDIUM))
         .and_then([&](const bool _) {
-            inst->routing.send_ws_notification(io::format_str("created new user:\n {}", *username), ws_notification_intent::GOOD);
+            inst->log.write(io::format_str("created new user:\n {}", *username), log_type::SUCCESS, log_noise::NOISY);
             return result<std::string>("success.");
         })
         .or_else([&](std::string err) {
-           inst->routing.send_ws_notification(io::format_str("failed to create new user:\n{}", err), ws_notification_intent::BAD);
            return result<std::string>(error(err));
         });
 }
@@ -192,7 +188,6 @@ lurch::root::recieve(const command &cmd, bool& log_if_error) {
     }
 
     if(cmd == "shutdown") {
-        inst->routing.send_ws_notification("Server is shutting down...", ws_notification_intent::NEUTRAL);
         shutdown(std::get<0>(cmd.get<empty>("--wipe-files", "-wf").done()).has_value());
         return "shutting down server...";
     }

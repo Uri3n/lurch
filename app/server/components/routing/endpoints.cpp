@@ -19,7 +19,11 @@ lurch::instance::router::run(
         res.set_static_file_info("static/templates/login.html");
         res.code = 200;
 
-        io::info("serving GET at endpoint: \"/\" :: " + std::to_string(res.code));
+        inst->log.write(
+            "serving GET at endpoint: \"/\" :: " + std::to_string(res.code),
+            log_type::INFO,
+            log_noise::REGULAR
+        );
         res.end();
     });
 
@@ -37,6 +41,13 @@ lurch::instance::router::run(
             }
         }
 
+        /*                  causes output issues
+        inst->log.write(
+            "serving GET at endpoint: \"/scripts\" :: " + std::to_string(res.code),
+            log_type::INFO,
+            log_noise::REGULAR
+        );
+        */
         res.end();
     });
 
@@ -56,7 +67,11 @@ lurch::instance::router::run(
             res.code = 200;
         }
 
-        io::info("serving POST at \"/verify\" :: " + std::to_string(res.code));
+        inst->log.write(
+            "serving POST at endpoint: \"/verify\" :: " + std::to_string(res.code),
+            log_type::INFO,
+            log_noise::REGULAR
+        );
         res.end();
     });
 
@@ -70,7 +85,11 @@ lurch::instance::router::run(
             res.code = 200;
         }
 
-        io::info("serving GET at endpoint: \"/main\" :: " + std::to_string(res.code));
+        inst->log.write(
+            "serving GET at endpoint: \"/main\" :: " + std::to_string(res.code),
+            log_type::INFO,
+            log_noise::REGULAR
+        );
         res.end();
     });
 
@@ -91,7 +110,11 @@ lurch::instance::router::run(
             res.code = 200;
         }
 
-        io::info("serving POST at endpoint: \"/objects/send\" :: " + std::to_string(res.code));
+        inst->log.write(
+            "serving POST at endpoint: \"/objects/send\" :: " + std::to_string(res.code),
+            log_type::INFO,
+            log_noise::REGULAR
+        );
         res.end();
     });
 
@@ -119,7 +142,11 @@ lurch::instance::router::run(
             res.code = 200;
         }
 
-        io::info("serving POST at endpoint: \"/objects/upload\" :: " + std::to_string(res.code));
+        inst->log.write(
+            "serving POST at endpoint: \"/objects/upload\" :: " + std::to_string(res.code),
+            log_type::INFO,
+            log_noise::REGULAR
+        );
         res.end();
     });
 
@@ -132,7 +159,11 @@ lurch::instance::router::run(
             res.code = 200;
         }
 
-        io::info("serving GET at endpoint: \"/objects/getdata\" :: " + std::to_string(res.code));
+        inst->log.write(
+            "serving GET at endpoint: \"/objects/getdata\" :: " + std::to_string(res.code),
+            log_type::INFO,
+            log_noise::REGULAR
+        );
         res.end();
     });
 
@@ -145,7 +176,11 @@ lurch::instance::router::run(
             res.code = 200;
         }
 
-        io::info("serving GET at endpoint: \"/objects/getchildren\" :: " + std::to_string(res.code));
+        inst->log.write(
+            "serving GET at endpoint: \"/objects/getchildren\" :: " + std::to_string(res.code),
+            log_type::INFO,
+            log_noise::REGULAR
+        );
         res.end();
     });
 
@@ -177,7 +212,12 @@ lurch::instance::router::run(
             res.code = 200;
         }
 
-        io::info("serving GET at endpoint: \"/objects/getmessages\" :: " + std::to_string(res.code));
+
+        inst->log.write(
+            "serving GET at endpoint: \"/objects/getmessages\" :: " + std::to_string(res.code),
+            log_type::INFO,
+            log_noise::REGULAR
+        );
         res.end();
     });
 
@@ -192,10 +232,10 @@ lurch::instance::router::run(
     })
     .onmessage([&](crow::websocket::connection& conn, const std::string& data, bool is_binary) {
         if(verify_ws_user(&conn, data)) {
-            io::success("authenticated websocket connection via token.");
+            inst->log.write("authenticated websocket connection via token.", log_type::SUCCESS, log_noise::REGULAR);
         }
         else {
-            io::failure("websocket verification failed: " + conn.get_remote_ip());
+            inst->log.write("websocket verification failed: " + conn.get_remote_ip(), log_type::ERROR_MINOR, log_noise::REGULAR);
         }
     });
 
@@ -231,6 +271,6 @@ lurch::instance::router::run(
                      "\n  please check the validity of these items, and create a new config.json file by deleting the old one." << std::endl;
 
         std::cout << termcolor::reset << "\nexiting..." << std::endl;
-        std::exit(1);
+        std::exit(EXIT_FAILURE);
     }
 }

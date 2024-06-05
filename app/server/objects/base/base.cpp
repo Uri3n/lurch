@@ -31,9 +31,9 @@ lurch::object::generate_id() {
 
 lurch::object::~object() {
     if(!id.empty()) {
-        io::info("freeing object from memory: " + id);
+        io::info("freeing object from memory: " + id); //can't log this
     } else {
-        io::failure("an object with no GUID is being deleted. Something is wrong.");
+        io::failure("an object with no GUID is being freed. Something is wrong.");
     }
 }
 
@@ -54,7 +54,7 @@ lurch::owner::create_child(const object_index index, const object_type type, con
     inst->routing.send_ws_object_create_update(child_ptr->id, this->id, alias, type);
     children.emplace_back(child_ptr);
 
-    io::success("created child under " + this->id);
+    inst->log.write("created new child under " + this->id, log_type::SUCCESS, log_noise::REGULAR);
     return { true };
 }
 
@@ -71,10 +71,13 @@ lurch::owner::delete_child(const std::string &guid) {
             children.erase(it);
 
             if(const auto delete_result = inst->db.delete_object(guid)) {
-                io::success("deleted object " + guid);
+                inst->log.write("deleted object " + guid, log_type::SUCCESS, log_noise::REGULAR);
             } else {
-                io::failure(io::format_str("failed to delete {} from database.", guid));
-                io::failure("error: " + delete_result.error());
+                inst->log.write(
+                    io::format_str("failed to delete {} from database: {}", guid, delete_result.error()),
+                    log_type::ERROR_MINOR,
+                    log_noise::REGULAR
+                );
             }
 
             inst->routing.send_ws_object_delete_update(guid);

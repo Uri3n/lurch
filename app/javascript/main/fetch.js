@@ -68,9 +68,9 @@ export async function fetchObjectMessages(guid, index){
     const json = await response.json();
     const arrayOfChildren = json.map(item => {
         return {
-            sender: item.sender,
-            body: item.body,
-            timestamp: item.timestamp
+            sender:     item.sender,
+            body:       item.body,
+            timestamp:  item.timestamp
         };
     });
 

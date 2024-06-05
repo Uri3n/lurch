@@ -46,6 +46,10 @@ add_executable(server main.cpp
         components/instance/misc.cpp
         components/instance/ssl.cpp
         components/instance/config.cpp
+        components/eventlog/eventlog.cpp
+        util/macro.hpp
+        util/structs.hpp
+        util/enums.hpp
 )
 
 target_compile_definitions(server PRIVATE CROW_ENABLE_SSL)

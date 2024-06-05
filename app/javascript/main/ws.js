@@ -22,13 +22,12 @@ function socketMessage(event) {
                 break;
             
             case "message":
-                appendMessage(json["body"], json["sender"], json["recipient"]);
+                appendMessage(json["body"], json["sender"], json["recipient"], json["timestamp"]);
                 break;
 
             case "object-delete":
                 deleteListElement(json["guid"]);
                 forceEndSession(json["guid"]);
-                appendNotification(`${json["guid"]}:\nobject has been deleted.`, "neutral");
                 break;
 
             case "object-create":

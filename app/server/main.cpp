@@ -17,5 +17,6 @@ int main() {
     inst->begin();
     delete inst;
 
+
     return EXIT_SUCCESS;
 }

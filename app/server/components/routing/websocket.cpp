@@ -10,7 +10,7 @@ lurch::instance::router::add_ws_connection(crow::websocket::connection* conn) {
 
     std::lock_guard<std::mutex> lock(websockets.lock);
     websockets.connections.emplace_back(std::make_pair(conn, std::nullopt));
-    //io::info("Opened new websocket connection from " + conn->get_remote_ip());
+    inst->log.write("Opened new websocket connection from " + conn->get_remote_ip(), log_type::INFO, log_noise::REGULAR);
 }
 
 
@@ -20,7 +20,7 @@ lurch::instance::router::remove_ws_connection(crow::websocket::connection* conn)
     std::lock_guard<std::mutex> lock(websockets.lock);
     for(auto it = websockets.connections.begin(); it != websockets.connections.end();) {
         if(it->first == conn) {
-            io::info("Closing websocket connection from " + conn->get_remote_ip());
+            inst->log.write("Closing websocket connection from " + conn->get_remote_ip(), log_type::INFO, log_noise::REGULAR);
             it = websockets.connections.erase(it);
         } else {
             ++it;
@@ -67,7 +67,7 @@ lurch::instance::router::send_ws_data(
                 }
             }
             catch(...) {
-                io::failure("exception while sending websocket data!");
+                inst->log.write("Exception while writing websocket data!", log_type::ERROR_MINOR, log_noise::REGULAR);
                 return;
             }
         }
@@ -91,9 +91,10 @@ lurch::instance::router::send_ws_object_message_update(
 
     crow::json::wvalue json;
     json["update-type"] = "message";
-    json["body"] = body;
-    json["sender"] = sender;
-    json["recipient"] = recipient;
+    json["body"]        = body;
+    json["sender"]      = sender;
+    json["recipient"]   = recipient;
+    json["timestamp"]   = io::curr_time();
 
     send_ws_data(json.dump(), false, required_access);
 }

@@ -90,6 +90,26 @@ lurch::io::access_to_str(const access_level access) {
 }
 
 
+std::string
+lurch::io::curr_time() {
+
+    const auto now      = std::chrono::system_clock::now();
+    const auto duration = std::chrono::duration_cast<std::chrono::seconds>(now.time_since_epoch());
+
+    // Get the total number of seconds since epoch
+    const int64_t total_seconds = duration.count();
+    const int64_t seconds_today = total_seconds % 86400; // 86400 seconds in a day
+
+    const int64_t hours = seconds_today / 3600;
+    const int64_t minutes = (seconds_today % 3600) / 60;
+    const int64_t seconds = seconds_today % 60;
+
+    return std::to_string(hours) + ":" +
+        std::to_string(minutes) + ":" +
+        std::to_string(seconds);
+}
+
+
 void
 lurch::io::success(const std::string& str) {
     std::cout << '|' << std::setw(TEXT_WIDTH) << std::left << str << '|' << \

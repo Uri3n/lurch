@@ -276,19 +276,18 @@ export function appendNotification(body, intent){
 }
 
 
-export function appendMessage(body, sender, recipient){
+export function appendMessage(body, sender, recipient, timestamp){
 
     const sessions = document.querySelectorAll('.terminal-session');
     if(sessions !== null){
         sessions.forEach(session => {
             if(session.getAttribute('data-object-guid') === recipient){
 
-                const terminalMessage = templates.terminalMessage(sender, body);
+                const terminalMessage = templates.terminalMessage(sender, body, timestamp);
                 
                 terminalMessage.style.display = 'none';                                 
                 session.appendChild(terminalMessage);                                   
                 transitions.popInElement(terminalMessage, true);
-
                 
                 try {
                     const messageIndex = parseInt(session.getAttribute('data-message-index'), 10);
@@ -344,7 +343,7 @@ export async function startSession(guid, alias){
             const messages = await fetchObjectMessages(guid, msgIndex);
 
             for(let i = messages.length - 1; i >= 0; i--){
-                newSession.appendChild(templates.terminalMessage(messages[i].sender, messages[i].body));
+                newSession.appendChild(templates.terminalMessage(messages[i].sender, messages[i].body, messages[i].timestamp));
                 msgIndex++;
             }
         } 

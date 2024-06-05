@@ -42,9 +42,6 @@
     #endif
 #endif
 
-#define LURCH_RSA_KEYSIZE 2048
-#define LURCH_CONFIG_PATH "config.json"
-
 
 namespace lurch {
 
@@ -173,15 +170,32 @@ class instance {
             ~object_tree() = default;
     };
 
+    class event_log {
+        private:
+            std::mutex log_mtx;
+            std::ofstream log_file;
+        public:
+
+            instance* inst = nullptr;
+
+            result<bool> init(const std::string& file_name);
+            void write(const std::string& message, log_type type, log_noise noise);
+            static std::string format_log_message(log_type type, const std::string& message);
+
+            ~event_log();
+            event_log() = default;
+    };
+
 public:
 
     std::mutex mtx;
     std::condition_variable shutdown_condition;
     bool shutdown = false;
 
-    database db;
-    router routing;
+    database    db;
+    router      routing;
     object_tree tree;
+    event_log   log;
 
     static void handle_uncaught_exception();
     static bool generate_self_signed_cert(const std::string& certfile_path, const std::string& keyfile_path, long certificate_version);
@@ -190,6 +204,7 @@ public:
     void post_message_interaction(const std::string& sender, const std::string& object, const std::optional<std::string>& response, const std::string& message_content, access_level required_access);
     void begin();
     void await_shutdown();
+    void set_shutdown_condition();
 
     instance() = default;
     ~instance() = default;

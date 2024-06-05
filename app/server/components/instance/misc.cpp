@@ -63,3 +63,10 @@ lurch::instance::await_shutdown() {
 }
 
 
+void
+lurch::instance::set_shutdown_condition() {
+
+    std::lock_guard<std::mutex> lock (this->mtx);
+    this->shutdown = true;
+    this->shutdown_condition.notify_all();
+}

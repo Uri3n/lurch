@@ -98,12 +98,16 @@ lurch::instance::database::fileman_wipe_all() {
                 ++total_deleted;
             }
             catch(const std::exception& e) {
-                io::failure(io::format_str("couldn't erase directory {}, error: {}", entry.path().string(), e.what()));
+                inst->log.write(
+                    io::format_str("couldn't erase directory {}, error: {}", entry.path().string(), e.what()),
+                    log_type::ERROR_MINOR,
+                    log_noise::REGULAR
+                );
             }
         }
     }
 
-    io::success("directories erased: " + std::to_string(total_deleted));
+    inst->log.write("fileman_wipe_all(): directories erased: " + std::to_string(total_deleted), log_type::SUCCESS, log_noise::REGULAR);
 }
 
 

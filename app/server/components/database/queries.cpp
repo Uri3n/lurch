@@ -54,7 +54,7 @@ lurch::instance::database::match_token(const std::string &token, const access_le
         throw std::runtime_error("token does not exist.");
     }
     catch(const std::exception& e) {
-        io::failure(std::string("match_token: ") + e.what());
+        inst->log.write(std::string("match_token: ") + e.what(), log_type::ERROR_MINOR, log_noise::REGULAR);
         return false;
     }
 }
@@ -123,7 +123,7 @@ lurch::instance::database::initialize(
             "   guid text not null,"
             "   sender text not null,"
             "   body text not null,"
-            "   insert_time timestamp default current_timestamp"
+            "   insert_time text not null"
             ");";
 
         if(initial_user && initial_password) {
@@ -163,10 +163,11 @@ lurch::instance::database::store_message(const std::string& guid, const std::str
     std::lock_guard<std::mutex> lock(this->mtx);
     try {
         *this->db <<
-            "insert into messages (guid,sender,body) values (?,?,?)"
+            "insert into messages (guid,sender,body,insert_time) values (?,?,?,?)"
             << guid
             << sender
-            << body;
+            << body
+            << io::curr_time();
     }
     catch(const std::exception& e) {
         return error(io::format_str("exception: {}", e.what()));

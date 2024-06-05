@@ -64,7 +64,6 @@ lurch::instance::router::handler_objects_getdata(std::string GUID, crow::respons
 
     return inst->db.query_object_data(GUID)
         .or_else([&](std::string err) {
-            io::failure("handler_getdata: " + err);
             res.code = 404;
             return lurch::result<object_data>(std::unexpected(err));
         })
@@ -129,9 +128,9 @@ lurch::instance::router::handler_objects_getmessages(std::string GUID, const int
         res.body = '[';
         for(const auto &[sender, body, timestamp] : *query_result) {
             crow::json::wvalue json;
-            json["sender"] = sender;
-            json["body"] = body;
-            json["timestamp"] = timestamp;
+            json["sender"]      = sender;
+            json["body"]        = body;
+            json["timestamp"]   = timestamp;
             res.body += (json.dump() + ',');
         }
 
@@ -140,12 +139,11 @@ lurch::instance::router::handler_objects_getmessages(std::string GUID, const int
         }
 
         res.body += ']';
-        io::success("got messages for: " + GUID);
+        inst->log.write("got messages for: " + GUID, log_type::SUCCESS, log_noise::QUIET);
         return true;
     }
 
-    io::failure("message query failed.");
-    io::failure("error: " + query_result.error());
+    inst->log.write(std::string("message query failed: ") + query_result.error(), log_type::ERROR_MINOR, log_noise::REGULAR);
     res.code = 404;
     return false;
 }
@@ -172,9 +170,10 @@ lurch::instance::router::handler_objects_upload(
 
     return inst->tree.upload_file(GUID, req.body, file_type, user_access)
         .or_else([&](std::string err) {
-            send_ws_notification(
-                io::format_str("user {}:\nbad object upload.\nerror:{}", user_alias, err),
-                ws_notification_intent::BAD
+            inst->log.write(
+                io::format_str("user \"{}\":\nupload error.\n{}", user_alias, err),
+                log_type::ERROR_MINOR,
+                log_noise::NOISY
             );
 
             res.code = 403;

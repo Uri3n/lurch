@@ -11,28 +11,13 @@ export const templates = {
 
 
     terminalMessage : (headerContent, content, timestamp) => {
-
-        // temporary shit fix for this retarded word wrapping issue
-        let replacementContent = '';
-        for(let i = 0, k = 0; i < content.length; i++, k++){
-            
-            if(content[i] === '\n'){
-                k = 0;
-            }
-
-            if( k > 0 && k % 125 === 0 ){
-                replacementContent += '\n';
-            }
-
-            replacementContent += content[i];
-        }
         
         // I know the pre element looks ghetto lowe it tho
         const template = `<div class="terminal-instance-element">
                             <div class="message is-small">
                                 <span class="message-span">${headerContent} - ${timestamp}</span>
                                 <pre class="message-body">
-${replacementContent}                                                   
+${content}                                                   
                                 </pre>
                             </div>
                         </div>`;

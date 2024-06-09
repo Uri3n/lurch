@@ -87,6 +87,15 @@ typedef NTSTATUS(NTAPI* fnNtSetIoCompletion)(
 	_In_ ULONG_PTR IoStatusInformation
 );
 
+typedef NTSTATUS(NTAPI* fnNtQueueApcThread)(
+
+	_In_ HANDLE ThreadHandle,
+	_In_ void* ApcRoutine,
+	_In_opt_ PVOID ApcArgument1,
+	_In_opt_ PVOID ApcArgument2,
+	_In_opt_ PVOID ApcArgument3
+);
+
 typedef NTSTATUS(NTAPI* fnNtCreateSection)(
 
 	_Out_ PHANDLE SectionHandle,

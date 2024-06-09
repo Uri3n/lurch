@@ -86,10 +86,10 @@ tasking::shell_command(std::string usr_arg_string, const bool powershell) {
     // create child process and read stdout
     //
 
-    startup_info.cb = sizeof(startup_info);
-    startup_info.hStdError = hPipe_write;
-    startup_info.hStdOutput = hPipe_write;
-    startup_info.dwFlags |= STARTF_USESTDHANDLES;
+    startup_info.cb             = sizeof(startup_info);
+    startup_info.hStdError      = hPipe_write;
+    startup_info.hStdOutput     = hPipe_write;
+    startup_info.dwFlags        |= STARTF_USESTDHANDLES;
 
     if(!CreateProcessA(
         nullptr,

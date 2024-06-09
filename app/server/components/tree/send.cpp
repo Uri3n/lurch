@@ -10,8 +10,7 @@ lurch::search_ctx
 lurch::instance::object_tree::send_message_r(
         const std::shared_ptr<object>& current,
         const std::string &guid,
-        const command& cmd,
-        const access_level access
+        reciever_context& reciever_ctx
     ) {
 
     search_ctx curr_ctx;
@@ -22,17 +21,19 @@ lurch::instance::object_tree::send_message_r(
         curr_ctx.keep_going = false;
         curr_ctx.obj_access = current->access;
 
-        if(access < current->access) {
+        if(reciever_ctx.tok.access < current->access) {
             curr_ctx.response = error("invalid access level.");
         }
 
         if(owner_ptr) {
-            curr_ctx.response = owner_ptr->recieve(cmd, curr_ctx.log_if_error);
+            curr_ctx.response = owner_ptr->receive(reciever_ctx);
         }
 
         if(leaf_ptr) {
-            curr_ctx.response = leaf_ptr->recieve(cmd, curr_ctx.log_if_error);
+            curr_ctx.response = leaf_ptr->receive(reciever_ctx);
         }
+
+        curr_ctx.log_if_error = reciever_ctx.log_if_error;
     }
 
     if(owner_ptr && curr_ctx.keep_going) {
@@ -40,8 +41,7 @@ lurch::instance::object_tree::send_message_r(
             curr_ctx = send_message_r(
                 child,
                 guid,
-                cmd,
-                access
+                reciever_ctx
             );
 
             if(curr_ctx.keep_going == false) {
@@ -105,17 +105,15 @@ lurch::instance::object_tree::upload_file_r(
 
 
 lurch::search_ctx
-lurch::instance::object_tree::send_message(const std::string& guid, const std::string& cmd_raw, const access_level access) {
+lurch::instance::object_tree::send_message(const std::string& guid, const std::string& cmd_raw, reciever_context& reciever_ctx) {
 
-    const result<command> cmd = argument_parser::parse(cmd_raw);
     const std::shared_ptr<object> root_ptr = root;
 
     std::lock_guard<std::recursive_mutex> lock(tree_lock); //lock tree
     return send_message_r(
         root_ptr,
         guid,
-        cmd.value_or(command{.name = cmd_raw}),
-        access
+        reciever_ctx
     );
 }
 

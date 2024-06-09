@@ -4,8 +4,8 @@
 
 #ifndef ROOT_HPP
 #define ROOT_HPP
-#include "../../util/argument_parser.hpp"
-#include "../base/base.hpp"
+#include "../../../util/argument_parser.hpp"
+#include "../../base/base.hpp"
 
 namespace lurch {
 class root final : public owner {
@@ -24,7 +24,7 @@ public:
     result<std::string> get_tokens() const;
 
     result<std::filesystem::path> upload(const std::string &file, const std::string &extension) override;
-    result<std::string> recieve(const command &cmd, bool& log_if_error) override;
+    result<std::string> receive(reciever_context& ctx) override;
 
     explicit root(instance* inst) : owner(std::nullopt, inst) {}
     ~root() override = default;

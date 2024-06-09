@@ -11,7 +11,10 @@ lurch::group::upload(const std::string &file, const std::string &extension) {
 }
 
 lurch::result<std::string>
-lurch::group::recieve(const lurch::command &cmd, bool& log_if_error) {
-    inst->log.write("This is a test message", log_type::INFO, log_noise::NOISY);
-    return OBJECT_EMPTY_RESPONSE;
+lurch::group::receive(reciever_context& ctx) {
+    return io::format_str("Token: {}\nAlias: {}\n, Access: {}\nIP: {}",
+        ctx.tok.token,
+        ctx.tok.alias,
+        io::access_to_str(ctx.tok.access),
+        ctx.address);
 }

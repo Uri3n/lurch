@@ -98,12 +98,15 @@ lurch::instance::router::run(
     .methods("POST"_method)([&](const crow::request& req, crow::response& res, std::string GUID){
 
         res.code = 400;
+        std::string tok;
+
         const auto success = hdr_extract_token(req)
             .and_then([&](std::string token) {
+                tok = token;
                 return inst->db.query_token_context(token);
             })
-            .and_then([&](std::pair<std::string, access_level> ctx) {
-                return result<bool>(handler_objects_send(GUID, req, res, ctx.first, ctx.second));
+            .and_then([&](std::pair<std::string, access_level> pair) {
+                return result<bool>(handler_objects_send(GUID, req, res, {tok, pair.first, pair.second}));
             });
 
         if(success && *success == true) {

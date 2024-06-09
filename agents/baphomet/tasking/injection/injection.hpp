@@ -16,10 +16,16 @@
 
 namespace tasking {
     std::string execute_bof(const std::string& object_file, unsigned char* arguments, int argc);
-    std::string run_shellcode(uint32_t pid, const std::string& shellcode_buffer);
-    std::string simple_self_inject(void const* payload, uint32_t payload_size);
+    std::string run_shellcode(uint32_t pid, bool inject_child, bool get_output_if_child, const std::string& shellcode_buffer);
     std::string runexe(bool hollow, const std::string& file_buffer);
-    bool hollow(HANDLE hsection, uint32_t entry_point_rva, void* preferred_base, bool& mapped_at_preferred);
+
+    std::string shellcode_self_inject(void const* payload, uint32_t payload_size);
+    std::string shellcode_inject_child(void* payload, uint32_t payload_size, bool get_output);
+    std::string shellcode_remote_inject(uint32_t pid, void const* payload, uint32_t payload_size);
+    bool queue_apc(HANDLE hthread, void* address, bool resume_thread);
+    bool queue_apc_with_arguments(HANDLE hthread, void* address, void* arg1, void* arg2, void* arg3, bool resume_thread);
+
+    bool hollow(HANDLE hsection, uint32_t entry_point_rva, void* preferred_base, bool& mapped_at_preferred, std::string& console_output);
     bool ghost(HANDLE hsection, uint32_t entry_point_rva);
     HANDLE create_ghosted_section(const std::string& payload_buffer);
     std::string rundll(const std::string& file_buffer);

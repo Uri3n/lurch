@@ -27,22 +27,27 @@ lurch::instance::router::handler_objects_send(
     std::string GUID,
     const crow::request& req,
     crow::response& res,
-    const std::string& user_alias,
-    const access_level user_access
+    const token_context& tok
 ) const {
 
     if(GUID == "root") {
         GUID = inst->db.query_root_guid().value_or(GUID);
     }
 
-    if(req.body.empty() || req.body.size() > 4096) {                                                        //check for a valid request
+    if(req.body.empty() || req.body.size() > 15000) {                                                        //check for a valid request
         return false;
     }
 
-    const auto [response, obj_access, keep_going, log_if_error] = inst->tree.send_message(GUID, req.body, user_access);
+    reciever_context reciever_ctx;
+    reciever_ctx.tok            = tok;
+    reciever_ctx.address        = req.remote_ip_address;
+    reciever_ctx.cmd            = argument_parser::parse(req.body).value_or(command{.name = "-"});
+    reciever_ctx.message_raw    = req.body;
+
+    const auto [response, obj_access, keep_going, log_if_error] = inst->tree.send_message(GUID, req.body, reciever_ctx);
     if(response || log_if_error) {
         inst->post_message_interaction(
-            user_alias,
+            tok.alias,
             GUID,
             response.value_or(response.error()),
             req.body,

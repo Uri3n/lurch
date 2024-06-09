@@ -10,10 +10,10 @@
 #include "../util/argument_parser.hpp"
 #include "../util/io.hpp"
 #include "../objects/base/base.hpp"
-#include "../objects/agent/baphomet.hpp"
-#include "../objects/root/root.hpp"
+#include "../objects/agent/baphomet/baphomet.hpp"
+#include "../objects/root/generic_root/root.hpp"
 #include "../objects/group/group.hpp"
-#include "../../objects/external/chatroom.hpp"
+#include "../objects/external/chatroom/chatroom.hpp"
 
 #include <crow.h>
 #include <openssl/bio.h>
@@ -130,7 +130,7 @@ class instance {
 
             /* handler functions should NOT call crow::response::end, or set the response code. */
             bool handler_verify(const crow::request& req, crow::response& res) const;
-            bool handler_objects_send(std::string GUID, const crow::request& req, crow::response& res, const std::string& user_alias, access_level user_access) const;
+            bool handler_objects_send(std::string GUID, const crow::request& req, crow::response& res, const token_context& tok) const;
             bool handler_objects_getdata(std::string GUID, crow::response& res) const;
             bool handler_objects_getchildren(std::string GUID, crow::response& res) const;
             bool handler_objects_getmessages(std::string GUID, int message_index, crow::response& res) const;
@@ -147,7 +147,7 @@ class instance {
             uint32_t max_object_count = 100;
             std::atomic_uint32_t curr_object_count = 0;
 
-            static search_ctx send_message_r(const std::shared_ptr<object>& current, const std::string& guid, const command& cmd, access_level access);
+            static search_ctx send_message_r(const std::shared_ptr<object>& current, const std::string& guid, reciever_context& reciever_ctx);
             static std::pair<result<std::filesystem::path>, bool> upload_file_r(const std::shared_ptr<object>&, const std::string& guid, const std::string& file, const std::string& file_type, access_level access);
             static std::pair<result<access_level>, bool> lookup_access_level_r(const std::shared_ptr<object>& current, const std::string& guid);
 
@@ -163,7 +163,7 @@ class instance {
             result<access_level> lookup_access_level(std::string& guid) const;
 
             std::shared_ptr<object> create_object(object_index index, std::optional<std::string> guid, std::optional<std::weak_ptr<owner>> parent);
-            search_ctx send_message(const std::string& guid, const std::string& cmd_raw, access_level access);
+            search_ctx send_message(const std::string& guid, const std::string& cmd_raw, reciever_context& reciever_ctx);
             result<std::filesystem::path> upload_file(const std::string& guid, const std::string& file, const std::string& file_type, access_level access);
 
             object_tree() = default;

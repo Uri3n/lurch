@@ -1,45 +1,9 @@
 //
-// Created by diago on 2024-04-25.
+// Created by diago on 2024-06-06.
 //
 
 #include "root.hpp"
 #include "../../components/instance.hpp"
-
-namespace lurch {
-    accepted_commands root::commands;
-}
-
-void
-lurch::root::init_commands() {
-
-    if(!commands.ready()) {
-        commands.add_command("shutdown", "shuts down the teamserver.")
-            .arg<empty>("--wipe-files", "-wf", false);
-
-        commands.add_command("add_user", "adds a new user to the database.")
-            .arg<std::string>("--username", "-u", true)
-            .arg<std::string>("--password", "-p", true)
-            .arg<bool>("--grant-admin", "-a", true);
-
-        commands.add_command("remove_user", "removes a user from the database.")
-            .arg<std::string>("--username", "-u", true);
-
-        commands.add_command("remove_child", "deletes a specified child given it's GUID.")
-            .arg<std::string>("--guid", "-g", true);
-
-        commands.add_command("generate_token", "generates an arbitrary access token with a specified expiration time.")
-            .arg<std::string>("--alias", "-a", true)
-            .arg<int64_t>("--access-level", "-al", true)
-            .arg<int64_t>("--expiration-hours", "-e", false);
-
-        commands.add_command("help", "display this help message.");
-        commands.add_command("create_chatroom", "creates a new chatroom object as a child.");
-        commands.add_command("tokens", "displays existing session tokens and their context.");
-
-        commands.done();
-    }
-}
-
 
 void
 lurch::root::shutdown(const bool wipe_files) const {
@@ -167,59 +131,4 @@ lurch::root::get_tokens() const {
     else {
         return error(tokens_res.error());
     }
-}
-
-
-lurch::result<std::filesystem::path>
-lurch::root::upload(const std::string &file, const std::string &extension) {
-    return error("this object does not accept files.");
-}
-
-
-lurch::result<std::string>
-lurch::root::recieve(const command &cmd, bool& log_if_error) {
-
-    if(!commands.ready()) {
-        init_commands();
-    }
-
-    if(!commands.matches(cmd)) {
-        return error("invalid command or argument.");
-    }
-
-    if(cmd == "shutdown") {
-        shutdown(std::get<0>(cmd.get<empty>("--wipe-files", "-wf").done()).has_value());
-        return "shutting down server...";
-    }
-
-    if(cmd == "add_user") {
-        return add_user(cmd);
-    }
-
-    if(cmd == "remove_user") {
-        return remove_user(*std::get<0>(cmd.get<std::string>("--username", "-u").done()));
-    }
-
-    if(cmd == "remove_child") {
-        return remove_child(cmd);
-    }
-
-    if(cmd == "create_chatroom") {
-        return create_chatroom(cmd);
-    }
-
-    if(cmd == "tokens") {
-        return get_tokens();
-    }
-
-    if(cmd == "help") {
-        return { commands.help() };
-    }
-
-    if(cmd == "generate_token") {
-        return generate_token(cmd);
-    }
-
-
-    return OBJECT_EMPTY_RESPONSE;
 }

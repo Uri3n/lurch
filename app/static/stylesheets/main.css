@@ -296,7 +296,7 @@ body {
 .message-body {
     padding-bottom: 0;
     padding-right: 0;
-    overflow:auto;
+    overflow-x:hidden !important;
     scrollbar-width: none;
 }
 

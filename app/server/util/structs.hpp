@@ -48,8 +48,8 @@ namespace lurch {
     struct search_ctx {
         result<std::string> response;
         access_level obj_access = access_level::LOW;
-        bool keep_going = true;
-        bool log_if_error = true;
+        bool keep_going     = true;
+        bool log_if_error   = true;
     };
 
     template<size_t num_extensions>
@@ -164,6 +164,16 @@ namespace lurch {
                 return name == this->name;
             }
     };
+
+    struct reciever_context {
+        token_context   tok;
+        command         cmd;
+        std::string     message_raw;
+        std::string     address;
+        bool            log_if_error   = true;
+        bool            delete_self    = false;
+    };
+
 }
 
 #endif //STRUCTS_HPP

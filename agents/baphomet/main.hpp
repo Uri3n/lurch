@@ -17,4 +17,8 @@
 #include "tasking/injection/injection.hpp"
 #include "reconaissance/reconaissance.hpp"
 
+#ifdef BAPHOMET_DEBUG
+    #include <iostream>
+#endif
+
 #endif //MAIN_HPP

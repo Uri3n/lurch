@@ -18,14 +18,15 @@ add_executable(server main.cpp
         util/io.cpp
         util/io.hpp
 
-        objects/agent/baphomet.cpp
-        objects/agent/baphomet.hpp
-        objects/root/root.cpp
-        objects/root/root.hpp
+        objects/root/generic_root/init_cmd.cpp
+        objects/root/generic_root/receive.cpp
+        objects/root/generic_root/tasks.cpp
+        objects/root/generic_root/root.hpp
+
         objects/group/group.cpp
         objects/group/group.hpp
-        objects/external/chatroom.cpp
-        objects/external/chatroom.hpp
+        objects/external/chatroom/chatroom.cpp
+        objects/external/chatroom/chatroom.hpp
 
         components/instance.hpp
 
@@ -50,6 +51,13 @@ add_executable(server main.cpp
         util/macro.hpp
         util/structs.hpp
         util/enums.hpp
+
+        objects/agent/baphomet/receive.cpp
+        objects/agent/baphomet/init_cmd.cpp
+        objects/agent/baphomet/tasks.cpp
+        objects/agent/baphomet/baphomet.hpp
+
+
 )
 
 target_compile_definitions(server PRIVATE CROW_ENABLE_SSL)

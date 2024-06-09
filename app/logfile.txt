@@ -1,0 +1,40 @@
+[INFO]      UTC 18:20:42  
+Attempting bind to: 127.0.0.1:8081
+[INFO]      UTC 18:22:31  serving GET at endpoint: "/" :: 200
+[INFO]      UTC 18:22:35  serving POST at endpoint: "/verify" :: 200
+[SUCCESS]   UTC 18:22:35  authenticated token MHljRFEwd2E5eDgxU0ZOc2F3YWRlRTJBVw==
+[INFO]      UTC 18:22:35  serving GET at endpoint: "/main" :: 200
+[INFO]      UTC 18:22:36  Opened new websocket connection from 127.0.0.1
+[SUCCESS]   UTC 18:22:36  authenticated websocket connection via token.
+[SUCCESS]   UTC 18:22:38  authenticated token MHljRFEwd2E5eDgxU0ZOc2F3YWRlRTJBVw==
+[INFO]      UTC 18:22:38  serving GET at endpoint: "/objects/getchildren" :: 200
+[INFO]      UTC 18:22:41  serving GET at endpoint: "/objects/getmessages" :: 200
+[INFO]      UTC 18:22:44  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 18:22:49  Server is shutting down...
+[INFO]      UTC 18:22:49  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 18:32:1   
+Attempting bind to: 127.0.0.1:8081
+[INFO]      UTC 18:32:11  serving GET at endpoint: "/" :: 200
+[INFO]      UTC 18:32:12  serving POST at endpoint: "/verify" :: 200
+[SUCCESS]   UTC 18:32:12  authenticated token SkVYT2FYaWZScmJmUDlRMlN5YjdPd3dZdg==
+[INFO]      UTC 18:32:12  serving GET at endpoint: "/main" :: 200
+[INFO]      UTC 18:32:12  Opened new websocket connection from 127.0.0.1
+[SUCCESS]   UTC 18:32:12  authenticated websocket connection via token.
+[SUCCESS]   UTC 18:32:13  authenticated token SkVYT2FYaWZScmJmUDlRMlN5YjdPd3dZdg==
+[INFO]      UTC 18:32:13  serving GET at endpoint: "/objects/getchildren" :: 200
+[INFO]      UTC 18:32:16  serving GET at endpoint: "/objects/getmessages" :: 200
+[INFO]      UTC 18:32:18  Server is shutting down...
+[INFO]      UTC 18:32:18  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 18:37:45  
+Attempting bind to: 127.0.0.1:8081
+[INFO]      UTC 18:39:31  serving GET at endpoint: "/" :: 200
+[INFO]      UTC 18:39:32  serving POST at endpoint: "/verify" :: 200
+[SUCCESS]   UTC 18:39:32  authenticated token cDZGajRacjlpQUg4TDg2SHFrWTBpMW1wSg==
+[INFO]      UTC 18:39:32  serving GET at endpoint: "/main" :: 200
+[INFO]      UTC 18:39:33  Opened new websocket connection from 127.0.0.1
+[SUCCESS]   UTC 18:39:33  authenticated websocket connection via token.
+[SUCCESS]   UTC 18:39:33  authenticated token cDZGajRacjlpQUg4TDg2SHFrWTBpMW1wSg==
+[INFO]      UTC 18:39:33  serving GET at endpoint: "/objects/getchildren" :: 200
+[INFO]      UTC 18:39:35  serving GET at endpoint: "/objects/getmessages" :: 200
+[INFO]      UTC 18:39:37  Server is shutting down...
+[INFO]      UTC 18:39:37  serving POST at endpoint: "/objects/send" :: 200

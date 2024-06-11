@@ -6,6 +6,7 @@
 #define RECONAISSANCE_HPP
 #include <Windows.h>
 #include <winternl.h>
+#include <lm.h>
 #include <string>
 #include <common.hpp>
 #include <function_ptrs.hpp>
@@ -20,14 +21,18 @@ namespace recon {
     bool        get_current_process_name(std::string& process_name);
     bool        get_user_sid(std::string& sid);
     bool        get_integrity_level(std::string& integrity_lvl_str);
+    bool        is_domain_joined(std::string& domain_name);
     uint32_t    get_current_process_pid();
     uint32_t    get_major_os_version();
+
+    bool is_elevated(uint32_t pid, bool& elevation);
+    HANDLE WINAPI save_screenshot();
+
     std::string whoami();
     std::string get_sid_group_attributes(uint32_t attr_mask);
     std::string get_sid_type(SID_NAME_USE sid_type);
     std::string enumerate_processes();
-    bool is_elevated(uint32_t pid, bool& elevation);
-    HANDLE WINAPI save_screenshot();
+    std::string generate_basic_info();
 }
 
 #endif //RECONAISSANCE_HPP

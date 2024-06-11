@@ -376,21 +376,46 @@ export function forceEndSession(guid){
 
     const sessions = document.querySelectorAll('.terminal-session');
     const terminalMenuElements = document.querySelectorAll('#terminal-menu .menu-list li');
+    let previous_session = null;
+    let found = false;
 
+    
     if(sessions !== null){
-        sessions.forEach(session => {
-            if(session.getAttribute('data-object-guid') === guid){
+        for(let session of sessions) {
+            const curr_guid = session.getAttribute('data-object-guid');
+            if(curr_guid === guid){
                 session.remove();
+                found = true;
+                break;
             }
-        });
+
+            previous_session = curr_guid;
+        }
     }
 
+    if(!found) {
+        return;
+    }
+
+
     if(terminalMenuElements !== null){
-        terminalMenuElements.forEach(element => {
+        for(let element of terminalMenuElements) {
             if(element.getAttribute('data-object-guid') === guid){
                 element.remove();
+                break;
             }
-        });
+        }
+    }
+
+
+    if(previous_session !== null) {
+        selectTerminalSession(previous_session);
+        selectTerminalMenuElement(previous_session);
+    }
+    else if(document.querySelector('.terminal-session') !== null){
+        previous_session = document.querySelector('.terminal-session').getAttribute('data-object-guid');
+        selectTerminalSession(previous_session);
+        selectTerminalMenuElement(previous_session);
     }
 }
 

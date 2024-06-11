@@ -24,19 +24,20 @@ namespace lurch {
 
     class object {
     public:
+        instance* inst;
+        bool delete_from_database = false;
         std::string id;
         access_level access = access_level::LOW;
 
         static std::string generate_id();
 
         virtual ~object();
-        object() = default;
+        explicit object(instance* inst) : inst(inst) {}
     };
 
     class owner : public object {
     public:
         std::optional<std::weak_ptr<owner>> parent;
-        instance* inst;
         std::vector<std::shared_ptr<object>> children;
 
         result<bool> create_child(object_index index, object_type type, const std::string& alias);
@@ -45,19 +46,18 @@ namespace lurch {
         virtual result<std::string>             receive(reciever_context& ctx) = 0;
         virtual result<std::filesystem::path>   upload(const std::string& file, const std::string& extension) = 0;
 
-        virtual ~owner() = default;
+        ~owner() override;
         owner(std::optional<std::weak_ptr<owner>> parent, instance* inst);
     };
 
     class leaf : public object {
     public:
         std::optional<std::weak_ptr<owner>> parent;
-        instance* inst;
 
         virtual result<std::string>             receive(reciever_context& ctx) = 0;
         virtual result<std::filesystem::path>   upload(const std::string& file, const std::string& extension) = 0;
 
-        virtual ~leaf() = default;
+        ~leaf() override;
         leaf(std::optional<std::weak_ptr<owner>> parent, instance* inst);
     };
 

@@ -1,40 +1,216 @@
-[INFO]      UTC 18:20:42  
+[INFO]      UTC 18:41:58  
 Attempting bind to: 127.0.0.1:8081
-[INFO]      UTC 18:22:31  serving GET at endpoint: "/" :: 200
-[INFO]      UTC 18:22:35  serving POST at endpoint: "/verify" :: 200
-[SUCCESS]   UTC 18:22:35  authenticated token MHljRFEwd2E5eDgxU0ZOc2F3YWRlRTJBVw==
-[INFO]      UTC 18:22:35  serving GET at endpoint: "/main" :: 200
-[INFO]      UTC 18:22:36  Opened new websocket connection from 127.0.0.1
-[SUCCESS]   UTC 18:22:36  authenticated websocket connection via token.
-[SUCCESS]   UTC 18:22:38  authenticated token MHljRFEwd2E5eDgxU0ZOc2F3YWRlRTJBVw==
-[INFO]      UTC 18:22:38  serving GET at endpoint: "/objects/getchildren" :: 200
-[INFO]      UTC 18:22:41  serving GET at endpoint: "/objects/getmessages" :: 200
-[INFO]      UTC 18:22:44  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 18:22:49  Server is shutting down...
-[INFO]      UTC 18:22:49  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 18:32:1   
+[INFO]      UTC 18:59:19  serving GET at endpoint: "/" :: 200
+[INFO]      UTC 18:59:20  serving POST at endpoint: "/verify" :: 200
+[SUCCESS]   UTC 18:59:20  authenticated token Sm1PNHF0empzcldZWndqTlF0TGpIbVlCVA==
+[INFO]      UTC 18:59:20  serving GET at endpoint: "/main" :: 200
+[INFO]      UTC 18:59:21  Opened new websocket connection from 127.0.0.1
+[SUCCESS]   UTC 18:59:21  authenticated websocket connection via token.
+[INFO]      UTC 18:59:22  serving GET at endpoint: "/objects/getmessages" :: 200
+[INFO]      UTC 18:59:24  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 18:59:30  serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 18:59:33  serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 18:59:37  Server is shutting down...
+[INFO]      UTC 18:59:37  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 23:51:1   
 Attempting bind to: 127.0.0.1:8081
-[INFO]      UTC 18:32:11  serving GET at endpoint: "/" :: 200
-[INFO]      UTC 18:32:12  serving POST at endpoint: "/verify" :: 200
-[SUCCESS]   UTC 18:32:12  authenticated token SkVYT2FYaWZScmJmUDlRMlN5YjdPd3dZdg==
-[INFO]      UTC 18:32:12  serving GET at endpoint: "/main" :: 200
-[INFO]      UTC 18:32:12  Opened new websocket connection from 127.0.0.1
-[SUCCESS]   UTC 18:32:12  authenticated websocket connection via token.
-[SUCCESS]   UTC 18:32:13  authenticated token SkVYT2FYaWZScmJmUDlRMlN5YjdPd3dZdg==
-[INFO]      UTC 18:32:13  serving GET at endpoint: "/objects/getchildren" :: 200
-[INFO]      UTC 18:32:16  serving GET at endpoint: "/objects/getmessages" :: 200
-[INFO]      UTC 18:32:18  Server is shutting down...
-[INFO]      UTC 18:32:18  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 18:37:45  
+[INFO]      UTC 23:51:21  serving GET at endpoint: "/" :: 200
+[INFO]      UTC 23:51:23  serving POST at endpoint: "/verify" :: 200
+[SUCCESS]   UTC 23:51:23  authenticated token WnVycFc1SFlEaFVSWUpxREY3WkJZRGRSNw==
+[INFO]      UTC 23:51:23  serving GET at endpoint: "/main" :: 200
+[INFO]      UTC 23:51:24  Opened new websocket connection from 127.0.0.1
+[SUCCESS]   UTC 23:51:24  authenticated websocket connection via token.
+[SUCCESS]   UTC 23:51:29  authenticated token WnVycFc1SFlEaFVSWUpxREY3WkJZRGRSNw==
+[INFO]      UTC 23:51:29  serving GET at endpoint: "/objects/getchildren" :: 200
+[INFO]      UTC 23:51:30  serving GET at endpoint: "/objects/getmessages" :: 200
+[SUCCESS]   UTC 23:51:50  created new child under e67a9661-cbb2-420c-a212-9ec894a5e239
+[INFO]      UTC 23:51:50  serving POST at endpoint: "/objects/send" :: 200
+[ERROR]     UTC 23:53:42  message query failed: no messages found.
+[INFO]      UTC 23:53:42  serving GET at endpoint: "/objects/getmessages" :: 404
+[ERROR]     UTC 23:53:51  message query failed: no messages found.
+[INFO]      UTC 23:53:51  serving GET at endpoint: "/objects/getmessages" :: 404
+[INFO]      UTC 23:54:18  object with a GUID of c1deeb9b-4e9e-498e-393d-79fccc88e942 has been deleted.
+[INFO]      UTC 23:54:18  serving POST at endpoint: "/objects/send" :: 200
+[ERROR]     UTC 23:54:26  message query failed: no messages found.
+[INFO]      UTC 23:54:26  serving GET at endpoint: "/objects/getmessages" :: 404
+[INFO]      UTC 23:54:31  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 23:54:33  serving POST at endpoint: "/objects/send" :: 200
+[ERROR]     UTC 23:54:37  message query failed: no messages found.
+[INFO]      UTC 23:54:37  serving GET at endpoint: "/objects/getmessages" :: 404
+[SUCCESS]   UTC 23:54:39  authenticated token WnVycFc1SFlEaFVSWUpxREY3WkJZRGRSNw==
+[INFO]      UTC 23:54:39  serving GET at endpoint: "/objects/getchildren" :: 404
+[INFO]      UTC 23:54:46  object with a GUID of 269e4624-5fe7-4059-5112-debfa90593d2 has been deleted.
+[INFO]      UTC 23:54:46  serving POST at endpoint: "/objects/send" :: 200
+[SUCCESS]   UTC 23:54:54  created new child under e67a9661-cbb2-420c-a212-9ec894a5e239
+[INFO]      UTC 23:54:54  serving POST at endpoint: "/objects/send" :: 200
+[SUCCESS]   UTC 23:54:57  authenticated token WnVycFc1SFlEaFVSWUpxREY3WkJZRGRSNw==
+[INFO]      UTC 23:54:57  serving GET at endpoint: "/objects/getchildren" :: 404
+[ERROR]     UTC 23:54:58  message query failed: no messages found.
+[INFO]      UTC 23:54:58  serving GET at endpoint: "/objects/getmessages" :: 404
+[INFO]      UTC 23:55:0   object with a GUID of fdaee6a5-4c4b-4f29-7bf4-7072a97a62a7 has been deleted.
+[INFO]      UTC 23:55:0   serving POST at endpoint: "/objects/send" :: 200
+[SUCCESS]   UTC 23:55:28  created new child under e67a9661-cbb2-420c-a212-9ec894a5e239
+[INFO]      UTC 23:55:28  serving POST at endpoint: "/objects/send" :: 200
+[SUCCESS]   UTC 23:55:31  created new child under e67a9661-cbb2-420c-a212-9ec894a5e239
+[INFO]      UTC 23:55:31  serving POST at endpoint: "/objects/send" :: 200
+[ERROR]     UTC 23:55:37  message query failed: no messages found.
+[INFO]      UTC 23:55:37  serving GET at endpoint: "/objects/getmessages" :: 404
+[INFO]      UTC 23:55:38  object with a GUID of 4ffd7599-1574-4711-e0b8-e1aad1d2249f has been deleted.
+[INFO]      UTC 23:55:38  serving POST at endpoint: "/objects/send" :: 200
+[SUCCESS]   UTC 23:55:39  authenticated token WnVycFc1SFlEaFVSWUpxREY3WkJZRGRSNw==
+[INFO]      UTC 23:55:39  serving GET at endpoint: "/objects/getchildren" :: 404
+[ERROR]     UTC 23:55:41  message query failed: no messages found.
+[INFO]      UTC 23:55:41  serving GET at endpoint: "/objects/getmessages" :: 404
+[INFO]      UTC 23:55:43  object with a GUID of 200b17d4-3582-4af2-5e15-dc57ff03f56b has been deleted.
+[INFO]      UTC 23:55:43  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 23:55:50  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 23:55:53  serving POST at endpoint: "/objects/send" :: 200
+[SUCCESS]   UTC 23:59:7   created new child under e67a9661-cbb2-420c-a212-9ec894a5e239
+[INFO]      UTC 23:59:7   serving POST at endpoint: "/objects/send" :: 200
+[SUCCESS]   UTC 23:59:9   authenticated token WnVycFc1SFlEaFVSWUpxREY3WkJZRGRSNw==
+[INFO]      UTC 23:59:9   serving GET at endpoint: "/objects/getchildren" :: 404
+[ERROR]     UTC 23:59:13  message query failed: no messages found.
+[INFO]      UTC 23:59:13  serving GET at endpoint: "/objects/getmessages" :: 404
+[INFO]      UTC 23:59:57  object with a GUID of 57b1842a-a324-48d8-76dc-2d3a4fe3e854 has been deleted.
+[INFO]      UTC 23:59:57  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:0:4     Server is shutting down...
+[INFO]      UTC 0:0:4     serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:50:45   
 Attempting bind to: 127.0.0.1:8081
-[INFO]      UTC 18:39:31  serving GET at endpoint: "/" :: 200
-[INFO]      UTC 18:39:32  serving POST at endpoint: "/verify" :: 200
-[SUCCESS]   UTC 18:39:32  authenticated token cDZGajRacjlpQUg4TDg2SHFrWTBpMW1wSg==
-[INFO]      UTC 18:39:32  serving GET at endpoint: "/main" :: 200
-[INFO]      UTC 18:39:33  Opened new websocket connection from 127.0.0.1
-[SUCCESS]   UTC 18:39:33  authenticated websocket connection via token.
-[SUCCESS]   UTC 18:39:33  authenticated token cDZGajRacjlpQUg4TDg2SHFrWTBpMW1wSg==
-[INFO]      UTC 18:39:33  serving GET at endpoint: "/objects/getchildren" :: 200
-[INFO]      UTC 18:39:35  serving GET at endpoint: "/objects/getmessages" :: 200
-[INFO]      UTC 18:39:37  Server is shutting down...
-[INFO]      UTC 18:39:37  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:50:51   serving GET at endpoint: "/" :: 200
+[INFO]      UTC 0:50:52   serving POST at endpoint: "/verify" :: 200
+[SUCCESS]   UTC 0:50:52   authenticated token SXhQZllaeXhVbTBhZE5NUWxBak9hMGowYg==
+[INFO]      UTC 0:50:52   serving GET at endpoint: "/main" :: 200
+[INFO]      UTC 0:50:53   Opened new websocket connection from 127.0.0.1
+[SUCCESS]   UTC 0:50:53   authenticated websocket connection via token.
+[SUCCESS]   UTC 0:50:55   authenticated token SXhQZllaeXhVbTBhZE5NUWxBak9hMGowYg==
+[INFO]      UTC 0:50:55   serving GET at endpoint: "/objects/getchildren" :: 200
+[SUCCESS]   UTC 0:50:59   authenticated token SXhQZllaeXhVbTBhZE5NUWxBak9hMGowYg==
+[INFO]      UTC 0:50:59   serving GET at endpoint: "/objects/getchildren" :: 200
+[SUCCESS]   UTC 0:51:2    authenticated token SXhQZllaeXhVbTBhZE5NUWxBak9hMGowYg==
+[INFO]      UTC 0:51:2    serving GET at endpoint: "/objects/getchildren" :: 404
+[ERROR]     UTC 0:51:11   message query failed: no messages found.
+[INFO]      UTC 0:51:11   serving GET at endpoint: "/objects/getmessages" :: 404
+[SUCCESS]   UTC 0:52:0    created new child under 8a403ec1-f5ea-4bda-cf08-57ca02c6862c
+[INFO]      UTC 0:52:0    serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:53:57   object with GUID 8a403ec1-f5ea-4bda-cf08-57ca02c6862c has been deleted.
+[INFO]      UTC 0:53:57   object with GUID f8b4e2a8-d2c0-4fb3-9d7a-ec044eed2d80 has been deleted.
+[INFO]      UTC 0:53:57   object with GUID 88243663-1fa2-42e7-eae7-c14b39a77615 has been deleted.
+[INFO]      UTC 0:53:57   serving POST at endpoint: "/objects/send" :: 200
+[ERROR]     UTC 0:54:34   message query failed: no messages found.
+[INFO]      UTC 0:54:34   serving GET at endpoint: "/objects/getmessages" :: 404
+[INFO]      UTC 0:54:37   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:56:4    serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:56:23   serving GET at endpoint: "/objects/getmessages" :: 200
+[SUCCESS]   UTC 0:56:27   created new child under e67a9661-cbb2-420c-a212-9ec894a5e239
+[INFO]      UTC 0:56:27   serving POST at endpoint: "/objects/send" :: 200
+[SUCCESS]   UTC 0:56:35   created new child under e67a9661-cbb2-420c-a212-9ec894a5e239
+[INFO]      UTC 0:56:35   serving POST at endpoint: "/objects/send" :: 200
+[SUCCESS]   UTC 0:56:36   authenticated token SXhQZllaeXhVbTBhZE5NUWxBak9hMGowYg==
+[INFO]      UTC 0:56:36   serving GET at endpoint: "/objects/getchildren" :: 404
+[ERROR]     UTC 0:56:37   message query failed: no messages found.
+[INFO]      UTC 0:56:37   serving GET at endpoint: "/objects/getmessages" :: 404
+[SUCCESS]   UTC 0:56:43   created new child under 9403d434-9137-47a1-5734-cea542d151dc
+[INFO]      UTC 0:56:43   serving POST at endpoint: "/objects/send" :: 200
+[SUCCESS]   UTC 0:56:47   authenticated token SXhQZllaeXhVbTBhZE5NUWxBak9hMGowYg==
+[INFO]      UTC 0:56:47   serving GET at endpoint: "/objects/getchildren" :: 200
+[SUCCESS]   UTC 0:56:55   authenticated token SXhQZllaeXhVbTBhZE5NUWxBak9hMGowYg==
+[INFO]      UTC 0:56:55   serving GET at endpoint: "/objects/getchildren" :: 200
+[INFO]      UTC 0:57:20   object with GUID 9403d434-9137-47a1-5734-cea542d151dc has been deleted.
+[INFO]      UTC 0:57:20   object with GUID 1f02d57b-263a-4ced-7405-ecdaf71e88ad has been deleted.
+[INFO]      UTC 0:57:20   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:57:26   serving GET at endpoint: "/objects/getmessages" :: 200
+[INFO]      UTC 0:57:29   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:57:36   serving POST at endpoint: "/objects/send" :: 200
+[ERROR]     UTC 0:57:39   message query failed: no messages found.
+[INFO]      UTC 0:57:39   serving GET at endpoint: "/objects/getmessages" :: 404
+[SUCCESS]   UTC 0:57:44   created new child under 40f0528d-779f-458f-d6b9-d3a1397ab5db
+[INFO]      UTC 0:57:44   serving POST at endpoint: "/objects/send" :: 200
+[SUCCESS]   UTC 0:57:46   authenticated token SXhQZllaeXhVbTBhZE5NUWxBak9hMGowYg==
+[INFO]      UTC 0:57:46   serving GET at endpoint: "/objects/getchildren" :: 200
+[SUCCESS]   UTC 0:57:51   authenticated token SXhQZllaeXhVbTBhZE5NUWxBak9hMGowYg==
+[INFO]      UTC 0:57:51   serving GET at endpoint: "/objects/getchildren" :: 200
+[INFO]      UTC 0:57:58   object with GUID 40f0528d-779f-458f-d6b9-d3a1397ab5db has been deleted.
+[INFO]      UTC 0:57:58   object with GUID 063f99bf-f423-44ab-f2bc-894dd35531f4 has been deleted.
+[INFO]      UTC 0:57:58   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:58:3    serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:58:4    serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:58:16   serving GET at endpoint: "/objects/getmessages" :: 200
+[INFO]      UTC 0:58:32   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:58:49   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:58:52   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:59:10   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 1:7:20    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 1:7:31    serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 1:7:34    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 1:7:37    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 1:7:40    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 1:7:43    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 1:7:46    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 1:7:49    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 1:7:52    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 1:7:55    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 1:7:57    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 1:8:0     serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 1:8:3     serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 1:8:6     serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 1:8:9     serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 1:8:12    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 1:8:15    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 1:8:18    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 1:8:20    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 1:8:22    serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 1:8:23    serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 1:8:26    serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 1:8:29    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 1:8:32    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 1:8:32    serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 1:8:35    serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 1:8:38    serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 1:8:41    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 1:8:43    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 1:8:46    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 1:8:49    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 1:8:51    serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 1:8:52    serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 1:8:52    Agent with alias baphomet is exiting...
+[INFO]      UTC 1:8:52    object with GUID fb5fde19-7052-4191-652b-83bd9f0a707f has been deleted.
+[INFO]      UTC 1:8:52    serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 1:9:26    Server is shutting down...
+[INFO]      UTC 1:9:26    serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 1:13:48   
+Attempting bind to: 127.0.0.1:8081
+[INFO]      UTC 1:13:59   serving GET at endpoint: "/" :: 200
+[INFO]      UTC 1:14:1    serving POST at endpoint: "/verify" :: 200
+[SUCCESS]   UTC 1:14:1    authenticated token MmFFM0RsUEZXUHI5TDlyNmhYRjF5TjdxSw==
+[INFO]      UTC 1:14:1    serving GET at endpoint: "/main" :: 200
+[INFO]      UTC 1:14:2    Opened new websocket connection from 127.0.0.1
+[SUCCESS]   UTC 1:14:2    authenticated websocket connection via token.
+[SUCCESS]   UTC 1:14:5    authenticated token MmFFM0RsUEZXUHI5TDlyNmhYRjF5TjdxSw==
+[INFO]      UTC 1:14:5    serving GET at endpoint: "/objects/getchildren" :: 200
+[INFO]      UTC 1:14:8    serving GET at endpoint: "/objects/getmessages" :: 200
+[SUCCESS]   UTC 1:14:12   created new child under e67a9661-cbb2-420c-a212-9ec894a5e239
+[INFO]      UTC 1:14:12   serving POST at endpoint: "/objects/send" :: 200
+[SUCCESS]   UTC 1:14:17   created new child under e67a9661-cbb2-420c-a212-9ec894a5e239
+[INFO]      UTC 1:14:17   serving POST at endpoint: "/objects/send" :: 200
+[ERROR]     UTC 1:14:20   message query failed: no messages found.
+[INFO]      UTC 1:14:20   serving GET at endpoint: "/objects/getmessages" :: 404
+[INFO]      UTC 1:14:23   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 1:14:25   serving GET at endpoint: "/objects/getmessages" :: 200
+[INFO]      UTC 1:14:27   serving GET at endpoint: "/objects/getmessages" :: 200
+[INFO]      UTC 1:14:35   serving GET at endpoint: "/objects/getmessages" :: 200
+[INFO]      UTC 1:14:38   Server is shutting down...
+[INFO]      UTC 1:14:38   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 1:14:49   
+Attempting bind to: 127.0.0.1:8081
+[INFO]      UTC 1:15:1    serving GET at endpoint: "/" :: 200
+[INFO]      UTC 1:15:2    serving POST at endpoint: "/verify" :: 200
+[SUCCESS]   UTC 1:15:2    authenticated token Um1FbHRMZ1ljekozT25ITmlWOHpCamxNTg==
+[INFO]      UTC 1:15:2    serving GET at endpoint: "/main" :: 200
+[INFO]      UTC 1:15:3    Opened new websocket connection from 127.0.0.1
+[SUCCESS]   UTC 1:15:3    authenticated websocket connection via token.
+[SUCCESS]   UTC 1:15:5    authenticated token Um1FbHRMZ1ljekozT25ITmlWOHpCamxNTg==
+[INFO]      UTC 1:15:5    serving GET at endpoint: "/objects/getchildren" :: 200
+[INFO]      UTC 1:15:8    serving GET at endpoint: "/objects/getmessages" :: 200
+[INFO]      UTC 1:15:10   Server is shutting down...
+[INFO]      UTC 1:15:10   serving POST at endpoint: "/objects/send" :: 200

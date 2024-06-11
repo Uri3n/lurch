@@ -206,14 +206,13 @@ lurch::instance::database::store_token(
 }
 
 
-
-
 lurch::result<bool>
 lurch::instance::database::delete_object(const std::string &guid) {
 
     std::lock_guard<std::mutex> lock(this->mtx);
     try {
         *this->db << "delete from objects where guid = ?;" << guid;
+        *this->db << "delete from messages where guid = ?;" << guid;
     }
     catch (const std::exception& e) {
         return error(io::format_str("exception: {}", e.what()));

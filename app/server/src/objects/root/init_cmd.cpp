@@ -6,6 +6,7 @@
 
 namespace lurch {
     accepted_commands root::commands;
+    std::unordered_map<std::string, std::function<result<std::string>(root*, reciever_context&)>> root::callables;
 }
 
 void
@@ -36,5 +37,17 @@ lurch::root::init_commands() {
         commands.add_command("tokens", "displays existing session tokens and their context.");
 
         commands.done();
+
+        callables =
+        {
+            {"shutdown",        &root::shutdown},
+            {"add_user",        &root::add_user},
+            {"remove_child",    &root::remove_child},
+            {"remove_user",     &root::remove_user},
+            {"generate_token",  &root::generate_token},
+            {"create_chatroom", &root::create_chatroom},
+            {"tokens", [](root* ptr, reciever_context& ctx) { return ptr->get_tokens(); }},
+            {"help", [&](root* ptr, reciever_context& ctx) { return root::commands.help(); }},
+        };
     }
 }

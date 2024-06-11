@@ -5,23 +5,25 @@
 #include <root.hpp>
 #include <components.hpp>
 
-void
-lurch::root::shutdown(const bool wipe_files) const {
+lurch::result<std::string>
+lurch::root::shutdown(reciever_context& ctx) const {
 
+    const bool wipe_files = std::get<0>(ctx.cmd.get<empty>("--wipe-files", "-wf").done()).has_value();
     if(wipe_files) {
         inst->db.fileman_wipe_all();
     }
 
     inst->log.write("Server is shutting down...", log_type::INFO, log_noise::NOISY);
     inst->set_shutdown_condition();
+    return { "Shutting down server." };
 }
 
 
 lurch::result<std::string>
-lurch::root::generate_token(const command &cmd) const {
+lurch::root::generate_token(reciever_context& ctx) const {
 
     const auto [alias, access, expiration] =
-        cmd.get<std::string>("--alias", "-a")
+        ctx.cmd.get<std::string>("--alias", "-a")
             .with<int64_t>("--access-level", "-al")
             .with<int64_t>("--expiration-hours", "-e")
             .done();
@@ -50,7 +52,7 @@ lurch::root::generate_token(const command &cmd) const {
 
 
 lurch::result<std::string>
-lurch::root::create_chatroom(const command &cmd) {
+lurch::root::create_chatroom(reciever_context& ctx) {
 
     return create_child(object_index::GENERIC_CHATROOM, object_type::EXTERNAL, "Teamserver Chat")
         .and_then([&](const bool _) {
@@ -63,9 +65,9 @@ lurch::root::create_chatroom(const command &cmd) {
 
 
 lurch::result<std::string>
-lurch::root::remove_child(const command &cmd) {
+lurch::root::remove_child(reciever_context& ctx) {
 
-    const std::string guid = *std::get<0>(cmd.get<std::string>("--guid", "-g").done());
+    const std::string guid = *std::get<0>(ctx.cmd.get<std::string>("--guid", "-g").done());
     return delete_child(guid)
         .and_then([&](const bool _) {
             return result<std::string>("successfully deleted child.");
@@ -77,10 +79,10 @@ lurch::root::remove_child(const command &cmd) {
 
 
 lurch::result<std::string>
-lurch::root::add_user(const command& cmd) const {
+lurch::root::add_user(reciever_context& ctx) const {
 
     const auto &[username, password, grant_admin] =
-        cmd.get<std::string>("--username", "-u")
+        ctx.cmd.get<std::string>("--username", "-u")
             .with<std::string>("--password", "-p")
             .with<bool>("--grant-admin", "-a")
             .done();
@@ -96,7 +98,10 @@ lurch::root::add_user(const command& cmd) const {
 }
 
 
-lurch::result<std::string> lurch::root::remove_user(const std::string &user) const {
+lurch::result<std::string> lurch::root::remove_user(reciever_context& ctx) const {
+
+    const std::string user = *std::get<0>(ctx.cmd.get<std::string>("--username", "-u").done());
+
     return inst->db.delete_user(user)
         .and_then([&](const bool _) {
             return result<std::string>("success");

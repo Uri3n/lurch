@@ -147,7 +147,7 @@ class instance {
             uint32_t max_object_count = 100;
             std::atomic_uint32_t curr_object_count = 0;
 
-            static search_ctx send_message_r(const std::shared_ptr<object>& current, const std::string& guid, reciever_context& reciever_ctx);
+            search_ctx send_message_r(const std::shared_ptr<object>& current, const std::string& guid, reciever_context& reciever_ctx);
             static std::pair<result<std::filesystem::path>, bool> upload_file_r(const std::shared_ptr<object>&, const std::string& guid, const std::string& file, const std::string& file_type, access_level access);
             static std::pair<result<access_level>, bool> lookup_access_level_r(const std::shared_ptr<object>& current, const std::string& guid);
 

@@ -11,16 +11,18 @@ namespace lurch {
 class root final : public owner {
 private:
     static accepted_commands commands;
+    static std::unordered_map<std::string, std::function<result<std::string>(root*, reciever_context&)>> callables;
+
 public:
 
-    void shutdown(bool wipe_files) const;
     static void init_commands();
 
-    result<std::string> generate_token(const command& cmd) const;
-    result<std::string> create_chatroom(const command& cmd);
-    result<std::string> remove_child(const command& cmd);
-    result<std::string> add_user(const command& cmd) const;
-    result<std::string> remove_user(const std::string& user) const;
+    result<std::string> shutdown(reciever_context& ctx) const;
+    result<std::string> remove_user(reciever_context& ctx) const;
+    result<std::string> generate_token(reciever_context& ctx) const;
+    result<std::string> create_chatroom(reciever_context& ctx);
+    result<std::string> remove_child(reciever_context& ctx);
+    result<std::string> add_user(reciever_context& ctx) const;
     result<std::string> get_tokens() const;
 
     result<std::filesystem::path> upload(const std::string &file, const std::string &extension) override;

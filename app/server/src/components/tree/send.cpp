@@ -12,8 +12,9 @@ lurch::instance::object_tree::send_message_r(
     ) {
 
     search_ctx curr_ctx;
-    const auto owner_ptr = dynamic_cast<owner*>(current.get());
-    const auto leaf_ptr = dynamic_cast<leaf*>(current.get());
+    const auto owner_ptr    = dynamic_cast<owner*>(current.get());
+    const auto leaf_ptr     = dynamic_cast<leaf*>(current.get());
+
 
     if(current->id == guid) {
         curr_ctx.keep_going = false;
@@ -31,18 +32,26 @@ lurch::instance::object_tree::send_message_r(
             curr_ctx.response = leaf_ptr->receive(reciever_ctx);
         }
 
-        curr_ctx.log_if_error = reciever_ctx.log_if_error;
+        curr_ctx.log_if_error   = reciever_ctx.log_if_error;
     }
 
+
     if(owner_ptr && curr_ctx.keep_going) {
-        for(std::shared_ptr<object> child : owner_ptr->children) {
+        for(auto it = owner_ptr->children.begin(); it != owner_ptr->children.end(); ++it) {
+
+            auto curr_child = *it;
             curr_ctx = send_message_r(
-                child,
+                curr_child,
                 guid,
                 reciever_ctx
             );
 
             if(curr_ctx.keep_going == false) {
+                if(reciever_ctx.delete_self == true) {
+                    reciever_ctx.delete_self = false;
+                    curr_child->delete_from_database = true;
+                    owner_ptr->children.erase(it);
+                }
                 break;
             }
         }

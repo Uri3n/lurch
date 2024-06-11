@@ -10,12 +10,12 @@
 std::string
 lurch::object::generate_id() {
 
-    std::random_device device;
-    std::mt19937 generator(device());
-    std::uniform_int_distribution distribution(0, 15);
+    std::random_device              device;
+    std::mt19937                    generator(device());
+    std::uniform_int_distribution   distribution(0, 15);
 
-    static const char* character_set = "0123456789abcdef";
-    std::string guid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx";
+    static const char*              character_set = "0123456789abcdef";
+    std::string                     guid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx";
 
     for(auto& ch : guid) {
         if(ch == 'x')
@@ -67,20 +67,10 @@ lurch::owner::delete_child(const std::string &guid) {
     }
 
     for(auto it = children.begin(); it != children.end(); ++it) {
-        if((*it)->id == guid) {
+        auto child = *it;
+        if(child->id == guid) {
+            child->delete_from_database = true;
             children.erase(it);
-
-            if(const auto delete_result = inst->db.delete_object(guid)) {
-                inst->log.write("deleted object " + guid, log_type::SUCCESS, log_noise::REGULAR);
-            } else {
-                inst->log.write(
-                    io::format_str("failed to delete {} from database: {}", guid, delete_result.error()),
-                    log_type::ERROR_MINOR,
-                    log_noise::REGULAR
-                );
-            }
-
-            inst->routing.send_ws_object_delete_update(guid);
             return { true };
         }
     }
@@ -89,5 +79,30 @@ lurch::owner::delete_child(const std::string &guid) {
 }
 
 
-lurch::owner::owner(std::optional<std::weak_ptr<owner>> parent, instance* inst) : parent(std::move(parent)), inst(inst) {}
-lurch::leaf::leaf(std::optional<std::weak_ptr<owner>> parent, instance *inst) : parent(std::move(parent)), inst(inst) {}
+lurch::owner::~owner() {
+    if(delete_from_database) {
+        for(auto& child : children) {
+            child->delete_from_database = true;
+        }
+
+        if(const auto delete_result = inst->db.delete_object(id)) {
+            inst->log.write(io::format_str("object with GUID {} has been deleted.", id), log_type::INFO, log_noise::NOISY);
+        }
+
+        inst->routing.send_ws_object_delete_update(id);
+    }
+}
+
+lurch::leaf::~leaf() {
+    if(delete_from_database) {
+        if(const auto delete_result = inst->db.delete_object(id)) {
+            inst->log.write(io::format_str("object with GUID {} has been deleted.", id), log_type::INFO, log_noise::NOISY);
+        }
+
+        inst->routing.send_ws_object_delete_update(id);
+    }
+}
+
+
+lurch::owner::owner(std::optional<std::weak_ptr<owner>> parent, instance* inst) : object(inst), parent(std::move(parent)) {}
+lurch::leaf::leaf(std::optional<std::weak_ptr<owner>> parent, instance *inst) : object(inst), parent(std::move(parent)) {}

@@ -115,11 +115,37 @@ tasking::resolve_object_symbol(const char* symbol) {
     std::string library;
     void* resolved_func = nullptr;
 
+    static const beacon_function_pair api_pairs[] = {
+        {"BeaconOutput", BeaconOutput},
+        {"BeaconPrintf", BeaconPrintf},
+        {"BeaconDataParse", BeaconDataParse},
+        {"BeaconDataInt", BeaconDataInt},
+        {"BeaconDataShort", BeaconDataShort},
+        {"BeaconDataLength", BeaconDataLength},
+        {"BeaconDataExtract", BeaconDataExtract},
+        {"BeaconIsAdmin", BeaconIsAdmin},
+        {"BeaconUseToken", BeaconUseToken},
+        {"BeaconRevertToken", BeaconRevertToken},
+        {"BeaconFormatAlloc", BeaconFormatAlloc},
+        {"BeaconFormatReset", BeaconFormatReset},
+        {"BeaconFormatAppend", BeaconFormatAppend},
+        {"BeaconFormatPrintf", BeaconFormatPrintf},
+        {"BeaconFormatToString", BeaconFormatToString},
+        {"BeaconFormatFree", BeaconFormatFree},
+        {"BeaconFormatInt", BeaconFormatInt},
+        {"BeaconGetSpawnTo", BeaconGetSpawnTo},
+        {"BeaconSpawnTemporaryProcess", BeaconSpawnTemporaryProcess},
+        {"BeaconInjectTemporaryProcess", BeaconInjectTemporaryProcess},
+        {"BeaconInjectProcess", BeaconInjectProcess},
+        {"BeaconCleanupProcess", BeaconCleanupProcess},
+        {"toWideChar", toWideChar},
+    };
+
     if(symbol == nullptr || strncmp("__imp_", symbol, 6) != 0) {
         return nullptr;
     }
 
-    symbol += 6;
+    symbol += 6; // move past the "__imp_" string
 
     //
     // if the symbol is a Beacon API function, check which one it is.
@@ -127,65 +153,14 @@ tasking::resolve_object_symbol(const char* symbol) {
 
     if(strncmp("Beacon", symbol, 6) == 0) {
 
-                /* data parse */
-        if (strcmp("BeaconDataParse", symbol) == 0) {
-            resolved_func = BeaconDataParse;
-        } else if (strcmp("BeaconDataInt", symbol) == 0) {
-            resolved_func = BeaconDataInt;
-        } else if (strcmp("BeaconDataShort", symbol) == 0) {
-            resolved_func = BeaconDataShort;
-        } else if (strcmp("BeaconDataLength", symbol) == 0) {
-            resolved_func = BeaconDataLength;
-        } else if (strcmp("BeaconDataExtract", symbol) == 0) {
-            resolved_func = BeaconDataExtract;
-        } else if (strcmp("BeaconOutput", symbol) == 0) {
-            resolved_func = BeaconOutput;
-        } else if (strcmp("BeaconPrintf", symbol) == 0) {
-            resolved_func = BeaconPrintf;
+        for(size_t i = 0; i < sizeof(api_pairs) / sizeof(api_pairs[0]); i++) {
+            if(api_pairs[i].name == symbol) {
+                resolved_func = api_pairs[i].func;
+                break;
+            }
         }
 
-                /* token  */
-        else if (strcmp("BeaconIsAdmin", symbol) == 0) {
-            resolved_func = BeaconIsAdmin;
-        } else if (strcmp("BeaconUseToken", symbol) == 0) {
-            resolved_func = BeaconUseToken;
-        } else if (strcmp("BeaconRevertToken", symbol) == 0) {
-            resolved_func = BeaconRevertToken;
-        }
-
-                /* format */
-        else if(strcmp("BeaconFormatAlloc", symbol) == 0) {
-            resolved_func = BeaconFormatAlloc;
-        } else if(strcmp("BeaconFormatReset", symbol) == 0) {
-            resolved_func = BeaconFormatReset;
-        } else if(strcmp("BeaconFormatAppend", symbol) == 0) {
-            resolved_func = BeaconFormatAppend;
-        } else if(strcmp("BeaconFormatPrintf", symbol) == 0) {
-            resolved_func = BeaconFormatPrintf;
-        } else if(strcmp("BeaconFormatToString", symbol) == 0) {
-            resolved_func = BeaconFormatToString;
-        } else if(strcmp("BeaconFormatFree", symbol) == 0) {
-            resolved_func = BeaconFormatFree;
-        } else if(strcmp("BeaconFormatInt", symbol) == 0) {
-            resolved_func = BeaconFormatInt;
-        }
-
-                /* fork & run */
-        else if(strcmp("BeaconGetSpawnTo", symbol) == 0) {
-            resolved_func = BeaconGetSpawnTo;
-        } else if(strcmp("BeaconSpawnTemporaryProcess", symbol) == 0) {
-            resolved_func = BeaconSpawnTemporaryProcess;
-        } else if(strcmp("BeaconInjectTemporaryProcess", symbol) == 0) {
-            resolved_func = BeaconInjectTemporaryProcess;
-        } else if(strcmp("BeaconInjectProcess", symbol) == 0) {
-            resolved_func = BeaconInjectProcess;
-        } else if(strcmp("BeaconCleanupProcess", symbol) == 0) {
-            resolved_func = BeaconCleanupProcess;
-        } else if(strcmp("toWideChar", symbol) == 0) {
-            resolved_func = toWideChar;
-        }
-
-        else {
+        if(resolved_func == nullptr) {
             clear_beacon_output();
             manip_beacon_output((char*)(std::string("Unsupported beacon function: ") + symbol).c_str(), false, false, nullptr);
             return nullptr;

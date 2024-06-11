@@ -218,6 +218,7 @@ BeaconFormatAppend(formatp *format, char* text, int len) {
     format->length += len;
 }
 
+
 void
 BeaconOutput(int type, char* data, int len) {
     manip_beacon_output(data, false, false, nullptr);
@@ -377,12 +378,12 @@ BeaconUseToken(HANDLE token) {
     return TRUE;
 }
 
+
 void
 BeaconRevertToken() {
     clear_curr_token();
     RevertToSelf();
 }
-
 
 
 void

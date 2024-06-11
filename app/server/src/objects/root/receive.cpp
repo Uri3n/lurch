@@ -17,43 +17,26 @@ lurch::root::receive(reciever_context& ctx) {
         init_commands();
     }
 
+    //
+    // debug purposes only
+    //
+    if(ctx.cmd.name == "debug_gen") {
+        return create_child(object_index::BAPHOMET, object_type::AGENT, "Baphomet")
+            .and_then([&](const bool _) {
+                return result<std::string>("successfully created baphomet object.");
+            })
+            .or_else([&](std::string err) {
+                return result<std::string>(error(err));
+            });
+    }
+
     if(!commands.matches(ctx.cmd)) {
         return error("invalid command or argument.");
     }
 
-    if(ctx.cmd == "shutdown") {
-        shutdown(std::get<0>(ctx.cmd.get<empty>("--wipe-files", "-wf").done()).has_value());
-        return "shutting down server...";
+    if(callables.contains(ctx.cmd.name)) {
+        return callables[ctx.cmd.name](this, ctx);
     }
-
-    if(ctx.cmd == "add_user") {
-        return add_user(ctx.cmd);
-    }
-
-    if(ctx.cmd == "remove_user") {
-        return remove_user(*std::get<0>(ctx.cmd.get<std::string>("--username", "-u").done()));
-    }
-
-    if(ctx.cmd == "remove_child") {
-        return remove_child(ctx.cmd);
-    }
-
-    if(ctx.cmd == "create_chatroom") {
-        return create_chatroom(ctx.cmd);
-    }
-
-    if(ctx.cmd == "tokens") {
-        return get_tokens();
-    }
-
-    if(ctx.cmd == "help") {
-        return { commands.help() };
-    }
-
-    if(ctx.cmd == "generate_token") {
-        return generate_token(ctx.cmd);
-    }
-
 
     return OBJECT_EMPTY_RESPONSE;
 }

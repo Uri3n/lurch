@@ -5,13 +5,19 @@
 #ifndef MACRO_HPP
 #define MACRO_HPP
 
+#ifdef BAPHOMET_DEBUG
+    #define DEBUG_PRINT(fmt, ...) printf(fmt, __VA_ARGS__)
+#else
+    #define DEBUG_PRINT(fmt,...)
+#endif
+
+
 #define CLOSE_HANDLE(HANDLE) if(HANDLE != nullptr && HANDLE != INVALID_HANDLE_VALUE){CloseHandle(HANDLE);}
 #define FREE_HEAP_BUFFER(BUFFER) if(BUFFER != nullptr){HeapFree(GetProcessHeap(), 0, BUFFER);}
 
 #define LURCH_INVALID_INTEGRITY_LEVEL 0xFFFFUL // unused.
 #define SIZE_OF_PAGE     0x1000
 #define COMMAND_DELIMITER '!'
-
 
 #define PAGE_ALIGN(x)    (((uint64_t)x) + ((SIZE_OF_PAGE - (((uint64_t)x) & (SIZE_OF_PAGE - 1))) % SIZE_OF_PAGE))
 #define PTR_TO_U64(ptr)  reinterpret_cast<uint64_t>(ptr)

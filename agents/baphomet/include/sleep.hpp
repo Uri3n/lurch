@@ -11,6 +11,7 @@
 #include <common.hpp>
 
 namespace obfus {
+    void ekko_sleep(uint32_t sleep_time);
     void sleep(uint32_t sleep_time);
 }
 

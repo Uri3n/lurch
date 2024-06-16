@@ -120,9 +120,8 @@ BeaconDataParse(datap* parser, char* buffer, int size) {
 
     parser->original = buffer;
     parser->buffer = buffer;
-    parser->length = size - 4;
-    parser->size = size - 4;
-    parser->buffer += 4;
+    parser->length = size;
+    parser->size = size;
 }
 
 
@@ -301,13 +300,13 @@ BeaconPrintf(int type, char* fmt, ...) {
         return;
     }
 
-    buff = static_cast<char*>(HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, len + 1));
+    buff = static_cast<char*>(HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, len + 2));
     if(!buff) {
         va_end(VaList);
         return;
     }
 
-    vsnprintf(buff, len, fmt, VaList);
+    vsnprintf(buff, len + 1, fmt, VaList);
     manip_beacon_output(buff, false, false, nullptr);
 
     va_end(VaList);

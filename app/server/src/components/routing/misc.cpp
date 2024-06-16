@@ -35,7 +35,7 @@ lurch::instance::router::file_template(
 
     static constexpr filetype_pair<2> audio_formats = {
         {".mp3",".wav"},
-        R"(<audio controls title="{}" draggable="false">
+        R"(<audio controls title="{}" draggable="false" class="terminal-media-element">
             <source src="{}" type="audio/mpeg">
                 Your browser does not support the audio element.
             </audio>)"
@@ -43,19 +43,19 @@ lurch::instance::router::file_template(
 
     static constexpr filetype_pair<5> image_formats = {
         {".png",".jpg",".jpeg",".bmp",".gif"},
-        R"(<img src="{}" draggable="false" class="placeholder-image" title="{}">)"
+        R"(<img src="{}" draggable="false" class="terminal-media-element" title="{}">)"
     };
 
     static constexpr filetype_pair<1> video_formats = {
         {".mp4"},
-        R"(<video controls title="{}" draggable="false">
+        R"(<video controls title="{}" draggable="false" class="terminal-media-element">
             <source src="{}" type="video/mp4"></source>
                 Your browser does not support video elements.
         </video>)"
     };
 
     static constexpr std::string_view generic_file_template =
-        R"(<a href="{}" download draggable="false">
+        R"(<a href="{}" download draggable="false" class="terminal-media-element">
                     <div class="file has-name is-boxed">
                         <label class="file-label">
                             <span class="file-cta">

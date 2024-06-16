@@ -4,7 +4,8 @@
 
 #include <common.hpp>
 
-constexpr size_t comptime_strlen_ansi(const char* string) {
+constexpr size_t
+comptime_strlen_ansi(const char* string) {
 
     size_t counter = 0;
     while (*string != '\0') {
@@ -17,7 +18,8 @@ constexpr size_t comptime_strlen_ansi(const char* string) {
 }
 
 
-constexpr uint32_t hash_ansi(const char* str) {
+constexpr uint32_t
+hash_ansi(const char* str) {
 
     uint32_t initial_seed = 7; //can be altered if needed
     uint32_t hash         = 0;

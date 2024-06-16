@@ -6,6 +6,7 @@
 #define FUNCTION_PTRS_HPP
 #include <Windows.h>
 #include <winternl.h>
+#include <structs.hpp>
 
 typedef HMODULE(WINAPI* fnLoadLibraryA)(
 	LPCSTR lpLibFileName
@@ -22,6 +23,23 @@ typedef LPVOID(WINAPI* fnVirtualAlloc)(
 	SIZE_T dwSize,
 	DWORD  flAllocationType,
 	DWORD  flProtect
+);
+
+typedef NTSTATUS(NTAPI* fnNtSetInformationVirtualMemory)(
+	_In_ HANDLE ProcessHandle,
+	_In_ VIRTUAL_MEMORY_INFORMATION_CLASS VmInformationClass,
+	_In_ ULONG_PTR NumberOfEntries,
+	_In_reads_(NumberOfEntries) PMEMORY_RANGE_ENTRY VirtualAddresses,
+	_In_reads_bytes_(VmInformationLength) PVOID VmInformation,
+	_In_ ULONG VmInformationLength
+);
+
+typedef BOOL(WINAPI* fnSetProcessValidCallTargets)(
+	HANDLE                hProcess,
+	PVOID                 VirtualAddress,
+	SIZE_T                RegionSize,
+	ULONG                 NumberOfOffsets,
+	PCFG_CALL_TARGET_INFO OffsetInformation
 );
 
 typedef BOOL(WINAPI* fnVirtualProtect)(

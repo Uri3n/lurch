@@ -61,6 +61,10 @@ lurch::baphomet::receive(reciever_context& ctx) {
     }
 
     if(!commands.matches(ctx.cmd)) {
+        if(ctx.address == connected_agent_data.ip && ctx.tok.token == connected_agent_data.token) {
+            return complete_task(ctx);
+        }
+
         return error("invalid command or argument");
     }
 

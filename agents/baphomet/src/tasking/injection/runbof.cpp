@@ -56,9 +56,9 @@ tasking::object_virtual_size(object_context* ctx) {
 
 
 bool
-tasking::object_execute(object_context* ctx, const char* entry, unsigned char* args, const uint32_t argc) {
+tasking::object_execute(object_context* ctx, const char* entry, char* args, const uint32_t argc) {
 
-    void(*main)(unsigned char*, uint32_t) = nullptr;
+    void(*main)(char*, uint32_t) = nullptr;
 
     PIMAGE_SYMBOL   symbol       = nullptr;
     char*           symbol_name  = nullptr;
@@ -307,7 +307,7 @@ bool
 tasking::load_object(
         void* pobject,
         const std::string& func_name,
-        unsigned char* arguments,
+        char* arguments,
         const uint32_t argc
     ) {
 
@@ -405,14 +405,165 @@ tasking::load_object(
 }
 
 
+bool
+is_numeric(const std::string& str) {
+    for( size_t i = 0; i < str.size(); i++ ) {
+        if(i == 0 && str[i] == '-') {
+            if(str.size() == 1) {
+                return false;
+            }
+            continue;
+        }
+        if(!isdigit(str[i])) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+
+bool
+is_ambiguous(const std::string& str) {
+    if(!str.empty() && (str[0] == 's' || str[0] == 'i')) {
+        if(str.size() == 1) {
+            return true;
+        } if(!is_numeric(std::string(&str.c_str()[1]))) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
+void
+strip_whitespace(std::string& str) {
+
+    if (str.empty()) {
+        return;
+    }
+
+    size_t first_non_space = str.find_first_not_of(" \t");
+    if (first_non_space != std::string::npos) {
+        str.erase(0, first_non_space);
+    }
+
+    if (str.empty())
+        return;
+
+
+    if (str.back() == ' ' || str.back() == '\t') {
+        size_t r_first_non_space = str.size() - 1;
+        while ((r_first_non_space - 1) >= 0 && (str[r_first_non_space - 1] == ' ' || str[r_first_non_space - 1] == '\t')) {
+            --r_first_non_space;
+        }
+
+        str.erase(r_first_non_space);
+    }
+}
+
+
+bool
+pack_arguments(std::string unpacked, std::vector<char>& packed) {
+
+    std::vector<std::string>    chunks;
+    size_t                      start    = 0;
+    size_t                      next_arg = 0;
+
+    if(unpacked.empty()) {
+        return false;
+    }
+
+    if(unpacked.back() != ',') {
+        unpacked += ',';
+    }
+
+
+    next_arg = unpacked.find(',');
+    while(next_arg != std::string::npos) {
+        if(next_arg > start) {
+            chunks.push_back(unpacked.substr(start, next_arg - start));
+        }
+
+        start = next_arg + 1;
+        next_arg = unpacked.find(',', start);
+    }
+
+    if(chunks.empty()) {
+        return false;
+    }
+
+
+    for(std::string& str : chunks) {
+        strip_whitespace(str);
+        if(str.empty()) {
+            return false;
+        }
+
+        if((str[0] != 's' && str[0] != 'i') || is_ambiguous(str) ) {
+            auto                size_prefix = static_cast<uint32_t>(str.size() + 1); //::size does not include the null terminator
+            std::vector<char>   prefix_buffer;
+
+            prefix_buffer.resize(sizeof(uint32_t));
+            memcpy(prefix_buffer.data(), &size_prefix, sizeof(uint32_t));
+
+            packed.insert(packed.end(), prefix_buffer.begin(), prefix_buffer.end());
+            packed.insert(packed.end(), str.begin(), str.end());
+            packed.emplace_back('\0');
+        }
+
+        else {
+            const bool          is_short = (str[0] == 's');
+            std::vector<char>   buffer;
+
+            buffer.resize(is_short ? sizeof(short) : sizeof(int));
+            str.erase(0,1);
+
+            if(str.empty() || !is_numeric(str)) {
+                return false;
+            }
+
+            const int arg_int = atoi(str.c_str());
+            if(!arg_int) {
+                return false;
+            }
+
+            if(is_short) {
+                short arg_short = static_cast<short>(arg_int);
+                memcpy(buffer.data(), &arg_short, sizeof(short));
+            } else {
+                memcpy(buffer.data(), &arg_int, sizeof(int));
+            }
+
+            packed.insert(packed.end(), buffer.begin(), buffer.end());
+        }
+    }
+
+    return true;
+}
+
+
 std::string
-tasking::execute_bof(const std::string &object_file, unsigned char* arguments, const int argc) {
+tasking::execute_bof(const std::string &object_file, const char* unpacked) {
 
-    const bool success = load_object((void*)object_file.data(), "go", arguments, argc);
+    std::vector<char> packed;
+    if(unpacked != nullptr) {
+        if(!pack_arguments(std::string(unpacked), packed)) {
+            return "Invalid BOF arguments provided.";
+        }
+    }
+
+    const bool success = load_object(
+        (void*)object_file.data(),
+        "go",
+        packed.empty() ? nullptr : packed.data(),
+        packed.size()
+    );
+
     std::string output = get_beacon_output();
-
     if(!success && output.empty()) {
-        return "Failed to load object file. Unspecified error.";
+        return "Failed to load object file.";
     }
 
     clear_beacon_output();

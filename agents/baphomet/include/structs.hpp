@@ -6,11 +6,13 @@
 #define STRUCTS_HPP
 #include <Windows.h>
 #include <cstdint>
+#include <vector>
 #include <string>
 #include <winternl.h>
 #include <winhttp.h>
 
 #define RTL_MAX_DRIVE_LETTERS 32
+
 
 struct implant_context {
     HINTERNET hsession = nullptr;
@@ -28,10 +30,12 @@ struct implant_context {
     uint64_t jitter;
 };
 
+
 enum class output_type : uint32_t {
     PLAIN_TEXT,
     FILE
 };
+
 
 struct command_output {
     std::string body;
@@ -39,15 +43,24 @@ struct command_output {
     output_type type            = output_type::PLAIN_TEXT;
 };
 
+
 struct beacon_function_pair {
     std::string name;
     void* func = nullptr;
 };
 
+
 struct section_map {
     PVOID base;
     ULONG size;
 };
+
+
+struct dispatch_pair {
+    std::string name;
+    command_output (*func)(const std::vector<std::string>&, const implant_context& ctx);
+};
+
 
 struct object_context {
     union {
@@ -60,6 +73,7 @@ struct object_context {
     section_map*        sec_map;
     PIMAGE_SECTION_HEADER sections;
 };
+
 
 struct dll_info {
 
@@ -78,6 +92,44 @@ struct dll_info {
 
     bool InitComplete = false;
 };
+
+
+typedef enum _VIRTUAL_MEMORY_INFORMATION_CLASS
+{
+    VmPrefetchInformation, // ULONG
+    VmPagePriorityInformation, // OFFER_PRIORITY
+    VmCfgCallTargetInformation, // CFG_CALL_TARGET_LIST_INFORMATION // REDSTONE2
+    VmPageDirtyStateInformation, // REDSTONE3
+    VmImageHotPatchInformation, // 19H1
+    VmPhysicalContiguityInformation, // 20H1
+    VmVirtualMachinePrepopulateInformation,
+    VmRemoveFromWorkingSetInformation,
+    MaxVmInfoClass
+} VIRTUAL_MEMORY_INFORMATION_CLASS;
+
+
+typedef struct _VM_INFORMATION
+{
+    DWORD                      dwNumberOfOffsets;
+    PVOID                      MustBeZero;
+    PDWORD                     pdwOutput;
+    PCFG_CALL_TARGET_INFO      ptOffsets;
+} VM_INFORMATION, *PVM_INFORMATION;
+
+
+typedef struct _MEMORY_RANGE_ENTRY
+{
+    PVOID VirtualAddress;
+    SIZE_T NumberOfBytes;
+} MEMORY_RANGE_ENTRY, *PMEMORY_RANGE_ENTRY;
+
+
+#pragma pack(push, 1)
+typedef struct {
+    ULONG ExtendedProcessInfo;
+    ULONG ExtendedProcessInfoBuffer;
+} EXTENDED_PROCESS_INFORMATION, *PEXTENDED_PROCESS_INFORMATION;
+#pragma pack(pop)
 
 
 typedef struct _BASE_RELOCATION_ENTRY {
@@ -314,13 +366,13 @@ typedef struct _RTL_DRIVE_LETTER_CURDIR
 
 } RTL_DRIVE_LETTER_CURDIR, * PRTL_DRIVE_LETTER_CURDIR;
 
+
 typedef struct _CURDIR
 {
     UNICODE_STRING DosPath;
     HANDLE Handle;
 
 } CURDIR, * PCURDIR;
-
 
 
 typedef struct _UNDOC_RTL_USER_PROCESS_PARAMETERS

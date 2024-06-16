@@ -7,6 +7,8 @@
 #include <Windows.h>
 #include <string>
 #include <winternl.h>
+#include <macro.hpp>
+#include <structs.hpp>
 #include <function_ptrs.hpp>
 
 namespace tasking {
@@ -22,6 +24,8 @@ namespace tasking {
     HANDLE      create_image_section(HANDLE himage, NTSTATUS* out_status);
 
     bool        create_anonymous_pipe(HANDLE* hread, HANDLE* hwrite);
+    bool        is_process_cfg_enforced();
+    bool        add_cfg_call_target(char* module_base, void* function_address);
     void*       remote_alloc(HANDLE hprocess, void* preferred, uint32_t size, uint32_t protect);
     bool        remote_write(HANDLE hprocess, void* destination, void* source, size_t size, uint32_t protect_after);
 }

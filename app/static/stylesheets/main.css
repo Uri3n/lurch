@@ -325,6 +325,21 @@ body {
     margin:auto;
 }
 
+.terminal-media-element {
+    display:flex;
+    align-items:center;
+    justify-content:left;
+    max-height:40vh;
+    max-width:auto;
+    display:block;
+    margin:auto;
+
+    margin-top:     0   !important;
+    margin-left:    0   !important;
+    margin-right:   0   !important;
+    margin-bottom:  2vh !important;
+}
+
 
 /* Animations */
 

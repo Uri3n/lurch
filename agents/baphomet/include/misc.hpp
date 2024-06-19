@@ -28,6 +28,7 @@ namespace tasking {
     bool        add_cfg_call_target(char* module_base, void* function_address);
     void*       remote_alloc(HANDLE hprocess, void* preferred, uint32_t size, uint32_t protect);
     bool        remote_write(HANDLE hprocess, void* destination, void* source, size_t size, uint32_t protect_after);
+    bool        init_config(const volatile char* pmetadata, implant_context& ctx);
 }
 
 namespace tasking {

@@ -27,6 +27,7 @@ lurch::instance::router::run(
         res.end();
     });
 
+
     CROW_ROUTE(this->app, "/scripts/<string>/<string>")
     .methods("GET"_method)([&](const crow::request& req, crow::response& res, std::string folder, std::string script_name) {
 
@@ -41,15 +42,9 @@ lurch::instance::router::run(
             }
         }
 
-        /*                  causes output issues
-        inst->log.write(
-            "serving GET at endpoint: \"/scripts\" :: " + std::to_string(res.code),
-            log_type::INFO,
-            log_noise::REGULAR
-        );
-        */
         res.end();
     });
+
 
     CROW_ROUTE(this->app, "/isrunning")
     .methods("GET"_method)([&](const crow::request& req, crow::response& res) {
@@ -58,6 +53,7 @@ lurch::instance::router::run(
         res.body = "LURCH_SERVER_OK";
         res.end();
     });
+
 
     CROW_ROUTE(this->app, "/verify")
     .methods("POST"_method)([&](const crow::request& req, crow::response& res) {
@@ -241,6 +237,7 @@ lurch::instance::router::run(
             inst->log.write("websocket verification failed: " + conn.get_remote_ip(), log_type::ERROR_MINOR, log_noise::REGULAR);
         }
     });
+
 
 
     app.loglevel(crow::LogLevel::Critical);

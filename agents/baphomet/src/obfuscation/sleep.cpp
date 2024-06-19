@@ -134,13 +134,13 @@ obfus::ekko_sleep(const uint32_t sleep_time) {
 }
 
 void
-obfus::sleep(const uint32_t sleep_time) {
+obfus::sleep(const implant_context& ctx) {
 
-    #ifdef BAPHOMET_USE_SLEEPMASK
-        ekko_sleep(sleep_time);
-    #else
-        Sleep(sleep_time);
-    #endif
+    if(ctx.use_sleepmask) {
+        ekko_sleep(ctx.sleep_time);
+    } else {
+        Sleep(ctx.sleep_time);
+    }
 }
 
 uint8_t*

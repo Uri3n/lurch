@@ -137,3 +137,50 @@ lurch::root::get_tokens() const {
         return error(tokens_res.error());
     }
 }
+
+
+lurch::result<std::string>
+lurch::root::get_listeners() const {
+
+    if(const auto listeners = inst->db.query_all_listeners()) {
+
+        std::string buff;
+        buff += io::format_str("{:<17} {:<7} {:<7} {:<38}", "Address", "Port", "Proto", "Object") + '\n';
+        buff += io::format_str("{:=<17} {:=<7} {:=<7} {:=<38}", "=", "=", "=", "=") + '\n';
+
+        for(const auto &[address, guid, port, type, cert, key] : *listeners) {
+            buff += io::format_str(
+                "{:<17} {:<7} {:<7} {:<38}",
+                address,
+                port,
+                io::listener_type_to_str(type),
+                guid
+            ) + '\n';
+        }
+
+        return buff;
+    }
+    else {
+        return error(listeners.error());
+    }
+}
+
+
+lurch::result<std::string>
+lurch::root::generate_baphomet(reciever_context& ctx) {
+
+    const auto [format, user_agent, sleeptime, jitter, killdate, mask, debug_prevention] =
+        ctx.cmd.get<std::string>("--format", "-f")
+            .with<std::string>("--user-agent", "-ua")
+            .with<int64_t>("--sleeptime", "-s")
+            .with<int64_t>("--jitter", "-j")
+            .with<int64_t>("--killdate", "-kd")
+            .with<bool>("--mask", "-m")
+            .with<bool>("--prevent-debugging", "-pd")
+            .done();
+
+
+    // do stuff...
+    return error("dfdsfsdf");
+}
+

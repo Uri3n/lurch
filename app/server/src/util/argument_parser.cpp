@@ -5,29 +5,6 @@
 #include <argument_parser.hpp>
 #include <typeindex>
 
-lurch::result<double>
-lurch::argument_parser::safe_to_double(const std::string token) {
-
-	bool has_period = false;
-	for(const char& c : token) {
-		if(!isdigit(c) && c != '-' && c != '.') {
-			return error("failed.");
-		}
-		if(c == '.') {
-			has_period = true;
-		}
-	}
-
-	if(!has_period) {
-		return error("failed.");
-	}
-
-	double d = 0.00;
-
-	try { d = std::stod(token); }
-	catch ( const std::exception& e) { return error("failed."); }
-	return d;
-}
 
 lurch::result<int64_t>
 lurch::argument_parser::safe_to_signed_integer(const std::string token) {
@@ -56,16 +33,11 @@ lurch::argument_parser::safe_to_boolean(const std::string token) {
 lurch::argument_parameter
 lurch::argument_parser::infer_parameter_type(const std::string token) {
 
-	result<int64_t> param_i64     =   argument_parser::safe_to_signed_integer(token);
-	result<bool> param_bool       =   argument_parser::safe_to_boolean(token);
-	result<double> param_double   =   argument_parser::safe_to_double(token);
+	result<int64_t> param_i64		 =   argument_parser::safe_to_signed_integer(token);
+	result<bool>	param_bool       =   argument_parser::safe_to_boolean(token);
 
 	if (param_bool) {
 		return param_bool.value();
-	}
-
-	if (param_double) {
-		return param_double.value();
 	}
 
 	if (param_i64) {

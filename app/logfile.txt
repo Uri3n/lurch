@@ -1,569 +1,596 @@
-[INFO]      UTC 18:41:58  
+[INFO]      UTC 21:42:25  
 Attempting bind to: 127.0.0.1:8081
-[INFO]      UTC 18:59:19  serving GET at endpoint: "/" :: 200
-[INFO]      UTC 18:59:20  serving POST at endpoint: "/verify" :: 200
-[SUCCESS]   UTC 18:59:20  authenticated token Sm1PNHF0empzcldZWndqTlF0TGpIbVlCVA==
-[INFO]      UTC 18:59:20  serving GET at endpoint: "/main" :: 200
-[INFO]      UTC 18:59:21  Opened new websocket connection from 127.0.0.1
-[SUCCESS]   UTC 18:59:21  authenticated websocket connection via token.
-[INFO]      UTC 18:59:22  serving GET at endpoint: "/objects/getmessages" :: 200
-[INFO]      UTC 18:59:24  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 18:59:30  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 18:59:33  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 18:59:37  Server is shutting down...
-[INFO]      UTC 18:59:37  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 23:51:1   
+[INFO]      UTC 21:42:31  serving GET at endpoint: "/" :: 200
+[INFO]      UTC 21:42:33  serving POST at endpoint: "/verify" :: 200
+[SUCCESS]   UTC 21:42:33  authenticated token ODJubFdrb1l4aTlIc0tINTY3ZkV3enlGYw==
+[INFO]      UTC 21:42:33  serving GET at endpoint: "/main" :: 200
+[INFO]      UTC 21:42:33  Opened new websocket connection from 127.0.0.1
+[SUCCESS]   UTC 21:42:33  authenticated websocket connection via token.
+[SUCCESS]   UTC 21:42:35  authenticated token ODJubFdrb1l4aTlIc0tINTY3ZkV3enlGYw==
+[INFO]      UTC 21:42:35  serving GET at endpoint: "/objects/getchildren" :: 200
+[INFO]      UTC 21:42:37  serving GET at endpoint: "/objects/getmessages" :: 200
+[INFO]      UTC 21:42:38  serving POST at endpoint: "/objects/send" :: 200
+[ERROR]     UTC 21:42:39  message query failed: no messages found.
+[INFO]      UTC 21:42:39  serving GET at endpoint: "/objects/getmessages" :: 404
+[INFO]      UTC 21:42:42  serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 21:42:43  serving GET at endpoint: "/objects/getmessages" :: 200
+[INFO]      UTC 21:42:45  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 21:42:58  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 21:42:59  serving POST at endpoint: "/objects/send" :: 200
+[SUCCESS]   UTC 21:46:4   authenticated token ODJubFdrb1l4aTlIc0tINTY3ZkV3enlGYw==
+[INFO]      UTC 21:46:4   serving GET at endpoint: "/objects/getchildren" :: 404
+[INFO]      UTC 21:48:3   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 21:57:20  Server is shutting down...
+[INFO]      UTC 21:57:20  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 23:39:12  
 Attempting bind to: 127.0.0.1:8081
-[INFO]      UTC 23:51:21  serving GET at endpoint: "/" :: 200
-[INFO]      UTC 23:51:23  serving POST at endpoint: "/verify" :: 200
-[SUCCESS]   UTC 23:51:23  authenticated token WnVycFc1SFlEaFVSWUpxREY3WkJZRGRSNw==
-[INFO]      UTC 23:51:23  serving GET at endpoint: "/main" :: 200
-[INFO]      UTC 23:51:24  Opened new websocket connection from 127.0.0.1
-[SUCCESS]   UTC 23:51:24  authenticated websocket connection via token.
-[SUCCESS]   UTC 23:51:29  authenticated token WnVycFc1SFlEaFVSWUpxREY3WkJZRGRSNw==
-[INFO]      UTC 23:51:29  serving GET at endpoint: "/objects/getchildren" :: 200
-[INFO]      UTC 23:51:30  serving GET at endpoint: "/objects/getmessages" :: 200
-[SUCCESS]   UTC 23:51:50  created new child under e67a9661-cbb2-420c-a212-9ec894a5e239
-[INFO]      UTC 23:51:50  serving POST at endpoint: "/objects/send" :: 200
-[ERROR]     UTC 23:53:42  message query failed: no messages found.
-[INFO]      UTC 23:53:42  serving GET at endpoint: "/objects/getmessages" :: 404
-[ERROR]     UTC 23:53:51  message query failed: no messages found.
-[INFO]      UTC 23:53:51  serving GET at endpoint: "/objects/getmessages" :: 404
-[INFO]      UTC 23:54:18  object with a GUID of c1deeb9b-4e9e-498e-393d-79fccc88e942 has been deleted.
-[INFO]      UTC 23:54:18  serving POST at endpoint: "/objects/send" :: 200
-[ERROR]     UTC 23:54:26  message query failed: no messages found.
-[INFO]      UTC 23:54:26  serving GET at endpoint: "/objects/getmessages" :: 404
-[INFO]      UTC 23:54:31  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 23:54:33  serving POST at endpoint: "/objects/send" :: 200
-[ERROR]     UTC 23:54:37  message query failed: no messages found.
-[INFO]      UTC 23:54:37  serving GET at endpoint: "/objects/getmessages" :: 404
-[SUCCESS]   UTC 23:54:39  authenticated token WnVycFc1SFlEaFVSWUpxREY3WkJZRGRSNw==
-[INFO]      UTC 23:54:39  serving GET at endpoint: "/objects/getchildren" :: 404
-[INFO]      UTC 23:54:46  object with a GUID of 269e4624-5fe7-4059-5112-debfa90593d2 has been deleted.
-[INFO]      UTC 23:54:46  serving POST at endpoint: "/objects/send" :: 200
-[SUCCESS]   UTC 23:54:54  created new child under e67a9661-cbb2-420c-a212-9ec894a5e239
-[INFO]      UTC 23:54:54  serving POST at endpoint: "/objects/send" :: 200
-[SUCCESS]   UTC 23:54:57  authenticated token WnVycFc1SFlEaFVSWUpxREY3WkJZRGRSNw==
-[INFO]      UTC 23:54:57  serving GET at endpoint: "/objects/getchildren" :: 404
-[ERROR]     UTC 23:54:58  message query failed: no messages found.
-[INFO]      UTC 23:54:58  serving GET at endpoint: "/objects/getmessages" :: 404
-[INFO]      UTC 23:55:0   object with a GUID of fdaee6a5-4c4b-4f29-7bf4-7072a97a62a7 has been deleted.
-[INFO]      UTC 23:55:0   serving POST at endpoint: "/objects/send" :: 200
-[SUCCESS]   UTC 23:55:28  created new child under e67a9661-cbb2-420c-a212-9ec894a5e239
-[INFO]      UTC 23:55:28  serving POST at endpoint: "/objects/send" :: 200
-[SUCCESS]   UTC 23:55:31  created new child under e67a9661-cbb2-420c-a212-9ec894a5e239
-[INFO]      UTC 23:55:31  serving POST at endpoint: "/objects/send" :: 200
-[ERROR]     UTC 23:55:37  message query failed: no messages found.
-[INFO]      UTC 23:55:37  serving GET at endpoint: "/objects/getmessages" :: 404
-[INFO]      UTC 23:55:38  object with a GUID of 4ffd7599-1574-4711-e0b8-e1aad1d2249f has been deleted.
-[INFO]      UTC 23:55:38  serving POST at endpoint: "/objects/send" :: 200
-[SUCCESS]   UTC 23:55:39  authenticated token WnVycFc1SFlEaFVSWUpxREY3WkJZRGRSNw==
-[INFO]      UTC 23:55:39  serving GET at endpoint: "/objects/getchildren" :: 404
-[ERROR]     UTC 23:55:41  message query failed: no messages found.
-[INFO]      UTC 23:55:41  serving GET at endpoint: "/objects/getmessages" :: 404
-[INFO]      UTC 23:55:43  object with a GUID of 200b17d4-3582-4af2-5e15-dc57ff03f56b has been deleted.
-[INFO]      UTC 23:55:43  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 23:55:50  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 23:55:53  serving POST at endpoint: "/objects/send" :: 200
-[SUCCESS]   UTC 23:59:7   created new child under e67a9661-cbb2-420c-a212-9ec894a5e239
-[INFO]      UTC 23:59:7   serving POST at endpoint: "/objects/send" :: 200
-[SUCCESS]   UTC 23:59:9   authenticated token WnVycFc1SFlEaFVSWUpxREY3WkJZRGRSNw==
-[INFO]      UTC 23:59:9   serving GET at endpoint: "/objects/getchildren" :: 404
-[ERROR]     UTC 23:59:13  message query failed: no messages found.
-[INFO]      UTC 23:59:13  serving GET at endpoint: "/objects/getmessages" :: 404
-[INFO]      UTC 23:59:57  object with a GUID of 57b1842a-a324-48d8-76dc-2d3a4fe3e854 has been deleted.
-[INFO]      UTC 23:59:57  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 0:0:4     Server is shutting down...
-[INFO]      UTC 0:0:4     serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 0:50:45   
+[INFO]      UTC 23:39:17  serving GET at endpoint: "/" :: 200
+[INFO]      UTC 23:39:19  serving POST at endpoint: "/verify" :: 200
+[SUCCESS]   UTC 23:39:19  authenticated token R1paUTJBMEkyU3lEWVNuTFFCdnE5c2RSMw==
+[INFO]      UTC 23:39:19  serving GET at endpoint: "/main" :: 200
+[INFO]      UTC 23:39:20  Opened new websocket connection from 127.0.0.1
+[SUCCESS]   UTC 23:39:20  authenticated websocket connection via token.
+[SUCCESS]   UTC 23:39:20  authenticated token R1paUTJBMEkyU3lEWVNuTFFCdnE5c2RSMw==
+[INFO]      UTC 23:39:20  serving GET at endpoint: "/objects/getchildren" :: 200
+[INFO]      UTC 23:39:24  serving GET at endpoint: "/objects/getmessages" :: 200
+[INFO]      UTC 23:39:25  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 23:44:52  serving GET at endpoint: "/objects/getmessages" :: 200
+[INFO]      UTC 23:45:4   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 23:45:12  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:14:35   Server is shutting down...
+[INFO]      UTC 0:14:35   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:19:56   
 Attempting bind to: 127.0.0.1:8081
-[INFO]      UTC 0:50:51   serving GET at endpoint: "/" :: 200
-[INFO]      UTC 0:50:52   serving POST at endpoint: "/verify" :: 200
-[SUCCESS]   UTC 0:50:52   authenticated token SXhQZllaeXhVbTBhZE5NUWxBak9hMGowYg==
-[INFO]      UTC 0:50:52   serving GET at endpoint: "/main" :: 200
-[INFO]      UTC 0:50:53   Opened new websocket connection from 127.0.0.1
-[SUCCESS]   UTC 0:50:53   authenticated websocket connection via token.
-[SUCCESS]   UTC 0:50:55   authenticated token SXhQZllaeXhVbTBhZE5NUWxBak9hMGowYg==
-[INFO]      UTC 0:50:55   serving GET at endpoint: "/objects/getchildren" :: 200
-[SUCCESS]   UTC 0:50:59   authenticated token SXhQZllaeXhVbTBhZE5NUWxBak9hMGowYg==
-[INFO]      UTC 0:50:59   serving GET at endpoint: "/objects/getchildren" :: 200
-[SUCCESS]   UTC 0:51:2    authenticated token SXhQZllaeXhVbTBhZE5NUWxBak9hMGowYg==
-[INFO]      UTC 0:51:2    serving GET at endpoint: "/objects/getchildren" :: 404
-[ERROR]     UTC 0:51:11   message query failed: no messages found.
-[INFO]      UTC 0:51:11   serving GET at endpoint: "/objects/getmessages" :: 404
-[SUCCESS]   UTC 0:52:0    created new child under 8a403ec1-f5ea-4bda-cf08-57ca02c6862c
-[INFO]      UTC 0:52:0    serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 0:53:57   object with GUID 8a403ec1-f5ea-4bda-cf08-57ca02c6862c has been deleted.
-[INFO]      UTC 0:53:57   object with GUID f8b4e2a8-d2c0-4fb3-9d7a-ec044eed2d80 has been deleted.
-[INFO]      UTC 0:53:57   object with GUID 88243663-1fa2-42e7-eae7-c14b39a77615 has been deleted.
-[INFO]      UTC 0:53:57   serving POST at endpoint: "/objects/send" :: 200
-[ERROR]     UTC 0:54:34   message query failed: no messages found.
-[INFO]      UTC 0:54:34   serving GET at endpoint: "/objects/getmessages" :: 404
-[INFO]      UTC 0:54:37   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 0:56:4    serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 0:56:23   serving GET at endpoint: "/objects/getmessages" :: 200
-[SUCCESS]   UTC 0:56:27   created new child under e67a9661-cbb2-420c-a212-9ec894a5e239
-[INFO]      UTC 0:56:27   serving POST at endpoint: "/objects/send" :: 200
-[SUCCESS]   UTC 0:56:35   created new child under e67a9661-cbb2-420c-a212-9ec894a5e239
-[INFO]      UTC 0:56:35   serving POST at endpoint: "/objects/send" :: 200
-[SUCCESS]   UTC 0:56:36   authenticated token SXhQZllaeXhVbTBhZE5NUWxBak9hMGowYg==
-[INFO]      UTC 0:56:36   serving GET at endpoint: "/objects/getchildren" :: 404
-[ERROR]     UTC 0:56:37   message query failed: no messages found.
-[INFO]      UTC 0:56:37   serving GET at endpoint: "/objects/getmessages" :: 404
-[SUCCESS]   UTC 0:56:43   created new child under 9403d434-9137-47a1-5734-cea542d151dc
-[INFO]      UTC 0:56:43   serving POST at endpoint: "/objects/send" :: 200
-[SUCCESS]   UTC 0:56:47   authenticated token SXhQZllaeXhVbTBhZE5NUWxBak9hMGowYg==
-[INFO]      UTC 0:56:47   serving GET at endpoint: "/objects/getchildren" :: 200
-[SUCCESS]   UTC 0:56:55   authenticated token SXhQZllaeXhVbTBhZE5NUWxBak9hMGowYg==
-[INFO]      UTC 0:56:55   serving GET at endpoint: "/objects/getchildren" :: 200
-[INFO]      UTC 0:57:20   object with GUID 9403d434-9137-47a1-5734-cea542d151dc has been deleted.
-[INFO]      UTC 0:57:20   object with GUID 1f02d57b-263a-4ced-7405-ecdaf71e88ad has been deleted.
-[INFO]      UTC 0:57:20   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 0:57:26   serving GET at endpoint: "/objects/getmessages" :: 200
-[INFO]      UTC 0:57:29   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 0:57:36   serving POST at endpoint: "/objects/send" :: 200
-[ERROR]     UTC 0:57:39   message query failed: no messages found.
-[INFO]      UTC 0:57:39   serving GET at endpoint: "/objects/getmessages" :: 404
-[SUCCESS]   UTC 0:57:44   created new child under 40f0528d-779f-458f-d6b9-d3a1397ab5db
-[INFO]      UTC 0:57:44   serving POST at endpoint: "/objects/send" :: 200
-[SUCCESS]   UTC 0:57:46   authenticated token SXhQZllaeXhVbTBhZE5NUWxBak9hMGowYg==
-[INFO]      UTC 0:57:46   serving GET at endpoint: "/objects/getchildren" :: 200
-[SUCCESS]   UTC 0:57:51   authenticated token SXhQZllaeXhVbTBhZE5NUWxBak9hMGowYg==
-[INFO]      UTC 0:57:51   serving GET at endpoint: "/objects/getchildren" :: 200
-[INFO]      UTC 0:57:58   object with GUID 40f0528d-779f-458f-d6b9-d3a1397ab5db has been deleted.
-[INFO]      UTC 0:57:58   object with GUID 063f99bf-f423-44ab-f2bc-894dd35531f4 has been deleted.
-[INFO]      UTC 0:57:58   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 0:58:3    serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 0:58:4    serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 0:58:16   serving GET at endpoint: "/objects/getmessages" :: 200
-[INFO]      UTC 0:58:32   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 0:58:49   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 0:58:52   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 0:59:10   serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 1:7:20    serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 1:7:31    serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 1:7:34    serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 1:7:37    serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 1:7:40    serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 1:7:43    serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 1:7:46    serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 1:7:49    serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 1:7:52    serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 1:7:55    serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 1:7:57    serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 1:8:0     serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 1:8:3     serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 1:8:6     serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 1:8:9     serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 1:8:12    serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 1:8:15    serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 1:8:18    serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 1:8:20    serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 1:8:22    serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 1:8:23    serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 1:8:26    serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 1:8:29    serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 1:8:32    serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 1:8:32    serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 1:8:35    serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 1:8:38    serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 1:8:41    serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 1:8:43    serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 1:8:46    serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 1:8:49    serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 1:8:51    serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 1:8:52    serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 1:8:52    Agent with alias baphomet is exiting...
-[INFO]      UTC 1:8:52    object with GUID fb5fde19-7052-4191-652b-83bd9f0a707f has been deleted.
-[INFO]      UTC 1:8:52    serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 1:9:26    Server is shutting down...
-[INFO]      UTC 1:9:26    serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 1:13:48   
+[INFO]      UTC 0:21:0    serving GET at endpoint: "/" :: 200
+[INFO]      UTC 0:21:1    serving POST at endpoint: "/verify" :: 200
+[SUCCESS]   UTC 0:21:1    authenticated token NmdxbWFGMnpOOE5oSktoZEdRTXE3SUhhUw==
+[INFO]      UTC 0:21:1    serving GET at endpoint: "/main" :: 200
+[INFO]      UTC 0:21:2    Opened new websocket connection from 127.0.0.1
+[SUCCESS]   UTC 0:21:2    authenticated websocket connection via token.
+[INFO]      UTC 0:21:3    serving GET at endpoint: "/objects/getmessages" :: 200
+[INFO]      UTC 0:21:5    serving POST at endpoint: "/objects/send" :: 200
+[SUCCESS]   UTC 0:21:25   authenticated token NmdxbWFGMnpOOE5oSktoZEdRTXE3SUhhUw==
+[INFO]      UTC 0:21:25   serving GET at endpoint: "/objects/getchildren" :: 200
+[INFO]      UTC 0:22:6    serving GET at endpoint: "/objects/getmessages" :: 200
+[INFO]      UTC 0:22:7    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:22:21   serving POST at endpoint: "/objects/upload" :: 200
+[INFO]      UTC 0:23:22   serving GET at endpoint: "/objects/getmessages" :: 200
+[INFO]      UTC 0:23:29   serving POST at endpoint: "/objects/upload" :: 200
+[INFO]      UTC 0:24:0    serving POST at endpoint: "/objects/upload" :: 200
+[INFO]      UTC 0:29:39   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:29:48   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:29:55   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:30:1    serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:31:21   Server is shutting down...
+[INFO]      UTC 0:31:21   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:31:55   
 Attempting bind to: 127.0.0.1:8081
-[INFO]      UTC 1:13:59   serving GET at endpoint: "/" :: 200
-[INFO]      UTC 1:14:1    serving POST at endpoint: "/verify" :: 200
-[SUCCESS]   UTC 1:14:1    authenticated token MmFFM0RsUEZXUHI5TDlyNmhYRjF5TjdxSw==
-[INFO]      UTC 1:14:1    serving GET at endpoint: "/main" :: 200
-[INFO]      UTC 1:14:2    Opened new websocket connection from 127.0.0.1
-[SUCCESS]   UTC 1:14:2    authenticated websocket connection via token.
-[SUCCESS]   UTC 1:14:5    authenticated token MmFFM0RsUEZXUHI5TDlyNmhYRjF5TjdxSw==
-[INFO]      UTC 1:14:5    serving GET at endpoint: "/objects/getchildren" :: 200
-[INFO]      UTC 1:14:8    serving GET at endpoint: "/objects/getmessages" :: 200
-[SUCCESS]   UTC 1:14:12   created new child under e67a9661-cbb2-420c-a212-9ec894a5e239
-[INFO]      UTC 1:14:12   serving POST at endpoint: "/objects/send" :: 200
-[SUCCESS]   UTC 1:14:17   created new child under e67a9661-cbb2-420c-a212-9ec894a5e239
-[INFO]      UTC 1:14:17   serving POST at endpoint: "/objects/send" :: 200
-[ERROR]     UTC 1:14:20   message query failed: no messages found.
-[INFO]      UTC 1:14:20   serving GET at endpoint: "/objects/getmessages" :: 404
-[INFO]      UTC 1:14:23   serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 1:14:25   serving GET at endpoint: "/objects/getmessages" :: 200
-[INFO]      UTC 1:14:27   serving GET at endpoint: "/objects/getmessages" :: 200
-[INFO]      UTC 1:14:35   serving GET at endpoint: "/objects/getmessages" :: 200
-[INFO]      UTC 1:14:38   Server is shutting down...
-[INFO]      UTC 1:14:38   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 1:14:49   
+[INFO]      UTC 0:31:59   serving GET at endpoint: "/" :: 200
+[INFO]      UTC 0:32:0    serving POST at endpoint: "/verify" :: 200
+[SUCCESS]   UTC 0:32:0    authenticated token c1RSTks0d1Yyb0pFdG90M2Y3dDVaMThJeg==
+[INFO]      UTC 0:32:0    serving GET at endpoint: "/main" :: 200
+[INFO]      UTC 0:32:1    Opened new websocket connection from 127.0.0.1
+[SUCCESS]   UTC 0:32:1    authenticated websocket connection via token.
+[INFO]      UTC 0:32:2    serving GET at endpoint: "/objects/getmessages" :: 200
+[INFO]      UTC 0:32:5    serving POST at endpoint: "/objects/send" :: 200
+[SUCCESS]   UTC 0:32:8    authenticated token c1RSTks0d1Yyb0pFdG90M2Y3dDVaMThJeg==
+[INFO]      UTC 0:32:8    serving GET at endpoint: "/objects/getchildren" :: 200
+[INFO]      UTC 0:32:10   serving GET at endpoint: "/objects/getmessages" :: 200
+[INFO]      UTC 0:32:18   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:32:22   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:32:24   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:33:40   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:33:41   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:33:43   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:33:44   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:33:46   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:33:47   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:33:49   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:34:59   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:35:5    serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:35:7    serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:35:8    serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:35:10   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:35:11   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:35:13   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:35:14   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:35:16   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:35:17   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:35:19   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:35:21   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:35:22   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:35:24   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:35:25   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:35:27   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:35:27   serving GET at endpoint: "/objects/getmessages" :: 200
+[INFO]      UTC 0:35:28   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:35:30   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:35:31   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:35:33   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:35:33   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:35:34   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:35:36   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:35:36   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:35:37   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:35:39   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:35:39   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:35:40   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:35:42   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:35:43   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:35:45   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:35:46   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:35:48   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:35:49   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:35:51   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:35:52   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:35:52   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:35:54   serving POST at endpoint: "/objects/upload" :: 200
+[INFO]      UTC 0:35:55   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:35:57   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:35:58   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:36:0    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:36:1    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:36:3    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:36:4    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:36:6    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:36:7    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:36:9    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:36:10   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:36:12   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:36:13   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:36:15   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:36:16   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:36:18   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:36:19   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:36:21   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:36:22   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:36:24   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:36:24   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:36:26   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:36:27   serving POST at endpoint: "/objects/upload" :: 200
+[INFO]      UTC 0:36:29   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:36:30   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:36:32   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:36:33   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:36:35   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:36:35   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:36:36   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:36:38   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:36:39   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:36:41   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:36:42   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:36:44   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:36:45   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:36:47   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:36:48   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:36:50   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:36:51   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:36:53   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:36:53   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:36:54   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:36:56   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:36:57   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:36:59   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:37:0    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:37:2    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:37:3    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:37:5    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:37:6    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:37:8    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:37:9    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:37:11   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:37:11   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:37:12   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:37:14   serving POST at endpoint: "/objects/upload" :: 200
+[INFO]      UTC 0:37:15   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:37:17   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:37:18   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:37:19   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:37:20   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:37:22   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:37:23   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:37:25   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:37:26   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:37:28   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:37:28   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:37:29   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:37:31   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:37:32   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:37:34   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:37:35   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:37:36   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:37:37   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:37:38   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:37:40   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:37:41   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:37:42   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:37:43   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:37:44   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:37:46   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:37:47   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:37:49   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:37:50   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:37:51   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:37:52   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:37:53   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:37:55   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:37:56   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:37:58   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:37:59   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:37:59   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:38:1    serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:38:2    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:38:4    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:38:5    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:38:7    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:38:8    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:38:10   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:38:11   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:38:13   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:38:14   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:38:15   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:38:16   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:38:17   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:38:19   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:38:20   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:38:22   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:38:23   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:38:25   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:38:27   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:38:28   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:38:30   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:38:31   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:38:33   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:38:34   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:38:36   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:38:37   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:38:38   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:38:39   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:38:40   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:38:42   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:38:43   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:38:45   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:38:46   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:38:46   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:38:48   serving POST at endpoint: "/objects/upload" :: 200
+[INFO]      UTC 0:38:49   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:38:51   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:42:25   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:42:26   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:42:28   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:42:29   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:42:31   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:42:33   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:42:34   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:42:35   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:42:36   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:42:37   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:42:39   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:42:40   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:42:40   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:42:42   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:42:43   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:42:45   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:42:46   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:42:46   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:42:48   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:42:49   serving POST at endpoint: "/objects/upload" :: 200
+[INFO]      UTC 0:42:51   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:42:52   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:42:54   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:42:55   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:42:55   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:42:57   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:42:58   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:43:0    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:43:1    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:43:3    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:43:4    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:43:6    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:43:7    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:43:9    serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:43:10   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:43:12   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:43:13   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:43:15   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:43:15   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:43:16   serving POST at endpoint: "/objects/upload" :: 200
+[INFO]      UTC 0:43:18   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:43:19   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:43:21   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:43:23   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:43:24   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:43:25   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:43:26   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:43:27   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:43:29   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:43:30   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:43:32   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:43:32   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:43:33   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:43:35   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:43:36   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:43:38   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:43:39   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:43:41   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:43:42   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:43:44   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:43:44   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:43:45   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:43:47   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:43:48   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:43:50   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 0:43:51   serving POST at endpoint: "/objects/send" :: 400
+[SUCCESS]   UTC 0:44:47   fileman_wipe_all(): directories erased: 2
+[INFO]      UTC 0:44:47   Server is shutting down...
+[INFO]      UTC 0:44:47   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 18:21:8   
 Attempting bind to: 127.0.0.1:8081
-[INFO]      UTC 1:15:1    serving GET at endpoint: "/" :: 200
-[INFO]      UTC 1:15:2    serving POST at endpoint: "/verify" :: 200
-[SUCCESS]   UTC 1:15:2    authenticated token Um1FbHRMZ1ljekozT25ITmlWOHpCamxNTg==
-[INFO]      UTC 1:15:2    serving GET at endpoint: "/main" :: 200
-[INFO]      UTC 1:15:3    Opened new websocket connection from 127.0.0.1
-[SUCCESS]   UTC 1:15:3    authenticated websocket connection via token.
-[SUCCESS]   UTC 1:15:5    authenticated token Um1FbHRMZ1ljekozT25ITmlWOHpCamxNTg==
-[INFO]      UTC 1:15:5    serving GET at endpoint: "/objects/getchildren" :: 200
-[INFO]      UTC 1:15:8    serving GET at endpoint: "/objects/getmessages" :: 200
-[INFO]      UTC 1:15:10   Server is shutting down...
-[INFO]      UTC 1:15:10   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 21:0:8    
+[INFO]      UTC 18:21:55  serving GET at endpoint: "/" :: 200
+[INFO]      UTC 18:21:56  serving POST at endpoint: "/verify" :: 200
+[SUCCESS]   UTC 18:21:56  authenticated token TjVCNXBvQmZmTElrb29KRTRpV3hkQlJhTA==
+[INFO]      UTC 18:21:56  serving GET at endpoint: "/main" :: 200
+[INFO]      UTC 18:21:57  Opened new websocket connection from 127.0.0.1
+[SUCCESS]   UTC 18:21:57  authenticated websocket connection via token.
+[SUCCESS]   UTC 18:21:59  authenticated token TjVCNXBvQmZmTElrb29KRTRpV3hkQlJhTA==
+[INFO]      UTC 18:21:59  serving GET at endpoint: "/objects/getchildren" :: 200
+[SUCCESS]   UTC 18:22:4   authenticated token TjVCNXBvQmZmTElrb29KRTRpV3hkQlJhTA==
+[INFO]      UTC 18:22:4   serving GET at endpoint: "/objects/getchildren" :: 404
+[ERROR]     UTC 18:22:8   message query failed: no messages found.
+[INFO]      UTC 18:22:8   serving GET at endpoint: "/objects/getmessages" :: 404
+[INFO]      UTC 18:22:11  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 18:22:40  Server is shutting down...
+[INFO]      UTC 18:22:40  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 18:24:19  
 Attempting bind to: 127.0.0.1:8081
-[INFO]      UTC 21:0:13   serving GET at endpoint: "/" :: 200
-[INFO]      UTC 21:0:14   serving POST at endpoint: "/verify" :: 200
-[SUCCESS]   UTC 21:0:14   authenticated token U3JMTldFWUxqZUFLSnRVNkFuREN6TkZqag==
-[INFO]      UTC 21:0:14   serving GET at endpoint: "/main" :: 200
-[INFO]      UTC 21:0:15   Opened new websocket connection from 127.0.0.1
-[SUCCESS]   UTC 21:0:15   authenticated websocket connection via token.
-[SUCCESS]   UTC 21:0:16   authenticated token U3JMTldFWUxqZUFLSnRVNkFuREN6TkZqag==
-[INFO]      UTC 21:0:16   serving GET at endpoint: "/objects/getchildren" :: 200
-[INFO]      UTC 21:0:20   serving GET at endpoint: "/objects/getmessages" :: 200
-[INFO]      UTC 21:0:22   serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 21:0:26   serving GET at endpoint: "/objects/getmessages" :: 200
-[INFO]      UTC 21:0:32   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 21:0:50   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 21:0:56   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 21:3:35   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 21:3:38   serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 21:3:40   serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 21:3:43   serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 21:3:44   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 21:3:46   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 21:3:49   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 21:3:52   serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 21:3:55   serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 21:3:58   serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 21:4:0    serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 21:7:3    serving POST at endpoint: "/objects/send" :: 400
-[ERROR]     UTC 21:8:7    message query failed: no messages found.
-[INFO]      UTC 21:8:7    serving GET at endpoint: "/objects/getmessages" :: 404
-[INFO]      UTC 21:8:11   serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 21:9:54   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 21:12:38  Server is shutting down...
-[INFO]      UTC 21:12:38  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 21:14:57  
+[INFO]      UTC 18:24:24  serving GET at endpoint: "/" :: 200
+[INFO]      UTC 18:24:25  serving POST at endpoint: "/verify" :: 200
+[SUCCESS]   UTC 18:24:25  authenticated token akVYTWhsT3FGREFiOTlhQ0hLMmJ4eEdicA==
+[INFO]      UTC 18:24:25  serving GET at endpoint: "/main" :: 200
+[INFO]      UTC 18:24:26  Opened new websocket connection from 127.0.0.1
+[SUCCESS]   UTC 18:24:26  authenticated websocket connection via token.
+[INFO]      UTC 18:24:27  serving GET at endpoint: "/objects/getmessages" :: 200
+[SUCCESS]   UTC 18:24:28  authenticated token akVYTWhsT3FGREFiOTlhQ0hLMmJ4eEdicA==
+[INFO]      UTC 18:24:28  serving GET at endpoint: "/objects/getchildren" :: 200
+[SUCCESS]   UTC 18:24:32  created new child under e67a9661-cbb2-420c-a212-9ec894a5e239
+[INFO]      UTC 18:24:32  serving POST at endpoint: "/objects/send" :: 200
+[ERROR]     UTC 18:24:35  message query failed: no messages found.
+[INFO]      UTC 18:24:35  serving GET at endpoint: "/objects/getmessages" :: 404
+[INFO]      UTC 18:26:22  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 18:27:58  Server is shutting down...
+[INFO]      UTC 18:27:58  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 19:54:13  
 Attempting bind to: 127.0.0.1:8081
-[INFO]      UTC 21:15:29  serving GET at endpoint: "/" :: 200
-[INFO]      UTC 21:15:30  serving POST at endpoint: "/verify" :: 200
-[SUCCESS]   UTC 21:15:30  authenticated token T0ZaVWgzcUF5OWFsa0FWSmxlbm91M2ZlZw==
-[INFO]      UTC 21:15:30  serving GET at endpoint: "/main" :: 200
-[INFO]      UTC 21:15:31  Opened new websocket connection from 127.0.0.1
-[SUCCESS]   UTC 21:15:31  authenticated websocket connection via token.
-[SUCCESS]   UTC 21:15:32  authenticated token T0ZaVWgzcUF5OWFsa0FWSmxlbm91M2ZlZw==
-[INFO]      UTC 21:15:32  serving GET at endpoint: "/objects/getchildren" :: 200
-[INFO]      UTC 21:15:44  serving GET at endpoint: "/objects/getmessages" :: 200
-[INFO]      UTC 21:15:52  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 21:16:52  serving GET at endpoint: "/objects/getmessages" :: 200
-[INFO]      UTC 21:16:54  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 21:17:22  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 21:19:42  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 21:19:45  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 21:19:47  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 21:19:50  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 21:19:52  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 21:19:55  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 21:19:56  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 21:19:57  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 21:20:0   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 21:20:2   serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 21:20:3   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 21:20:5   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 21:20:7   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 21:20:10  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 21:20:12  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 21:20:13  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 21:20:15  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 21:20:17  serving POST at endpoint: "/objects/upload" :: 200
-[INFO]      UTC 21:20:20  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 21:20:22  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 21:20:23  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 21:20:25  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 21:20:25  Agent with alias Baphomet is exiting...
-[INFO]      UTC 21:20:25  object with GUID b41a0c12-2749-4c5c-4ff2-6c90d4639aca has been deleted.
-[INFO]      UTC 21:20:25  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 21:22:20  serving GET at endpoint: "/objects/getmessages" :: 200
-[INFO]      UTC 21:25:19  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 21:26:7   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 21:27:58  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 21:29:31  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 21:41:10  serving GET at endpoint: "/objects/getmessages" :: 200
-[INFO]      UTC 21:41:16  Server is shutting down...
-[INFO]      UTC 21:41:16  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 20:20:57  
+[INFO]      UTC 19:54:19  serving GET at endpoint: "/" :: 200
+[INFO]      UTC 19:54:20  serving POST at endpoint: "/verify" :: 200
+[SUCCESS]   UTC 19:54:20  authenticated token U2RKTW1JTUNBUkI4S3dNWnNEZDYwMTBmdw==
+[INFO]      UTC 19:54:20  serving GET at endpoint: "/main" :: 200
+[INFO]      UTC 19:54:21  Opened new websocket connection from 127.0.0.1
+[SUCCESS]   UTC 19:54:21  authenticated websocket connection via token.
+[SUCCESS]   UTC 19:54:21  authenticated token U2RKTW1JTUNBUkI4S3dNWnNEZDYwMTBmdw==
+[INFO]      UTC 19:54:21  serving GET at endpoint: "/objects/getchildren" :: 200
+[ERROR]     UTC 19:54:29  message query failed: no messages found.
+[INFO]      UTC 19:54:29  serving GET at endpoint: "/objects/getmessages" :: 404
+[INFO]      UTC 19:54:31  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 19:55:10  serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 19:56:4   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 19:56:16  serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 19:58:17  serving GET at endpoint: "/objects/getmessages" :: 200
+[INFO]      UTC 19:58:20  Server is shutting down...
+[INFO]      UTC 19:58:20  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 20:5:32   
 Attempting bind to: 127.0.0.1:8081
-[INFO]      UTC 20:21:6   serving GET at endpoint: "/" :: 200
-[INFO]      UTC 20:21:6   serving GET at endpoint: "/" :: 200
-[INFO]      UTC 20:21:7   serving POST at endpoint: "/verify" :: 200
-[SUCCESS]   UTC 20:21:7   authenticated token MmxUc3lteFIzclk1dGJPZGQxcXhOTXM4bg==
-[INFO]      UTC 20:21:7   serving GET at endpoint: "/main" :: 200
-[INFO]      UTC 20:21:8   Opened new websocket connection from 127.0.0.1
-[SUCCESS]   UTC 20:21:8   authenticated websocket connection via token.
-[SUCCESS]   UTC 20:21:9   authenticated token MmxUc3lteFIzclk1dGJPZGQxcXhOTXM4bg==
-[INFO]      UTC 20:21:9   serving GET at endpoint: "/objects/getchildren" :: 200
-[INFO]      UTC 20:21:14  serving GET at endpoint: "/objects/getmessages" :: 200
-[INFO]      UTC 20:21:15  serving GET at endpoint: "/objects/getmessages" :: 200
-[INFO]      UTC 20:21:18  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:21:27  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 20:21:36  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 20:21:38  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 20:22:30  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 20:23:16  serving POST at endpoint: "/objects/upload" :: 200
-[INFO]      UTC 20:23:34  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 20:26:5   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 20:26:51  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:27:33  Server is shutting down...
-[INFO]      UTC 20:27:33  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 20:28:13  
+[INFO]      UTC 20:5:40   serving GET at endpoint: "/" :: 200
+[INFO]      UTC 20:5:41   serving POST at endpoint: "/verify" :: 200
+[SUCCESS]   UTC 20:5:41   authenticated token c281N2dNMzNFckd2ZjI1QlR1U3hldmVaNA==
+[INFO]      UTC 20:5:41   serving GET at endpoint: "/main" :: 200
+[INFO]      UTC 20:5:41   Opened new websocket connection from 127.0.0.1
+[SUCCESS]   UTC 20:5:41   authenticated websocket connection via token.
+[SUCCESS]   UTC 20:5:43   authenticated token c281N2dNMzNFckd2ZjI1QlR1U3hldmVaNA==
+[INFO]      UTC 20:5:43   serving GET at endpoint: "/objects/getchildren" :: 200
+[INFO]      UTC 20:5:49   serving GET at endpoint: "/objects/getmessages" :: 200
+[INFO]      UTC 20:6:41   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 20:8:25   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 20:9:5    serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 20:9:10   serving GET at endpoint: "/objects/getmessages" :: 200
+[INFO]      UTC 20:9:17   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 20:9:19   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 20:12:33  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 20:17:52  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 20:18:39  serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 20:21:12  serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 20:22:28  Server is shutting down...
+[INFO]      UTC 20:22:28  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 20:22:44  
 Attempting bind to: 127.0.0.1:8081
-[INFO]      UTC 20:28:24  serving GET at endpoint: "/" :: 200
-[INFO]      UTC 20:28:26  serving POST at endpoint: "/verify" :: 200
-[SUCCESS]   UTC 20:28:26  authenticated token WXJaWmFiOUQwNUo3TGk1NkV2MjZPektPRA==
-[INFO]      UTC 20:28:26  serving GET at endpoint: "/main" :: 200
-[INFO]      UTC 20:28:26  Opened new websocket connection from 127.0.0.1
-[SUCCESS]   UTC 20:28:26  authenticated websocket connection via token.
-[SUCCESS]   UTC 20:28:27  authenticated token WXJaWmFiOUQwNUo3TGk1NkV2MjZPektPRA==
-[INFO]      UTC 20:28:27  serving GET at endpoint: "/objects/getchildren" :: 200
-[INFO]      UTC 20:28:30  serving GET at endpoint: "/objects/getmessages" :: 200
-[INFO]      UTC 20:28:32  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 20:29:7   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 20:29:12  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 20:30:30  serving GET at endpoint: "/objects/getmessages" :: 200
-[INFO]      UTC 20:30:31  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 20:31:51  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 20:31:54  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 20:32:0   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 20:32:3   serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:32:6   serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:32:8   serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:32:11  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:32:14  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:32:16  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 20:32:17  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 20:32:20  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 20:32:23  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:32:26  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:32:29  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:32:31  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:32:32  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 20:32:34  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 20:32:37  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 20:32:40  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:32:43  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:32:46  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:32:49  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:32:52  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:32:55  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:32:57  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 20:32:57  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 20:33:0   serving POST at endpoint: "/objects/upload" :: 200
-[INFO]      UTC 20:33:3   serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:33:6   serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:33:9   serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:33:12  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:33:15  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:33:18  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:33:21  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:33:22  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 20:33:23  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:33:26  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:33:29  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:33:32  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:33:35  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:33:37  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 20:33:38  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 20:33:41  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 20:33:44  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:33:46  serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 20:22:49  serving GET at endpoint: "/" :: 200
+[INFO]      UTC 20:22:50  serving POST at endpoint: "/verify" :: 200
+[SUCCESS]   UTC 20:22:50  authenticated token OXJlN2ViWHBBZUZ5TDlnUG94Q09Gb2lJNQ==
+[INFO]      UTC 20:22:50  serving GET at endpoint: "/main" :: 200
+[INFO]      UTC 20:22:51  Opened new websocket connection from 127.0.0.1
+[SUCCESS]   UTC 20:22:51  authenticated websocket connection via token.
+[SUCCESS]   UTC 20:22:51  authenticated token OXJlN2ViWHBBZUZ5TDlnUG94Q09Gb2lJNQ==
+[INFO]      UTC 20:22:51  serving GET at endpoint: "/objects/getchildren" :: 200
+[INFO]      UTC 20:22:53  serving GET at endpoint: "/objects/getmessages" :: 200
+[INFO]      UTC 20:23:22  serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 20:24:0   serving GET at endpoint: "/objects/getmessages" :: 200
+[INFO]      UTC 20:24:2   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 20:24:59  serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 20:25:9   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 20:25:18  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 20:25:37  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 20:25:47  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 20:25:49  serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 20:26:47  serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 20:27:29  serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 20:27:35  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 20:27:49  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 20:28:38  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 20:28:42  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 20:30:39  
+Attempting bind to: 127.0.0.1:8081
+[INFO]      UTC 20:30:43  serving GET at endpoint: "/" :: 200
+[INFO]      UTC 20:30:44  serving POST at endpoint: "/verify" :: 200
+[SUCCESS]   UTC 20:30:44  authenticated token QWQ4OXdsVmF2T05LMkZSNk9VcUpqTEpXeg==
+[INFO]      UTC 20:30:44  serving GET at endpoint: "/main" :: 200
+[INFO]      UTC 20:30:45  Opened new websocket connection from 127.0.0.1
+[SUCCESS]   UTC 20:30:45  authenticated websocket connection via token.
+[INFO]      UTC 20:30:48  serving GET at endpoint: "/objects/getmessages" :: 200
+[SUCCESS]   UTC 20:30:49  authenticated token QWQ4OXdsVmF2T05LMkZSNk9VcUpqTEpXeg==
+[INFO]      UTC 20:30:49  serving GET at endpoint: "/objects/getchildren" :: 200
+[INFO]      UTC 20:30:50  serving GET at endpoint: "/objects/getmessages" :: 200
 [INFO]      UTC 20:33:49  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:34:44  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 20:34:47  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:34:50  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:34:50  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 20:34:53  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 20:34:56  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 20:34:59  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:35:2   serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:35:4   serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:35:7   serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:35:9   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 20:35:10  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 20:35:13  serving POST at endpoint: "/objects/upload" :: 200
-[INFO]      UTC 20:35:16  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:35:19  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:35:22  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:35:25  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:35:27  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:35:30  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:35:33  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:35:36  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:35:39  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:35:42  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:35:45  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 20:35:45  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 20:35:48  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 20:35:51  serving POST at endpoint: "/objects/upload" :: 200
-[INFO]      UTC 20:35:53  serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 21:52:55  Server is shutting down...
-[INFO]      UTC 21:52:55  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 16:55:17  
+[INFO]      UTC 20:34:5   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 20:37:13  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 20:37:16  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 20:37:28  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 20:37:38  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 20:38:8   Server is shutting down...
+[INFO]      UTC 20:38:8   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 20:51:38  
 Attempting bind to: 127.0.0.1:8081
-[INFO]      UTC 16:55:22  serving GET at endpoint: "/" :: 200
-[INFO]      UTC 16:55:24  serving POST at endpoint: "/verify" :: 200
-[SUCCESS]   UTC 16:55:24  authenticated token TEdvQld5R2RIdkVsODV0N3gzNUJ4VXZ5RA==
-[INFO]      UTC 16:55:24  serving GET at endpoint: "/main" :: 200
-[INFO]      UTC 16:55:24  Opened new websocket connection from 127.0.0.1
-[SUCCESS]   UTC 16:55:24  authenticated websocket connection via token.
-[SUCCESS]   UTC 16:55:25  authenticated token TEdvQld5R2RIdkVsODV0N3gzNUJ4VXZ5RA==
-[INFO]      UTC 16:55:25  serving GET at endpoint: "/objects/getchildren" :: 200
-[SUCCESS]   UTC 16:55:27  authenticated token TEdvQld5R2RIdkVsODV0N3gzNUJ4VXZ5RA==
-[INFO]      UTC 16:55:27  serving GET at endpoint: "/objects/getchildren" :: 404
-[INFO]      UTC 16:55:28  serving GET at endpoint: "/objects/getmessages" :: 200
-[INFO]      UTC 16:55:32  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 16:55:45  serving GET at endpoint: "/objects/getmessages" :: 200
-[INFO]      UTC 16:55:48  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 16:56:2   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 16:56:4   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 17:0:59   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 17:1:1    serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 17:1:4    serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 17:1:7    serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 17:1:10   serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 17:1:12   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 17:1:13   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 17:1:16   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 17:1:19   serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 17:1:22   serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 17:1:22   serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 17:1:24   serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 17:1:26   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 17:1:27   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 17:1:30   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 17:1:33   serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 17:1:36   serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 17:1:38   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 17:1:39   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 17:1:42   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 17:1:45   serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 17:1:47   serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 17:1:50   serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 17:1:53   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 17:1:53   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 17:1:56   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 17:1:59   serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 17:2:2    serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 17:2:5    serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 17:2:5    serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 17:2:8    serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 17:2:11   serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 17:2:11   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 17:2:13   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 17:2:16   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 17:2:19   serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 17:2:22   serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 17:2:25   serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 17:2:28   serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 17:2:29   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 17:2:31   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 17:2:34   serving POST at endpoint: "/objects/upload" :: 200
-[INFO]      UTC 17:2:37   serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 17:2:39   serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 17:2:42   serving POST at endpoint: "/objects/send" :: 400
-[INFO]      UTC 17:2:43   serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 17:2:45   serving POST at endpoint: "/objects/send" :: 400
-[SUCCESS]   UTC 17:13:58  fileman_wipe_all(): directories erased: 3
-[INFO]      UTC 17:13:58  Server is shutting down...
-[INFO]      UTC 17:13:58  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 17:14:44  
+[INFO]      UTC 20:51:42  serving GET at endpoint: "/" :: 200
+[INFO]      UTC 20:51:43  serving POST at endpoint: "/verify" :: 200
+[SUCCESS]   UTC 20:51:43  authenticated token YmVhV1NSazN5ZWxQSkZJUjgzOWxzMXZhVw==
+[INFO]      UTC 20:51:43  serving GET at endpoint: "/main" :: 200
+[INFO]      UTC 20:51:44  Opened new websocket connection from 127.0.0.1
+[SUCCESS]   UTC 20:51:44  authenticated websocket connection via token.
+[SUCCESS]   UTC 20:51:47  authenticated token YmVhV1NSazN5ZWxQSkZJUjgzOWxzMXZhVw==
+[INFO]      UTC 20:51:47  serving GET at endpoint: "/objects/getchildren" :: 200
+[INFO]      UTC 20:51:48  serving GET at endpoint: "/objects/getmessages" :: 200
+[INFO]      UTC 20:51:56  serving GET at endpoint: "/objects/getmessages" :: 200
+[INFO]      UTC 20:52:21  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 20:53:1   serving GET at endpoint: "/objects/getmessages" :: 200
+[INFO]      UTC 20:53:3   Server is shutting down...
+[INFO]      UTC 20:53:3   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 21:30:3   
 Attempting bind to: 127.0.0.1:8081
-[INFO]      UTC 17:14:49  serving GET at endpoint: "/" :: 200
-[INFO]      UTC 17:14:50  serving POST at endpoint: "/verify" :: 200
-[SUCCESS]   UTC 17:14:50  authenticated token djlBbHdTNkRPRHRTblR6bmxRNmQ5c3R1Vg==
-[INFO]      UTC 17:14:50  serving GET at endpoint: "/main" :: 200
-[INFO]      UTC 17:14:51  Opened new websocket connection from 127.0.0.1
-[SUCCESS]   UTC 17:14:51  authenticated websocket connection via token.
-[SUCCESS]   UTC 17:14:51  authenticated token djlBbHdTNkRPRHRTblR6bmxRNmQ5c3R1Vg==
-[INFO]      UTC 17:14:51  serving GET at endpoint: "/objects/getchildren" :: 200
-[ERROR]     UTC 17:14:53  message query failed: no messages found.
-[INFO]      UTC 17:14:53  serving GET at endpoint: "/objects/getmessages" :: 404
-[INFO]      UTC 17:15:18  serving POST at endpoint: "/objects/upload" :: 200
-[INFO]      UTC 17:15:34  serving POST at endpoint: "/objects/upload" :: 200
-[ERROR]     UTC 17:15:35  message query failed: no messages found.
-[INFO]      UTC 17:15:35  serving GET at endpoint: "/objects/getmessages" :: 404
-[INFO]      UTC 17:15:44  serving POST at endpoint: "/objects/upload" :: 200
-[INFO]      UTC 17:15:48  serving POST at endpoint: "/objects/send" :: 200
-[INFO]      UTC 17:15:56  serving POST at endpoint: "/objects/upload" :: 200
-[INFO]      UTC 17:16:5   serving POST at endpoint: "/objects/upload" :: 200
-[ERROR]     UTC 17:16:8   message query failed: no messages found.
-[INFO]      UTC 17:16:8   serving GET at endpoint: "/objects/getmessages" :: 404
-[ERROR]     UTC 17:16:9   message query failed: no messages found.
-[INFO]      UTC 17:16:9   serving GET at endpoint: "/objects/getmessages" :: 404
-[ERROR]     UTC 17:16:36  message query failed: no messages found.
-[INFO]      UTC 17:16:36  serving GET at endpoint: "/objects/getmessages" :: 404
-[INFO]      UTC 17:18:55  serving GET at endpoint: "/" :: 200
-[INFO]      UTC 17:18:55  Closing websocket connection from 127.0.0.1
-[INFO]      UTC 17:18:57  serving POST at endpoint: "/verify" :: 200
-[SUCCESS]   UTC 17:18:57  authenticated token N2xqWWZJWmtvZHVVREZSd2RaU2F6TjdwOA==
-[INFO]      UTC 17:18:57  serving GET at endpoint: "/main" :: 200
-[INFO]      UTC 17:18:57  Opened new websocket connection from 127.0.0.1
-[SUCCESS]   UTC 17:18:57  authenticated websocket connection via token.
-[SUCCESS]   UTC 17:18:58  authenticated token N2xqWWZJWmtvZHVVREZSd2RaU2F6TjdwOA==
-[INFO]      UTC 17:18:58  serving GET at endpoint: "/objects/getchildren" :: 200
-[ERROR]     UTC 17:19:0   message query failed: no messages found.
-[INFO]      UTC 17:19:0   serving GET at endpoint: "/objects/getmessages" :: 404
-[INFO]      UTC 17:19:1   serving GET at endpoint: "/objects/getmessages" :: 200
-[INFO]      UTC 17:19:45  serving GET at endpoint: "/" :: 200
-[INFO]      UTC 17:19:45  Closing websocket connection from 127.0.0.1
-[INFO]      UTC 17:19:47  serving POST at endpoint: "/verify" :: 200
-[SUCCESS]   UTC 17:19:47  authenticated token eEp0U0VBTUtlSTBGWWEydWhnY3ZFSG9EYg==
-[INFO]      UTC 17:19:47  serving GET at endpoint: "/main" :: 200
-[INFO]      UTC 17:19:48  Opened new websocket connection from 127.0.0.1
-[SUCCESS]   UTC 17:19:48  authenticated websocket connection via token.
-[SUCCESS]   UTC 17:19:49  authenticated token eEp0U0VBTUtlSTBGWWEydWhnY3ZFSG9EYg==
-[INFO]      UTC 17:19:49  serving GET at endpoint: "/objects/getchildren" :: 200
-[INFO]      UTC 17:19:50  serving GET at endpoint: "/objects/getmessages" :: 200
-[INFO]      UTC 17:21:5   serving GET at endpoint: "/" :: 200
-[INFO]      UTC 17:21:5   Closing websocket connection from 127.0.0.1
-[INFO]      UTC 17:21:8   serving POST at endpoint: "/verify" :: 200
-[SUCCESS]   UTC 17:21:8   authenticated token dkp5ekcxUER0ek43MjBSckJHQW1TeVNrSg==
-[INFO]      UTC 17:21:8   serving GET at endpoint: "/main" :: 200
-[INFO]      UTC 17:21:9   Opened new websocket connection from 127.0.0.1
-[SUCCESS]   UTC 17:21:9   authenticated websocket connection via token.
-[SUCCESS]   UTC 17:21:10  authenticated token dkp5ekcxUER0ek43MjBSckJHQW1TeVNrSg==
-[INFO]      UTC 17:21:10  serving GET at endpoint: "/objects/getchildren" :: 200
-[INFO]      UTC 17:21:11  serving GET at endpoint: "/objects/getmessages" :: 200
-[INFO]      UTC 17:22:45  serving GET at endpoint: "/" :: 200
-[INFO]      UTC 17:22:45  Closing websocket connection from 127.0.0.1
-[INFO]      UTC 17:22:47  serving POST at endpoint: "/verify" :: 200
-[SUCCESS]   UTC 17:22:47  authenticated token OW9NMnk3cWg4c1E0TG9yc2NnVloxVG5ybA==
-[INFO]      UTC 17:22:47  serving GET at endpoint: "/main" :: 200
-[INFO]      UTC 17:22:48  Opened new websocket connection from 127.0.0.1
-[SUCCESS]   UTC 17:22:48  authenticated websocket connection via token.
-[SUCCESS]   UTC 17:22:49  authenticated token OW9NMnk3cWg4c1E0TG9yc2NnVloxVG5ybA==
-[INFO]      UTC 17:22:49  serving GET at endpoint: "/objects/getchildren" :: 200
-[INFO]      UTC 17:22:51  serving GET at endpoint: "/objects/getmessages" :: 200
-[INFO]      UTC 17:23:1   serving GET at endpoint: "/" :: 200
-[INFO]      UTC 17:23:1   Closing websocket connection from 127.0.0.1
-[INFO]      UTC 17:23:2   serving POST at endpoint: "/verify" :: 200
-[SUCCESS]   UTC 17:23:2   authenticated token YWt2ajZrMktMbnNlVlQ3R2pibXltdDYwQQ==
-[INFO]      UTC 17:23:2   serving GET at endpoint: "/main" :: 200
-[INFO]      UTC 17:23:3   Opened new websocket connection from 127.0.0.1
-[SUCCESS]   UTC 17:23:3   authenticated websocket connection via token.
-[SUCCESS]   UTC 17:23:4   authenticated token YWt2ajZrMktMbnNlVlQ3R2pibXltdDYwQQ==
-[INFO]      UTC 17:23:4   serving GET at endpoint: "/objects/getchildren" :: 200
-[INFO]      UTC 17:23:7   serving GET at endpoint: "/objects/getmessages" :: 200
-[ERROR]     UTC 17:23:10  message query failed: no messages found.
-[INFO]      UTC 17:23:10  serving GET at endpoint: "/objects/getmessages" :: 404
-[ERROR]     UTC 17:23:41  message query failed: no messages found.
-[INFO]      UTC 17:23:41  serving GET at endpoint: "/objects/getmessages" :: 404
-[ERROR]     UTC 17:23:50  message query failed: no messages found.
-[INFO]      UTC 17:23:50  serving GET at endpoint: "/objects/getmessages" :: 404
-[SUCCESS]   UTC 17:23:57  fileman_wipe_all(): directories erased: 1
-[INFO]      UTC 17:23:57  Server is shutting down...
-[INFO]      UTC 17:23:57  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 21:30:9   serving GET at endpoint: "/" :: 200
+[INFO]      UTC 21:30:11  serving POST at endpoint: "/verify" :: 200
+[SUCCESS]   UTC 21:30:11  authenticated token ZGZlbkoyVDRXdXIwbW1ualVUcDBXSnlUdQ==
+[INFO]      UTC 21:30:11  serving GET at endpoint: "/main" :: 200
+[INFO]      UTC 21:30:12  Opened new websocket connection from 127.0.0.1
+[SUCCESS]   UTC 21:30:12  authenticated websocket connection via token.
+[SUCCESS]   UTC 21:30:13  authenticated token ZGZlbkoyVDRXdXIwbW1ualVUcDBXSnlUdQ==
+[INFO]      UTC 21:30:13  serving GET at endpoint: "/objects/getchildren" :: 200
+[INFO]      UTC 21:30:14  serving GET at endpoint: "/objects/getmessages" :: 200
+[INFO]      UTC 21:30:36  serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 21:30:46  serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 21:30:55  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 21:31:56  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 21:32:20  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 21:34:37  serving GET at endpoint: "/objects/getmessages" :: 200
+[INFO]      UTC 21:34:39  Server is shutting down...
+[INFO]      UTC 21:34:39  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 23:44:40  
+Attempting bind to: 127.0.0.1:8081
+[INFO]      UTC 23:51:38  
+Attempting bind to: 127.0.0.1:8081
+[INFO]      UTC 23:51:55  serving GET at endpoint: "/" :: 200
+[INFO]      UTC 23:51:56  serving POST at endpoint: "/verify" :: 200
+[SUCCESS]   UTC 23:51:56  authenticated token Z3Ayam5wZG94blljR21ENVhGd1BQRVMwNg==
+[INFO]      UTC 23:51:56  serving GET at endpoint: "/main" :: 200
+[INFO]      UTC 23:51:57  Opened new websocket connection from 127.0.0.1
+[SUCCESS]   UTC 23:51:57  authenticated websocket connection via token.
+[SUCCESS]   UTC 23:51:58  authenticated token Z3Ayam5wZG94blljR21ENVhGd1BQRVMwNg==
+[INFO]      UTC 23:51:58  serving GET at endpoint: "/objects/getchildren" :: 200
+[INFO]      UTC 23:52:5   serving GET at endpoint: "/objects/getmessages" :: 200
+[INFO]      UTC 23:52:29  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 23:52:44  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 23:52:50  serving GET at endpoint: "/objects/getmessages" :: 200
+[INFO]      UTC 23:52:53  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 23:57:48  Server is shutting down...
+[INFO]      UTC 23:57:48  serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:54:24   
+Attempting bind to: 127.0.0.1:8081
+[INFO]      UTC 0:59:41   Server is shutting down...
+[INFO]      UTC 0:59:41   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 0:59:54   
+Attempting bind to: 127.0.0.1:8081
+[INFO]      UTC 1:0:8     serving GET at endpoint: "/" :: 200
+[INFO]      UTC 1:0:9     serving POST at endpoint: "/verify" :: 200
+[SUCCESS]   UTC 1:0:9     authenticated token SlhoeWQ3REhBbjBuMDlKakd0UG5QUlQ5Yg==
+[INFO]      UTC 1:0:9     serving GET at endpoint: "/main" :: 200
+[INFO]      UTC 1:0:9     Opened new websocket connection from 127.0.0.1
+[SUCCESS]   UTC 1:0:9     authenticated websocket connection via token.
+[SUCCESS]   UTC 1:0:11    authenticated token SlhoeWQ3REhBbjBuMDlKakd0UG5QUlQ5Yg==
+[INFO]      UTC 1:0:11    serving GET at endpoint: "/objects/getchildren" :: 200
+[INFO]      UTC 1:0:12    serving GET at endpoint: "/objects/getmessages" :: 200
+[INFO]      UTC 1:1:12    serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 1:1:19    serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 1:1:54    serving GET at endpoint: "/objects/getmessages" :: 200
+[INFO]      UTC 1:1:56    Server is shutting down...
+[INFO]      UTC 1:1:56    serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 1:14:1    
+Attempting bind to: 127.0.0.1:8081
+[INFO]      UTC 1:14:7    serving GET at endpoint: "/" :: 200
+[INFO]      UTC 1:14:8    serving POST at endpoint: "/verify" :: 200
+[SUCCESS]   UTC 1:14:8    authenticated token SEN1SEtRWWU4ajBNSlVCSE1PNXFsSEkwVw==
+[INFO]      UTC 1:14:8    serving GET at endpoint: "/main" :: 200
+[INFO]      UTC 1:14:8    Opened new websocket connection from 127.0.0.1
+[SUCCESS]   UTC 1:14:8    authenticated websocket connection via token.
+[SUCCESS]   UTC 1:14:10   authenticated token SEN1SEtRWWU4ajBNSlVCSE1PNXFsSEkwVw==
+[INFO]      UTC 1:14:10   serving GET at endpoint: "/objects/getchildren" :: 200
+[INFO]      UTC 1:14:14   serving GET at endpoint: "/objects/getmessages" :: 200
+[INFO]      UTC 1:14:17   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 1:14:28   Server is shutting down...
+[INFO]      UTC 1:14:28   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 1:15:3    
+Attempting bind to: 127.0.0.1:8081
+[INFO]      UTC 1:15:6    serving GET at endpoint: "/" :: 200
+[INFO]      UTC 1:15:8    serving POST at endpoint: "/verify" :: 200
+[SUCCESS]   UTC 1:15:8    authenticated token ME1nQVVRSUw4MDNRaWVpVVBHaGFaY3pLSA==
+[INFO]      UTC 1:15:8    serving GET at endpoint: "/main" :: 200
+[INFO]      UTC 1:15:9    Opened new websocket connection from 127.0.0.1
+[SUCCESS]   UTC 1:15:9    authenticated websocket connection via token.
+[SUCCESS]   UTC 1:15:10   authenticated token ME1nQVVRSUw4MDNRaWVpVVBHaGFaY3pLSA==
+[INFO]      UTC 1:15:10   serving GET at endpoint: "/objects/getchildren" :: 200
+[INFO]      UTC 1:15:12   serving GET at endpoint: "/objects/getmessages" :: 200
+[INFO]      UTC 1:15:15   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 1:15:28   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 1:21:39   Server is shutting down...
+[INFO]      UTC 1:21:39   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 1:26:44   
+Attempting bind to: 127.0.0.1:8081
+[INFO]      UTC 1:27:38   serving GET at endpoint: "/" :: 200
+[INFO]      UTC 1:27:39   serving POST at endpoint: "/verify" :: 200
+[SUCCESS]   UTC 1:27:39   authenticated token Rm1STG9kQWk2UFVNaUV4eU51UjVuOEVzRw==
+[INFO]      UTC 1:27:39   serving GET at endpoint: "/main" :: 200
+[INFO]      UTC 1:27:40   Opened new websocket connection from 127.0.0.1
+[SUCCESS]   UTC 1:27:40   authenticated websocket connection via token.
+[SUCCESS]   UTC 1:27:41   authenticated token Rm1STG9kQWk2UFVNaUV4eU51UjVuOEVzRw==
+[INFO]      UTC 1:27:41   serving GET at endpoint: "/objects/getchildren" :: 200
+[INFO]      UTC 1:27:43   serving GET at endpoint: "/objects/getmessages" :: 200
+[INFO]      UTC 1:27:47   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 1:27:50   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 1:27:52   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 1:27:53   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 1:27:56   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 1:28:32   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 1:28:57   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 1:29:2    serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 1:29:35   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 1:29:42   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 1:29:59   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 1:30:24   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 1:30:27   serving POST at endpoint: "/objects/send" :: 400
+[INFO]      UTC 1:31:21   serving GET at endpoint: "/objects/getmessages" :: 200
+[SUCCESS]   UTC 1:31:25   fileman_wipe_all(): directories erased: 1
+[INFO]      UTC 1:31:25   Server is shutting down...
+[INFO]      UTC 1:31:25   serving POST at endpoint: "/objects/send" :: 200
+[INFO]      UTC 1:32:14   Attempting bind to: 127.0.0.1:8081
+[INFO]      UTC 1:32:21   serving GET at endpoint: "/" :: 200
+[INFO]      UTC 1:32:22   serving POST at endpoint: "/verify" :: 200
+[SUCCESS]   UTC 1:32:22   authenticated token SWFtMmJtdUZmQmhOQXBUZFdzSXBteGNneQ==
+[INFO]      UTC 1:32:22   serving GET at endpoint: "/main" :: 200
+[INFO]      UTC 1:32:23   Opened new websocket connection from 127.0.0.1
+[SUCCESS]   UTC 1:32:23   authenticated websocket connection via token.
+[SUCCESS]   UTC 1:32:23   authenticated token SWFtMmJtdUZmQmhOQXBUZFdzSXBteGNneQ==
+[INFO]      UTC 1:32:23   serving GET at endpoint: "/objects/getchildren" :: 200
+[ERROR]     UTC 1:32:24   message query failed: no messages found.
+[INFO]      UTC 1:32:24   serving GET at endpoint: "/objects/getmessages" :: 404
+[INFO]      UTC 1:32:28   serving POST at endpoint: "/objects/send" :: 200
+[ERROR]     UTC 1:32:30   message query failed: no messages found.
+[INFO]      UTC 1:32:30   serving GET at endpoint: "/objects/getmessages" :: 404
+[INFO]      UTC 1:32:32   Server is shutting down...
+[INFO]      UTC 1:32:32   serving POST at endpoint: "/objects/send" :: 200

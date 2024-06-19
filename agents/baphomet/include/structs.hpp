@@ -18,13 +18,19 @@ struct implant_context {
     HINTERNET hsession = nullptr;
     HINTERNET hconnect = nullptr;
 
+    void*    implant_base  = nullptr;
+    void*    original_base = nullptr;
+    uint32_t implant_size  = 0;
+
     std::string server_addr;
     std::string session_token;
     std::string callback_object;
     std::string user_agent;
 
     uint16_t port;
-    bool is_https;
+    bool is_https           = false;
+    bool use_sleepmask      = false;
+    bool prevent_debugging  = false;
 
     uint64_t sleep_time; //milliseconds
     uint64_t jitter;

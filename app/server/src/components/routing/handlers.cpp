@@ -38,11 +38,13 @@ lurch::instance::router::handler_objects_send(
         return false;
     }
 
+
     reciever_context reciever_ctx;
     reciever_ctx.tok            = tok;
     reciever_ctx.address        = req.remote_ip_address;
     reciever_ctx.cmd            = argument_parser::parse(req.body).value_or(command{.name = "-"});
     reciever_ctx.message_raw    = req.body;
+
 
     const auto [response, obj_access, keep_going, log_if_error] = inst->tree.send_message(GUID, req.body, reciever_ctx);
     if(response || log_if_error) {

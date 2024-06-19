@@ -27,10 +27,7 @@ namespace lurch {
 
         static void                                             strip_whitespace(std::string& str);
         static std::pair<std::string, size_t>                   get_quoted_string(const std::vector<std::string>& tokens, size_t index);
-
         static argument_parameter                               infer_parameter_type(std::string token);
-
-        static result<double>                                   safe_to_double(std::string token);
         static result<int64_t>                                  safe_to_signed_integer(std::string token);
         static result<bool>                                     safe_to_boolean(std::string token);
 
@@ -43,9 +40,9 @@ namespace lurch {
     concept valid_argument =
         std::is_same_v<T, std::string>  ||
         std::is_same_v<T, int64_t>      ||
-        std::is_same_v<T, double>       ||
         std::is_same_v<T, bool>         ||
         std::is_same_v<T, empty>;
+
 
     struct formatted_argument {
         std::string long_form;

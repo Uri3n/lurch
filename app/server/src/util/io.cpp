@@ -72,6 +72,20 @@ lurch::io::type_to_str(const object_type type) {
     }
 }
 
+std::string
+lurch::io::listener_type_to_str(const listener_type type) {
+
+    switch(type) {
+        case listener_type::HTTP:
+            return "HTTP";
+
+        case listener_type::HTTPS:
+            return "HTTPS";
+
+        default:
+            return "?";
+    }
+}
 
 std::string
 lurch::io::access_to_str(const access_level access) {
@@ -79,10 +93,13 @@ lurch::io::access_to_str(const access_level access) {
     switch(access) {
         case access_level::LOW:
             return "LOW";
+
         case access_level::MEDIUM:
             return "MEDIUM";
+
         case access_level::HIGH:
             return "HIGH";
+
         default:
             return "?";
     }

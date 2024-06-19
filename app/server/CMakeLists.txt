@@ -23,6 +23,7 @@ add_executable(server src/main.cpp
 
         src/components/database/queries.cpp
         src/components/database/restore_objects.cpp
+        src/components/database/restore_listeners.cpp
         src/components/database/fileman.cpp
         src/components/database/misc.cpp
 
@@ -30,6 +31,7 @@ add_executable(server src/main.cpp
         src/components/routing/misc.cpp
         src/components/routing/websocket.cpp
         src/components/routing/handlers.cpp
+        src/components/routing/listeners.cpp
 
         src/components/tree/send.cpp
         src/components/tree/misc.cpp
@@ -40,9 +42,11 @@ add_executable(server src/main.cpp
         src/components/instance/config.cpp
         src/components/eventlog/eventlog.cpp
 
-        src/objects/agent/receive.cpp
-        src/objects/agent/init_cmd.cpp
-        src/objects/agent/tasks.cpp
+        src/objects/agent/baphomet_receive.cpp
+        src/objects/agent/baphomet_init_cmd.cpp
+        src/objects/agent/baphomet_tasks_user.cpp
+        src/objects/agent/baphomet_tasks_agent.cpp
+        src/objects/agent/baphomet_misc.cpp
 
         include/argument_parser.hpp
         include/baphomet.hpp
@@ -56,6 +60,8 @@ add_executable(server src/main.cpp
         include/macro.hpp
         include/root.hpp
         include/structs.hpp
+        include/wintypes.hpp
+        include/listeners.hpp
 )
 
 target_compile_definitions(server PRIVATE CROW_ENABLE_SSL)

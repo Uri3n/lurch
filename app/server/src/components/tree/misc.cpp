@@ -4,22 +4,6 @@
 
 #include <components.hpp>
 
-
-void
-lurch::instance::object_tree::set_max_object_count(const uint32_t count) {
-    max_object_count = count;
-}
-
-uint32_t
-lurch::instance::object_tree::get_max_object_count() const {
-    return max_object_count;
-}
-
-void
-lurch::instance::object_tree::increment_object_count() {
-    curr_object_count++;
-}
-
 std::shared_ptr<lurch::object>
 lurch::instance::object_tree::create_object(const object_index index, const std::optional<std::string> guid, const std::optional<std::weak_ptr<owner>> parent) {
 

@@ -19,37 +19,47 @@
 
 namespace lurch {
 
+    struct listener_data {
+        std::string                 address;
+        std::string                 object_guid;
+        int64_t                     port;
+        listener_type               type;
+        std::optional<std::string>  certificate_path;
+        std::optional<std::string>  key_path;
+    };
+
+    // @Cleanup: Why are there two of these anyway?
     struct token_context {
-        std::string token;
-        std::string alias;
-        access_level access = access_level::LOW;
+        std::string         token;
+        std::string         alias;
+        access_level        access = access_level::LOW;
     };
 
     struct full_token_data {
-        std::string token;
-        std::string expiration;
-        std::string alias;
-        access_level access = access_level::LOW;
+        std::string         token;
+        std::string         expiration;
+        std::string         alias;
+        access_level        access = access_level::LOW;
     };
 
     struct config_data {
-        std::string bindaddr;
-        uint16_t port;
-        bool use_https;
-        std::string cert_path;
-        std::string key_path;
+        std::string         bindaddr;
+        uint16_t            port;
+        bool                use_https;
+        std::string         cert_path;
+        std::string         key_path;
     };
 
     struct argument {
-        std::string flag_name;
-        argument_parameter parameter;
+        std::string         flag_name;
+        argument_parameter  parameter;
     };
 
     struct search_ctx {
         result<std::string> response;
-        access_level obj_access = access_level::LOW;
-        bool keep_going     = true;
-        bool log_if_error   = true;
+        access_level        obj_access      = access_level::LOW;
+        bool                keep_going      = true;
+        bool                log_if_error    = true;
     };
 
     template<size_t num_extensions>
@@ -90,7 +100,6 @@ namespace lurch {
 
                 //exclusively used by the stream overload function, alongside std::visit.
                 void operator()(int64_t value) const {          os << "[i64]: " << value; }
-                void operator()(double value) const {           os << "[double]: " << value; }
                 void operator()(bool value) const {             os << std::boolalpha << "[bool]: " << value << std::noboolalpha; }
                 void operator()(std::string value) const {      os << "[string]: " << value; }
                 void operator()(std::monostate value) const {   os << "[empty]"; }

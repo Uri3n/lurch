@@ -68,8 +68,6 @@ lurch::instance::database::restore_objects() {
     );
 
     inst->tree.root = std::move(root_ptr);
-    inst->tree.increment_object_count();
-
     restore_objects_r(std::dynamic_pointer_cast<owner>(inst->tree.root), total_restored_objects);
 
     io::success("finished restoration.");
@@ -77,3 +75,4 @@ lurch::instance::database::restore_objects() {
 
     return { true };
 }
+

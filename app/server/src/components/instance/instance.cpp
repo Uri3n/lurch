@@ -73,8 +73,9 @@ lurch::instance::begin() {
     // set up worker thread and attempt bind to specified addr/port
     //
 
+    std::cout << std::endl;
     log.write(
-        io::format_str( "\nAttempting bind to: {}:{}", config->bindaddr, std::to_string(config->port)),
+        io::format_str("Attempting bind to: {}:{}", config->bindaddr, std::to_string(config->port)),
         log_type::INFO,
         log_noise::REGULAR
     );
@@ -100,6 +101,12 @@ lurch::instance::begin() {
         }
     });
 
+
+    //
+    // Restore any listeners if there are any.
+    //
+
+    db.restore_listeners();
 
     //
     // await server shutdown

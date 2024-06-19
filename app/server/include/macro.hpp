@@ -22,7 +22,7 @@ namespace lurch {
     template<typename T>
     using result = std::expected<T, std::string>;
     using error = std::unexpected<std::string>;
-    using argument_parameter = std::variant<int64_t, double, bool, std::string, std::monostate>;
+    using argument_parameter = std::variant<int64_t, bool, std::string, std::monostate>;
 }
 
 #endif //MACRO_HPP

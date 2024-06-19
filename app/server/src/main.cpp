@@ -13,10 +13,7 @@ int main() {
     std::set_terminate(lurch::instance::handle_uncaught_exception);
     std::signal(SIGINT, handle_kb_interrupt);
 
-    auto* inst = new lurch::instance;
-    inst->begin();
-    delete inst;
-
-
+    lurch::instance inst;
+    inst.begin();
     return EXIT_SUCCESS;
 }

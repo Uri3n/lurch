@@ -37,6 +37,7 @@ namespace lurch {
             return output;
         }
 
+        static std::string listener_type_to_str(const listener_type type);
         static std::string type_to_str(object_type type);
         static std::string access_to_str(access_level access);
         static std::string curr_time();

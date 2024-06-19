@@ -11,12 +11,12 @@ lurch::instance::generate_self_signed_cert(const std::string &certfile_path, con
         return false;
     }
 
-    EVP_PKEY* pkey = nullptr;
-    X509* cert = nullptr;
-    X509_NAME* name = nullptr;
-    FILE* cert_fp = nullptr;
-    FILE* key_fp = nullptr;
-    errno_t err = 0x00;
+    EVP_PKEY*   pkey    = nullptr;
+    X509*       cert    = nullptr;
+    X509_NAME*  name    = nullptr;
+    FILE*       cert_fp = nullptr;
+    FILE*       key_fp  = nullptr;
+    errno_t     err     = 0x00;
 
     auto _ = lurch::defer([&] {
         if (cert_fp) fclose(cert_fp);
@@ -29,6 +29,7 @@ lurch::instance::generate_self_signed_cert(const std::string &certfile_path, con
 
     io::info("\n\nbeginning certificate generation. version:" + std::to_string(certificate_version + 1));
     io::info("generating evp key...");
+
 
     pkey = EVP_PKEY_new();
     if (!pkey) {

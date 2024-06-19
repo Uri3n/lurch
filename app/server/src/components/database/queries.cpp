@@ -89,7 +89,8 @@ lurch::instance::database::initialize(
 
     try {
         this->inst = inst;
-        this->db = std::make_unique<sqlite::database>("db/lurch_database.db");
+        this->db   = std::make_unique<sqlite::database>("db/lurch_database.db");
+
 
         *this->db <<
             "create table if not exists users ("
@@ -111,7 +112,7 @@ lurch::instance::database::initialize(
             "create table if not exists objects ("
             "   _id integer primary key autoincrement not null,"
             "   guid text unique not null,"
-            "   parent text,"                                                       //can be null.
+            "   parent text," //can be null.
             "   alias text not null,"
             "   type integer not null,"
             "   type_index integer not null"
@@ -126,6 +127,18 @@ lurch::instance::database::initialize(
             "   insert_time text not null"
             ");";
 
+        *this->db <<
+            "create table if not exists listeners ("
+            "   _id integer primary key autoincrement not null,"
+            "   address text not null,"
+            "   port integer not null,"
+            "   object_guid text not null,"
+            "   type integer not null,"
+            "   certificate text,"
+            "   key text"
+            ");";
+
+
         if(initial_user && initial_password) {
             *this->db <<
                 "insert into users (username,password,access_level) values (?,?,?);"
@@ -133,7 +146,6 @@ lurch::instance::database::initialize(
                 << hash_password(initial_password.value())
                 << static_cast<int32_t>(access_level::HIGH);
         }
-
     }
     catch(const sqlite::sqlite_exception& e) {
         return error(io::format_str("exception: {} SQL: {}", e.what(), e.get_sql()));
@@ -182,12 +194,14 @@ lurch::instance::database::store_message(const std::string& guid, const std::str
 
 lurch::result<bool>
 lurch::instance::database::store_token(
-    const std::string &token,
-    const access_level access,
-    const std::optional<std::string>& alias,
-    uint64_t expiration_time) {
+        const std::string &token,
+        const access_level access,
+        const std::optional<std::string>& alias,
+        uint64_t expiration_time
+    ) {
 
     std::lock_guard<std::mutex> lock(this->mtx);
+
     try {
         *this->db << u"insert into tokens (token,expiration_time,alias,access_level) values (?,strftime('%s', 'now') + ?,?,?);"
             << token
@@ -200,6 +214,77 @@ lurch::instance::database::store_token(
     }
     catch(...) {
         return error("unknown exception.");
+    }
+
+    return { true };
+}
+
+
+lurch::result<bool>
+lurch::instance::database::store_listener(
+        const std::string                 &address,
+        const int64_t                     port,
+        const std::string                 &object_guid,
+        const std::optional<std::string>  certificate_path, // Only used if HTTPS
+        const std::optional<std::string>  key_path,         // Only used if HTTPS
+        const listener_type               type
+    ) {
+
+    std::lock_guard<std::mutex> lock(this->mtx);
+
+    try {
+        if(certificate_path && key_path) {
+            *this->db << "insert into listeners (address, port, object_guid, type, certificate, key) values (?,?,?,?,?,?);"
+                << address
+                << port
+                << object_guid
+                << static_cast<int64_t>(type)
+                << *certificate_path
+                << *key_path;
+        }
+        else {
+            *this->db << "insert into listeners (address, port, object_guid, type) values (?,?,?,?);"
+                << address
+                << port
+                << object_guid
+                << static_cast<int64_t>(type);
+        }
+    }
+    catch(const std::exception& e) {
+        return error(e.what());
+    }
+
+    return { true };
+}
+
+
+lurch::result<bool>
+lurch::instance::database::delete_listeners(const std::string &guid) {
+
+    std::lock_guard<std::mutex> lock(this->mtx);
+    try {
+        *this->db << "delete from listeners where object_guid = ?;" << guid;
+    }
+    catch(const std::exception& e) {
+        return error(e.what());
+    }
+
+    return { true };
+}
+
+
+lurch::result<bool>
+lurch::instance::database::delete_listener(const std::string &guid, const std::string &address, const int64_t port) {
+
+    std::lock_guard<std::mutex> lock(this->mtx);
+    try {
+        *this->db << "delete from listeners where object_guid = ? and address = ? and port = ?;"
+            << guid
+            << address
+            << port;
+    }
+    catch(const std::exception& e) {
+        return error(e.what());
     }
 
     return { true };
@@ -332,14 +417,15 @@ lurch::result<lurch::array_of_children>
 lurch::instance::database::query_object_children(const std::string &guid){
 
     array_of_children children;
-
     std::lock_guard<std::mutex> lock(this->mtx);
+
     try {
         for(auto&& row : *this->db << "select guid,alias,type,type_index from objects where parent = ?" << guid) {
+
             std::string q_guid;
             std::string q_alias;
-            int64_t q_type = 0;
-            int64_t q_index = 0;
+            int64_t     q_type = 0;
+            int64_t     q_index = 0;
 
             row >> q_guid >> q_alias >> q_type >> q_index;
             children.emplace_back(std::make_tuple(
@@ -375,19 +461,20 @@ lurch::instance::database::query_object_data(const std::string &guid) {
 
     std::optional<object_data> data = std::nullopt;
     std::lock_guard<std::mutex> lock(this->mtx);
+
     try {
         *this->db << "select parent,alias,type,type_index from objects where guid = ? ;"
-                    << guid
-                    >> [&](std::unique_ptr<std::string> parent, std::string alias, int64_t type, int64_t index) {
-                        data = std::make_tuple(
-                            (parent == nullptr ? std::string("none") : *parent),
-                            alias,
-                            static_cast<object_type>(type),
-                            static_cast<object_index>(index)
-                        );
-                    };
+            << guid
+            >> [&](std::unique_ptr<std::string> parent, std::string alias, int64_t type, int64_t index) {
+                data = std::make_tuple(
+                    (parent == nullptr ? std::string("none") : *parent),
+                    alias,
+                    static_cast<object_type>(type),
+                    static_cast<object_index>(index)
+                );
+            };
 
-        if(data.has_value()) {
+        if(data) {
             return *data;
         }
 
@@ -478,14 +565,103 @@ lurch::instance::database::query_full_token_list() {
 }
 
 
+lurch::result<std::vector<lurch::listener_data>>
+lurch::instance::database::query_all_listeners() {
+
+    std::lock_guard<std::mutex> lock(this->mtx);
+    std::vector<listener_data>  listeners;
+
+    try {
+        for(auto&& row : *this->db << "select address, port, object_guid, type, certificate, key from listeners;") {
+
+            std::string                  q_address;
+            int64_t                      q_port;
+            std::string                  q_guid;
+            int64_t                      q_type;
+            std::unique_ptr<std::string> q_certificate  = nullptr;
+            std::unique_ptr<std::string> q_key          = nullptr;
+
+
+            row >> q_address >> q_port >> q_guid >> q_type >> q_certificate >> q_key;
+
+            listeners.emplace_back(
+                q_address,
+                q_guid,
+                q_port,
+                static_cast<listener_type>(q_type),
+                q_certificate == nullptr ? std::nullopt : std::optional(*q_certificate),
+                q_key == nullptr ? std::nullopt : std::optional(*q_key)
+            );
+        }
+
+        if(listeners.empty()) {
+            throw std::runtime_error("No listeners exist.");
+        }
+
+        return listeners;
+    }
+    catch(const std::exception& e) {
+        return error(e.what());
+    }
+    catch(...) {
+        return error("Unknown error.");
+    }
+}
+
+
+lurch::result<std::vector<lurch::listener_data>>
+lurch::instance::database::query_listeners_by_object(const std::string &guid) {
+
+    std::lock_guard<std::mutex> lock(this->mtx);
+    std::vector<listener_data>  listeners;
+
+    try {
+        for(auto&& row : *this->db << "select address, port, object_guid, type, certificate, key from listeners where object_guid = ?;" << guid) {
+
+            std::string                  q_address;
+            int64_t                      q_port;
+            std::string                  q_guid;
+            int64_t                      q_type;
+            std::unique_ptr<std::string> q_certificate  = nullptr;
+            std::unique_ptr<std::string> q_key          = nullptr;
+
+
+            row >> q_address >> q_port >> q_guid >> q_type >> q_certificate >> q_key;
+
+            listeners.emplace_back(
+                q_address,
+                q_guid,
+                q_port,
+                static_cast<listener_type>(q_type),
+                q_certificate == nullptr ? std::nullopt :  std::optional(*q_certificate),
+                q_key == nullptr ? std::nullopt : std::optional(*q_key)
+            );
+        }
+
+        if(listeners.empty()) {
+            throw std::runtime_error("No listeners currently exist for this object.");
+        }
+
+        return listeners;
+    }
+    catch(const std::exception& e) {
+        return error(e.what());
+    }
+    catch(...) {
+        return error("Unknown error.");
+    }
+}
+
+
 size_t
 lurch::instance::database::object_count() {
     std::lock_guard<std::mutex> lock(this->mtx);
+
+    // this shit sucks
     try {
         size_t count = 0;
         *this->db << "select count(*) from objects" >> count;
         return count;
-
     }
     catch(...) {
         return 0;

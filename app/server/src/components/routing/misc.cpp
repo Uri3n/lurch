@@ -55,7 +55,7 @@ lurch::instance::router::file_template(
     };
 
     static constexpr std::string_view generic_file_template =
-        R"(<a href="{}" download draggable="false" class="terminal-media-element">
+        R"(<a href="{}" download draggable="false" style="padding-bottom:1.5vh">
                     <div class="file has-name is-boxed">
                         <label class="file-label">
                             <span class="file-cta">

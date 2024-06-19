@@ -21,9 +21,9 @@ lurch::root::receive(reciever_context& ctx) {
     // debug purposes only
     //
     if(ctx.cmd.name == "debug_gen") {
-        return create_child(object_index::BAPHOMET, object_type::AGENT, "Baphomet")
+        return create_child(object_index::BAPHOMET, object_type::AGENT, "Agent")
             .and_then([&](const bool _) {
-                return result<std::string>("successfully created baphomet object.");
+                return result<std::string>("successfully created agent object.");
             })
             .or_else([&](std::string err) {
                 return result<std::string>(error(err));

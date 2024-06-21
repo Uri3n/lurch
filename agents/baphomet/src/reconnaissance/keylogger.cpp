@@ -2,7 +2,7 @@
 // Created by diago on 2024-06-15.
 //
 
-#include <reconaissance.hpp>
+#include <reconnaissance.hpp>
 
 #ifndef BAPHOMET_USE_SLEEPMASK
 

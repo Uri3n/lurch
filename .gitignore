@@ -12,6 +12,7 @@
 *.la
 *.a
 *.exe
+*.bin
 *.out
 *.app
 *.db
@@ -22,6 +23,6 @@ cmake-build-*/
 **/.idea/
 **/fileman/
 **/fileman/*
-app/bin
-config.json
-logfile.txt
+app/payloads
+**/config.json
+**/logfile.txt

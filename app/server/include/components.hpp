@@ -89,7 +89,7 @@ class instance {
 
             result<std::filesystem::path>                   fileman_create(const std::string_view& raw_contents, const std::string& extension, const std::string& guid, bool is_binary);
             result<std::filesystem::path>                   fileman_get_by_extension(const std::string& guid, const std::string& extension);
-            result<std::stringstream>                       fileman_get_raw(const std::string& name, const std::string& guid);
+            result<std::vector<char>>                       fileman_get_raw(const std::string& file_name);
             result<std::vector<std::filesystem::path>>      fileman_get_file_list(const std::string& guid);
 
 
@@ -141,6 +141,7 @@ class instance {
 
     class router {
         private:
+
             struct {
                 std::vector<std::pair<crow::websocket::connection*, std::optional<access_level>>> connections;
                 std::mutex lock;
@@ -154,6 +155,13 @@ class instance {
             [[nodiscard]] bool verify_token(const crow::request& req, access_level required_access) const;
 
         public:
+
+            struct {
+                std::string address;
+                uint16_t    port;
+                bool        secure;
+            } network_data;
+
             crow::SimpleApp app;
             instance* inst = nullptr;
 
@@ -234,7 +242,6 @@ class instance {
     };
 
 public:
-
 
     std::mutex mtx;
     std::condition_variable shutdown_condition;

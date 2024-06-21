@@ -156,6 +156,7 @@ lurch::baphomet::checkin(reciever_context &ctx) {
         return error("Checkin requested, but this object is already in use.");
     }
     */
+
     connected_agent_data.ip     = ctx.address;
     connected_agent_data.token  = ctx.tok.token;
 
@@ -349,3 +350,5 @@ lurch::baphomet::rundll(reciever_context& ctx) {
         "Successfully queued DLL to be executed."
     );
 }
+
+

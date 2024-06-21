@@ -98,7 +98,8 @@ lurch::root::add_user(reciever_context& ctx) const {
 }
 
 
-lurch::result<std::string> lurch::root::remove_user(reciever_context& ctx) const {
+lurch::result<std::string>
+lurch::root::remove_user(reciever_context& ctx) const {
 
     const std::string user = *std::get<0>(ctx.cmd.get<std::string>("--username", "-u").done());
 
@@ -165,22 +166,4 @@ lurch::root::get_listeners() const {
     }
 }
 
-
-lurch::result<std::string>
-lurch::root::generate_baphomet(reciever_context& ctx) {
-
-    const auto [format, user_agent, sleeptime, jitter, killdate, mask, debug_prevention] =
-        ctx.cmd.get<std::string>("--format", "-f")
-            .with<std::string>("--user-agent", "-ua")
-            .with<int64_t>("--sleeptime", "-s")
-            .with<int64_t>("--jitter", "-j")
-            .with<int64_t>("--killdate", "-kd")
-            .with<bool>("--mask", "-m")
-            .with<bool>("--prevent-debugging", "-pd")
-            .done();
-
-
-    // do stuff...
-    return error("dfdsfsdf");
-}
 

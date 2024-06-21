@@ -8,7 +8,15 @@
 
 std::string
 dispatch::format_output(const std::string& str) {
-    return std::string("\"\n") + (str + '\"');
+
+    auto output = std::string("\"\n") + (str + '\"');
+    for(size_t i = 0; i < output.size(); i++) {
+        if(output[i] < 0 || output[i] > 127) {
+            output[i] = '?';
+        }
+    }
+
+    return output;
 }
 
 command_output

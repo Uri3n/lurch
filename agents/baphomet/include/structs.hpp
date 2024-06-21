@@ -62,12 +62,6 @@ struct section_map {
 };
 
 
-struct dispatch_pair {
-    std::string name;
-    command_output (*func)(const std::vector<std::string>&, const implant_context& ctx);
-};
-
-
 struct object_context {
     union {
         ULONG_PTR          base;
@@ -78,6 +72,12 @@ struct object_context {
     PVOID*              sym_map;
     section_map*        sec_map;
     PIMAGE_SECTION_HEADER sections;
+};
+
+
+struct dispatch_pair {
+    std::string name;
+    command_output (*func)(const std::vector<std::string>&, const implant_context& ctx);
 };
 
 

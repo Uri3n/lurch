@@ -35,6 +35,7 @@ lurch::instance::router::handler_objects_send(
     }
 
     if(req.body.empty() || req.body.size() > 15000) {                                                        //check for a valid request
+        inst->log.write("/objects/send: invalid request body.", log_type::ERROR_MINOR, log_noise::REGULAR);
         return false;
     }
 
@@ -174,6 +175,7 @@ lurch::instance::router::handler_objects_upload(
     if(GUID == "root") {
         GUID = inst->db.query_root_guid().value_or(GUID);
     }
+
 
     return inst->tree.upload_file(GUID, req.body, file_type, user_access)
         .or_else([&](std::string err) {

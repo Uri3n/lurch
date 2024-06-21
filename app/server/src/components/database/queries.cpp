@@ -262,7 +262,15 @@ lurch::result<bool>
 lurch::instance::database::delete_listeners(const std::string &guid) {
 
     std::lock_guard<std::mutex> lock(this->mtx);
+
     try {
+        size_t count = 0;
+        *this->db << "select count(*) as listener_count from listeners where object_guid = ?" << guid >> count;
+
+        if(!count) {
+            throw std::runtime_error("No active listeners.");
+        }
+
         *this->db << "delete from listeners where object_guid = ?;" << guid;
     }
     catch(const std::exception& e) {
@@ -277,7 +285,15 @@ lurch::result<bool>
 lurch::instance::database::delete_listener(const std::string &guid, const std::string &address, const int64_t port) {
 
     std::lock_guard<std::mutex> lock(this->mtx);
+
     try {
+        size_t count = 0;
+        *this->db << "select count(*) as listener_count from listeners where object_guid = ?" << guid >> count;
+
+        if(!count) {
+            throw std::runtime_error("No active listeners.");
+        }
+
         *this->db << "delete from listeners where object_guid = ? and address = ? and port = ?;"
             << guid
             << address

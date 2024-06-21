@@ -11,7 +11,7 @@
 #include <common.hpp>
 
 namespace obfus {
-    void ekko_sleep(uint32_t sleep_time);
+    void ekko_sleep(uint32_t sleep_time, void* image_base, uint32_t image_size);
     void sleep(const implant_context& ctx);
 }
 

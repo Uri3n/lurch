@@ -62,6 +62,19 @@ namespace lurch {
         bool                log_if_error    = true;
     };
 
+    struct baphomet_metadata {
+        std::string     addr;
+        std::string     user_agent;
+        std::string     callback_object;
+        std::string     token;
+        int64_t         port;
+        uint64_t        sleep_time;
+        uint64_t        jitter;
+        bool            use_sleepmask;
+        bool            prevent_debugging;
+        listener_type   proto;
+    };
+
     template<size_t num_extensions>
     struct filetype_pair {
         std::array<std::string_view, num_extensions> extensions;

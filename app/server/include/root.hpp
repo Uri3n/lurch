@@ -26,7 +26,6 @@ public:
     result<std::string> create_chatroom(reciever_context& ctx);
     result<std::string> remove_child(reciever_context& ctx);
     result<std::string> add_user(reciever_context& ctx) const;
-    result<std::string> generate_baphomet(reciever_context& ctx);
 
     result<std::filesystem::path> upload(const std::string &file, const std::string &extension) override;
     result<std::string> receive(reciever_context& ctx) override;

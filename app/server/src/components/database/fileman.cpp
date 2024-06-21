@@ -70,25 +70,34 @@ lurch::instance::database::fileman_get_by_extension(const std::string &guid, con
 }
 
 
-lurch::result<std::stringstream>
-lurch::instance::database::fileman_get_raw(const std::string &name, const std::string &guid) {
+lurch::result<std::vector<char>>
+lurch::instance::database::fileman_get_raw(const std::string &file_name) {
 
-    std::lock_guard<std::mutex> lock(fileman_mtx);
-    const std::string filename = io::format_str("static/fileman/{}/{}", guid, name);
+    std::ifstream       input(file_name, std::ios::binary);
+    std::vector<char>   out;
 
-    if(!fs::exists(filename) || !fs::is_regular_file(filename)) {
-        return error("file does not exist, or is a directory.");
+
+    auto _ = defer([&]() {
+       if(input.is_open()) {
+           input.close();
+       }
+    });
+
+    if(!input.is_open()) {
+        return error("File does not exist.");
     }
 
-    const std::ifstream stream(filename);
-    if(!stream.is_open()) {
-        return error("failed to open file");
+
+    input.seekg(0, std::ios::end);
+    const std::streamsize file_size = input.tellg();
+    input.seekg(0, std::ios::beg);
+
+    out.resize(file_size);
+    if(!input.read(out.data(), file_size)) {
+        return error("Failed to read file contents.");
     }
 
-    std::stringstream buff;
-    buff << stream.rdbuf();
-
-    return buff;
+    return out;
 }
 
 

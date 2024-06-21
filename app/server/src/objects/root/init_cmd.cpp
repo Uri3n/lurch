@@ -24,15 +24,6 @@ lurch::root::init_commands() {
         commands.add_command("remove_user", "removes a user from the database.")
             .arg<std::string>("--username", "-u", true);
 
-        commands.add_command("generate_baphomet", "generates a baphomet payload in the specified format.")
-            .arg<std::string>("--format", "-f", true)
-            .arg<std::string>("--user-agent", "-ua", false)
-            .arg<int64_t>("--sleeptime", "-s", false)
-            .arg<int64_t>("--jitter", "-j", false)
-            .arg<int64_t>("--killdate", "-kd", false)
-            .arg<bool>("--mask", "-m", false)
-            .arg<bool>("--prevent-debugging", "-pd", false);
-
         commands.add_command("remove_child", "deletes a specified child given it's GUID.")
             .arg<std::string>("--guid", "-g", true);
 
@@ -56,7 +47,6 @@ lurch::root::init_commands() {
             {"remove_user",      &root::remove_user},
             {"generate_token",   &root::generate_token},
             {"create_chatroom",  &root::create_chatroom},
-            {"generate_baphomet",&root::generate_baphomet},
             {"tokens", [](root* ptr, reciever_context& ctx) { return ptr->get_tokens(); }},
             {"listeners", [](root* ptr, reciever_context& ctx){ return ptr->get_listeners(); }},
             {"help", [&](root* ptr, reciever_context& ctx) { return root::commands.help(); }},

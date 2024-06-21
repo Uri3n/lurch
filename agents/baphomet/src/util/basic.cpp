@@ -208,3 +208,71 @@ tasking::create_anonymous_pipe(_Out_ HANDLE* hread, _Out_ HANDLE* hwrite) {
 
     return true;
 }
+
+
+uint32_t
+tasking::get_img_size(char* original_base) {
+
+    PIMAGE_DOS_HEADER     pdos_hdr = nullptr;
+    PIMAGE_NT_HEADERS     pnt_hdrs = nullptr;
+
+
+    if(original_base == nullptr) {
+        return 0;
+    }
+
+    pdos_hdr = reinterpret_cast<decltype(pdos_hdr)>(original_base);
+    if(pdos_hdr->e_magic != IMAGE_DOS_SIGNATURE) {
+        DEBUG_PRINT("[!] get_img_size: Invalid DOS signature.");
+        return 0;
+    }
+
+    pnt_hdrs = reinterpret_cast<decltype(pnt_hdrs)>(original_base + pdos_hdr->e_lfanew);
+    if(pnt_hdrs->Signature != IMAGE_NT_SIGNATURE) {
+        DEBUG_PRINT("[!] get_img_size: Invalid NT signature.");
+        return 0;
+    }
+
+    return pnt_hdrs->OptionalHeader.SizeOfImage;
+}
+
+
+uint32_t
+tasking::get_img_raw_size(char* original_base) {
+
+    PIMAGE_DOS_HEADER     pdos_hdr = nullptr;
+    PIMAGE_NT_HEADERS     pnt_hdrs = nullptr;
+    PIMAGE_SECTION_HEADER psec_hdr = nullptr;
+    uint32_t              stotal   = 0;
+
+
+    if(original_base == nullptr) {
+        return 0;
+    }
+
+    pdos_hdr = reinterpret_cast<decltype(pdos_hdr)>(original_base);
+    if(pdos_hdr->e_magic != IMAGE_DOS_SIGNATURE) {
+        DEBUG_PRINT("[!] get_img_raw_size: Invalid DOS signature.");
+        return 0;
+    }
+
+    pnt_hdrs = reinterpret_cast<decltype(pnt_hdrs)>(original_base + pdos_hdr->e_lfanew);
+    if(pnt_hdrs->Signature != IMAGE_NT_SIGNATURE) {
+        DEBUG_PRINT("[!] get_img_raw_size: Invalid NT signature.");
+        return 0;
+    }
+
+
+    //
+    // In order to determine the raw size (size on disk) of the image, we can add up
+    // the SizeOfRawData members of each section header along with the SizeOfHeaders member inside
+    // of the OptionalHeader.
+    //
+
+    psec_hdr = reinterpret_cast<decltype(psec_hdr)>(((char*)pnt_hdrs) + sizeof(IMAGE_NT_HEADERS));
+    for(uint32_t i = 0; i < pnt_hdrs->FileHeader.NumberOfSections; i++) {
+        stotal += psec_hdr[i].SizeOfRawData;
+    }
+
+    return stotal + pnt_hdrs->OptionalHeader.SizeOfHeaders;
+}

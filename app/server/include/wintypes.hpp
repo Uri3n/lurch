@@ -3,17 +3,19 @@
 //
 
 //
-// This header file exists for the sole purpose of parsing portions of windows PE files. Which can occur
-// if we need to generate a payload, for instance.
-// Instead of including Windows.h I prefer to do this for portability's sake, especially when building
-// on Linux.
+// This header file exists for the purpose of parsing portions of Windows PE files on Linux.
+// On Windows, this header file has no effect and simply includes Windows.h
 //
 
 #ifndef WINTYPES_HPP
 #define WINTYPES_HPP
 
+#ifndef WINDOWS
+
 #define IMAGE_NUMBEROF_DIRECTORY_ENTRIES    16
 #define IMAGE_SIZEOF_SHORT_NAME              8
+#define IMAGE_DOS_SIGNATURE                 0x5A4D
+#define IMAGE_NT_SIGNATURE                  0x00004550
 
 typedef unsigned short      WORD;
 typedef long                LONG;
@@ -98,7 +100,6 @@ typedef struct _IMAGE_NT_HEADERS64 {
     IMAGE_OPTIONAL_HEADER64 OptionalHeader;
 } IMAGE_NT_HEADERS64, *PIMAGE_NT_HEADERS64;
 
-
 typedef struct _IMAGE_SECTION_HEADER {
     BYTE    Name[IMAGE_SIZEOF_SHORT_NAME];
     union {
@@ -117,5 +118,9 @@ typedef struct _IMAGE_SECTION_HEADER {
 
 typedef IMAGE_NT_HEADERS64                  IMAGE_NT_HEADERS;
 typedef PIMAGE_NT_HEADERS64                 PIMAGE_NT_HEADERS;
+
+#else
+#include <windows.h>
+#endif
 
 #endif //WINTYPES_HPP

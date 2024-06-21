@@ -5,12 +5,6 @@
 #include <injection.hpp>
 #include <beacon_api.hpp>
 
-//
-// TODO:
-// - arguments for bofs
-// - some sections, like .text, may appear twice. We NEED to make sure that
-//   we skip these a second time if we encounter them.
-//
 
 uint32_t
 tasking::object_virtual_size(object_context* ctx) {

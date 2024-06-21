@@ -54,6 +54,10 @@ lurch::instance::begin() {
     log.inst        = this;
 
 
+    //
+    // Initialize database and logger, delete old access tokens if any exist
+    //
+
     if(const auto db_init = db.initialize(this, initial_user, initial_password); !db_init) {
         throw std::runtime_error(db_init.error());
     }
@@ -67,6 +71,15 @@ lurch::instance::begin() {
     }
 
     db.delete_old_tokens();
+
+
+    //
+    // Save some config data in-memory for easy access later
+    //
+
+    routing.network_data.address = config->bindaddr;
+    routing.network_data.port    = config->port;
+    routing.network_data.secure  = config->use_https;
 
 
     //
@@ -107,6 +120,7 @@ lurch::instance::begin() {
     //
 
     db.restore_listeners();
+
 
     //
     // await server shutdown

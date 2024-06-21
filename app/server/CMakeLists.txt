@@ -47,6 +47,7 @@ add_executable(server src/main.cpp
         src/objects/agent/baphomet_tasks_user.cpp
         src/objects/agent/baphomet_tasks_agent.cpp
         src/objects/agent/baphomet_misc.cpp
+        src/objects/agent/baphomet_payloadgen.cpp
 
         include/argument_parser.hpp
         include/baphomet.hpp
@@ -68,6 +69,7 @@ target_compile_definitions(server PRIVATE CROW_ENABLE_SSL)
 target_include_directories(server PRIVATE ${MAIN_INCLUDE_DIR})
 
 if(WIN32)
+    target_compile_definitions(server PRIVATE WINDOWS)
     target_include_directories(server PRIVATE ${WINDOWS_VENDOR_DIR})
     target_link_directories(server PRIVATE ${WINDOWS_VENDOR_DIR})
     target_link_libraries(server PRIVATE libcrypto)
@@ -77,5 +79,6 @@ if(WIN32)
 endif()
 
 if(UNIX)
+    target_compile_definitions(server PRIVATE LINUX)
     target_include_directories(server PRIVATE vendor/linux) #unfinished
 endif()

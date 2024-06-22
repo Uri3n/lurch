@@ -706,7 +706,7 @@ lurch::instance::database::query_root_guid() {
 
 
 lurch::result<std::pair<std::string, lurch::access_level>>
-lurch::instance::database::query_token_context(const std::string &token) {
+lurch::instance::database::query_token_context(const std::string& token) {
 
     std::lock_guard<std::mutex> lock(this->mtx);
     try {
@@ -724,3 +724,34 @@ lurch::instance::database::query_token_context(const std::string &token) {
         return error(e.what());
     }
 }
+
+
+lurch::result<bool>
+lurch::instance::database::delete_all_messages() {
+
+    std::lock_guard<std::mutex> lock(this->mtx);
+
+    try {
+        *this->db << "delete from messages;";
+        return { true };
+    }
+    catch(const std::exception& e) {
+        return error(e.what());
+    }
+}
+
+
+lurch::result<bool>
+lurch::instance::database::delete_messages(const std::string& guid) {
+
+    std::lock_guard<std::mutex> lock(this->mtx);
+
+    try {
+        *this->db << "delete from messages where guid = ?" << guid;
+        return { true };
+    }
+    catch(const std::exception& e) {
+        return error(e.what());
+    }
+}
+

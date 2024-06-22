@@ -13,31 +13,57 @@ void
 lurch::root::init_commands() {
 
     if(!commands.ready()) {
+
         commands.add_command("shutdown", "shuts down the teamserver.")
-            .arg<empty>("--wipe-files", "-wf", false);
+            .arg<empty>("--wipe-files", "-wf", false)
+            .desc("If this flag is specified, all staged, exfiltrated, and stored files are wiped.")
+
+            .arg<empty>("--wipe-messages", "-wm", false)
+            .desc("If this flag is specified, all sent messages are wiped from the database.");
+
 
         commands.add_command("add_user", "adds a new user to the database.")
             .arg<std::string>("--username", "-u", true)
+            .desc("The name of the user to be added. This should be unique.")
+
             .arg<std::string>("--password", "-p", true)
-            .arg<bool>("--grant-admin", "-a", true);
+            .desc("The password for the new user.")
+
+            .arg<bool>("--grant-admin", "-a", true)
+            .desc("If this is true, the user has admin privileges.<br>"
+                  "This means they can access the root object, remove users, and manage configurations.");
+
 
         commands.add_command("remove_user", "removes a user from the database.")
-            .arg<std::string>("--username", "-u", true);
+            .arg<std::string>("--username", "-u", true)
+            .desc("the name of the user to be removed.");
+
 
         commands.add_command("remove_child", "deletes a specified child given it's GUID.")
             .arg<std::string>("--guid", "-g", true);
 
+
         commands.add_command("generate_token", "generates an arbitrary access token with a specified expiration time.")
             .arg<std::string>("--alias", "-a", true)
-            .arg<int64_t>("--access-level", "-al", true)
-            .arg<int64_t>("--expiration-hours", "-e", false);
+            .desc("the alias to be given to the token. This does not have to be unique.")
 
-        commands.add_command("help", "display this help message.");
-        commands.add_command("create_chatroom", "creates a new chatroom object as a child.");
+            .arg<int64_t>("--access-level", "-al", true)
+            .desc("The access level of the token. Can be LOW (0), MEDIUM (1) or HIGH (2).")
+
+            .arg<int64_t>("--expiration-hours", "-e", false)
+            .desc("The time, in hours, after which the token should be destroyed. 12 by default.");
+
+
+        commands.add_command("help", "display this help message.")
+            .arg<std::string>("--command", "-c", false)
+            .desc("If specified, shows information about a specific command.");
+
+
+        commands.add_command("create_chatroom", "creates a new chatroom object that operators can use to talk to one another.");
         commands.add_command("tokens", "displays existing session tokens and their context.");
         commands.add_command("listeners", "displays all active listeners on the server.");
-
         commands.done();
+
 
         callables =
         {
@@ -47,9 +73,16 @@ lurch::root::init_commands() {
             {"remove_user",      &root::remove_user},
             {"generate_token",   &root::generate_token},
             {"create_chatroom",  &root::create_chatroom},
-            {"tokens", [](root* ptr, reciever_context& ctx) { return ptr->get_tokens(); }},
-            {"listeners", [](root* ptr, reciever_context& ctx){ return ptr->get_listeners(); }},
-            {"help", [&](root* ptr, reciever_context& ctx) { return root::commands.help(); }},
+            {"tokens",           [](root* ptr, reciever_context& ctx) { return ptr->get_tokens(); }},
+            {"listeners",        [](root* ptr, reciever_context& ctx){ return ptr->get_listeners(); }},
+            {"help",             [&](root* ptr, reciever_context& ctx) {
+              const auto [command] = ctx.cmd.get<std::string>("--command","-c").done();
+              if(command) {
+                  return commands.command_help(*command);
+              }
+
+              return commands.help();
+            }},
         };
     }
 }

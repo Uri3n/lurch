@@ -8,12 +8,22 @@
 lurch::result<std::string>
 lurch::root::shutdown(reciever_context& ctx) const {
 
-    const bool wipe_files = std::get<0>(ctx.cmd.get<empty>("--wipe-files", "-wf").done()).has_value();
+    const auto [wipe_files, wipe_messages] =
+        ctx.cmd.get<empty>("--wipe-files", "-wf")
+            .with<empty>("--wipe-messages", "-wm")
+            .done();
+
+
     if(wipe_files) {
         inst->db.fileman_wipe_all();
     }
 
-    inst->log.write("Server is shutting down...", log_type::INFO, log_noise::NOISY);
+    if(wipe_messages) {
+        inst->db.delete_all_messages();
+    }
+
+
+    inst->log.write("Server is shutting down.", log_type::INFO, log_noise::NOISY);
     inst->set_shutdown_condition();
     return { "Shutting down server." };
 }

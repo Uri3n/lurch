@@ -211,25 +211,57 @@ lurch::accepted_commands::done() {
 std::string
 lurch::accepted_commands::help() const {
 
-	std::string buffer;
+	std::vector<std::pair<std::string, std::string>> pairs;
+
 	for(const auto& command : commands) {
-		buffer += command.name + '\n';
-		buffer += command.description + "\n\n";
-		for(const auto& argument : command.args) {
-			buffer += ("  " + io::format_str("{:<15}", argument.long_form));
-			buffer += ("  " + io::format_str("{:<5}", argument.short_form));
-			buffer += ("  required: " + io::format_str("{:<5}", argument.required ? "true" : "false"));
-			buffer += "\n";
-		}
-		buffer += "\n";
+		pairs.emplace_back(std::make_pair(command.name, command.description));
 	}
 
-	if(buffer.size() > 2) {
-		buffer.erase(buffer.size() - 3, 2);
-	}
-
-	return buffer;
+	return templates::command_list("Commands", pairs);
 }
+
+
+std::string
+lurch::accepted_commands::command_help(const std::string& name) const {
+
+	for(const auto& command : commands) {
+		if(command.name == name) {
+
+			std::vector<flag_descriptor> descriptors;
+			for(const auto &[long_form, short_form, type, required, description] : command.args) {
+
+				std::string type_str;
+				if(type == typeid(bool)) {
+					type_str = "flag type: boolean";
+				} else if(type == typeid(std::string)) {
+					type_str = "flag type: string";
+				} else if(type == typeid(int64_t)) {
+					type_str = "flag type: string";
+				} else if(type == typeid(empty)) {
+					type_str = "flag type: none/empty";
+				} else {
+					type_str = "flag type: unknown";
+				}
+
+				descriptors.emplace_back(flag_descriptor{
+					(long_form + ' ') + short_form,
+					type_str,
+					required ? "required flag: true" : "required flag: false",
+					description.value_or("N/A")
+				});
+			}
+
+			if(descriptors.empty()) {
+				return "No flags exist for this command.";
+			}
+
+			return templates::flag_list(command.name, descriptors);
+		}
+	}
+
+	return "That command doesn't exist.";
+}
+
 
 bool
 lurch::accepted_commands::ready() const {

@@ -16,7 +16,7 @@ lurch::instance::router::run(
     CROW_ROUTE(this->app, "/")
     .methods("GET"_method)([&](const crow::request& req, crow::response& res) {
 
-        res.set_static_file_info("static/templates/login.html");
+        res.set_static_file_info("static/html/login.html");
         res.code = 200;
 
         inst->log.write(
@@ -77,7 +77,7 @@ lurch::instance::router::run(
 
         res.code = 403;
         if(verify_token(req, access_level::MEDIUM)) {
-            res.set_static_file_info("static/templates/index.html");
+            res.set_static_file_info("static/html/index.html");
             res.code = 200;
         }
 

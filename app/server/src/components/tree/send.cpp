@@ -32,7 +32,7 @@ lurch::instance::object_tree::send_message_r(
             curr_ctx.response = leaf_ptr->receive(reciever_ctx);
         }
 
-        curr_ctx.log_if_error   = reciever_ctx.log_if_error;
+        curr_ctx.log_if_error = reciever_ctx.log_if_error;
     }
 
 

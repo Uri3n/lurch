@@ -123,6 +123,7 @@ obfus::ekko_sleep(const uint32_t sleep_time, void* image_base, const uint32_t im
     DeleteTimerQueue(hTimerQueue);
 }
 
+
 void
 obfus::sleep(const implant_context& ctx) {
 

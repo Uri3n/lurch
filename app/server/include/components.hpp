@@ -8,6 +8,7 @@
 #include "../vendor/sqlite/sqlite_modern_cpp.h"
 #include <common.hpp>
 #include <argument_parser.hpp>
+#include <templating.hpp>
 #include <io.hpp>
 #include <base.hpp>
 #include <baphomet.hpp>
@@ -117,10 +118,13 @@ class instance {
             result<bool> store_token(const std::string& token, access_level access, const std::optional<std::string>& alias = std::nullopt, uint64_t expiration_time = 12);
             result<bool> store_listener(const std::string& address, int64_t port, const std::string& object_guid, std::optional<std::string> certificate_path, std::optional<std::string> key_path, listener_type type);
 
+
             result<bool> delete_listeners(const std::string& guid);
             result<bool> delete_listener(const std::string& guid, const std::string& address, int64_t port);
             result<bool> delete_object(const std::string& guid);
             result<bool> delete_user(const std::string& username);
+            result<bool> delete_all_messages();
+            result<bool> delete_messages(const std::string& guid);
             void         delete_old_tokens();
 
 
@@ -168,8 +172,6 @@ class instance {
 
             static result<std::pair<std::string, std::string>>  hdr_extract_credentials(const crow::request& req);
             static result<std::string>                          hdr_extract_token(const crow::request& req);
-            static std::string                                  file_template(const std::string& uri_path, const std::string& file_name, const std::string& extension);
-
 
             void add_ws_connection(crow::websocket::connection* conn);
             void remove_ws_connection(crow::websocket::connection* conn);

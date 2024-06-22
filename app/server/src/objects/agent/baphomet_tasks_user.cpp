@@ -283,7 +283,7 @@ lurch::baphomet::generate_payload(reciever_context &ctx) const {
             return inst->db.fileman_create({file_contents->data(), file_contents->size()}, extension, id, true);
         })
         .and_then([&](std::filesystem::path pth) {
-            return result<std::string>(inst->routing.file_template(pth.string(), pth.filename().string(), '.' + extension));
+            return result<std::string>(templates::terminal_media(pth.string(), pth.filename().string(), '.' + extension));
         })
         .or_else([&](std::string err) {
             return result<std::string>(error(err));

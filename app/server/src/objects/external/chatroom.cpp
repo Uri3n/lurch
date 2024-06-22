@@ -12,5 +12,8 @@ lurch::chatroom::upload(const std::string &file, const std::string &extension) {
 
 lurch::result<std::string>
 lurch::chatroom::receive(reciever_context& ctx) {
+    if(ctx.message_raw == "delete") {
+        ctx.delete_self = true;
+    }
     return OBJECT_EMPTY_RESPONSE;
 }

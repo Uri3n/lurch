@@ -13,6 +13,7 @@ add_executable(server src/main.cpp
         src/objects/base/base.cpp
         src/util/argument_parser.cpp
         src/util/io.cpp
+        src/util/templating.cpp
 
         src/objects/root/init_cmd.cpp
         src/objects/root/receive.cpp
@@ -63,6 +64,7 @@ add_executable(server src/main.cpp
         include/structs.hpp
         include/wintypes.hpp
         include/listeners.hpp
+        include/templating.hpp
 )
 
 target_compile_definitions(server PRIVATE CROW_ENABLE_SSL)

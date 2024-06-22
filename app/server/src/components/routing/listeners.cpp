@@ -4,9 +4,17 @@
 
 #include <components.hpp>
 
+
 lurch::http_listener::~http_listener() {
-    app.stop();
-    io::info("Freeing listener for object " + object_guid);
+
+    try {
+        app.stop();
+        future.get(); // This can throw.
+    } catch(...) {
+        inst->log.write("Exception while trying to stop listener.", log_type::ERROR_MINOR, log_noise::QUIET);
+    }
+
+    inst->log.write("Freeing listener for object " + object_guid, log_type::INFO, log_noise::QUIET);
 }
 
 
@@ -44,7 +52,7 @@ lurch::http_listener::start(
         inst->log.write(
             io::format_str("Listener for {} serving POST at \"/objects/send\" :: {}", object_guid, std::to_string(res.code)),
             log_type::INFO,
-            log_noise::QUIET
+            log_noise::REGULAR
         );
 
         res.end();
@@ -81,7 +89,7 @@ lurch::http_listener::start(
         inst->log.write(
             io::format_str("Listener for {} serving POST at \"/objects/upload\" :: {}", object_guid, std::to_string(res.code)),
             log_type::INFO,
-            log_noise::QUIET
+            log_noise::REGULAR
         );
 
         res.end();
@@ -153,10 +161,12 @@ lurch::instance::router::free_listeners(const std::string &guid) {
     std::lock_guard<std::mutex> lock(listeners.lock);
 
     bool erased = false;
-    for(auto it = listeners.list.begin(); it != listeners.list.end(); ++it) {
+    for(auto it = listeners.list.begin(); it != listeners.list.end(); )  {
         if((*it)->object_guid == guid) {
             it = listeners.list.erase(it);
-            erased = true;                  // There might be multiple listeners for 1 object
+            erased = true;
+        } else {
+            ++it;
         }
     }
 

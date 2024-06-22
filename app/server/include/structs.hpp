@@ -50,6 +50,13 @@ namespace lurch {
         std::string         key_path;
     };
 
+    struct flag_descriptor {
+        std::string full_name;
+        std::string type_str;
+        std::string required;
+        std::string description;
+    };
+
     struct argument {
         std::string         flag_name;
         argument_parameter  parameter;

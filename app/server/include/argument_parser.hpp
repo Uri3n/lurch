@@ -15,6 +15,7 @@
 #include <optional>
 #include <common.hpp>
 #include <io.hpp>
+#include <templating.hpp>
 
 
 using empty = std::monostate;
@@ -49,6 +50,7 @@ namespace lurch {
         std::string short_form;
         std::type_index type_name;
         bool required;
+        std::optional<std::string> description = std::nullopt;
 
         formatted_argument(const std::string &long_form, const std::string &short_form, const std::type_index &type_name,
             const bool required)
@@ -80,6 +82,14 @@ namespace lurch {
             return *this;
         }
 
+        formatted_command& desc(const std::string& description) {
+            if(!is_done && !args.empty()) {
+                args[args.size() - 1].description = description;
+            }
+
+            return *this;
+        }
+
         formatted_command(const std::string& name, const std::string& description)
             : name(name), description(description) {}
     };
@@ -92,7 +102,7 @@ namespace lurch {
         bool match_flags(const lurch::command& passed, const formatted_command& to_compare);
     public:
 
-        // I can't define a friend function in a .cpp file?? Lol.
+        // I can't put a friend function in a source file?? Lol.
         friend std::ostream& operator<<(std::ostream &os, const accepted_commands &obj) {
             os << std::boolalpha << "commands: \n";
             for(const auto& command : obj.commands) {
@@ -114,6 +124,7 @@ namespace lurch {
 
         void done();
         std::string help() const;
+        std::string command_help(const std::string& name) const;
         bool ready() const;
 
         accepted_commands() = default;

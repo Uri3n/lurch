@@ -4,12 +4,12 @@
     margin: 0;
     padding: 0;
     display: flex;
-    font-family: 'Cascadia Mono', Consolas, monospace, 'Cascadia Code', Arial !important;
+    font-family: monospace, 'Cascadia Mono', Consolas, 'Cascadia Code', Arial !important;
 }
 
 html {
     /* 
-    dumb issue. Empty scroilbar will appear on the side of the page if I don't do this. 
+    dumb issue. Empty scrollbar will appear on the side of the page if I don't do this. 
     */
     scrollbar-width: none; 
 }
@@ -309,12 +309,24 @@ body {
     flex-direction:column !important;
 }
 
+.terminal-instance-element .content h1 {
+    margin-bottom: 2vh;
+}
+
 .terminal-instance-element .content h3 {
+    margin-bottom:0.7vh !important;
+    margin-top:0        !important;
+    margin-left: 0      !important;
+    margin-right: 0     !important;
+}
+
+.terminal-instance-element .content h5 {
     margin:0 !important;
+    font-weight:400;
 }
 
 .terminal-instance-element .content ul {
-    display:flex !important;
+    display:flex          !important;
     flex-direction:column !important;
 }
 
@@ -352,6 +364,11 @@ body {
     margin-left:    0   !important;
     margin-right:   0   !important;
     margin-bottom:  2vh !important;
+}
+
+.content .message {
+    margin-bottom:0;
+    padding-bottom:2vh;
 }
 
 

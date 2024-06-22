@@ -193,7 +193,7 @@ lurch::instance::router::handler_objects_upload(
                 user_alias,
                 GUID,
                 std::nullopt,
-                file_template(
+                templates::terminal_media(
                     pth.string(),
                     pth.filename().string(),
                     pth.extension().string()

@@ -2,6 +2,13 @@ import { observeElement } from './observer.js';
 import * as cb from './callbacks.js';
 
 
+//
+// Templating rules:
+// - Anything that is static should be templated on the server
+// - Anything with interactivity should be templated on the frontend
+//
+
+
 export const templates = {
     
     //
@@ -9,13 +16,12 @@ export const templates = {
     // therefore, we need to return the first child within the document's body as the new element.
     //
 
-
     terminalMessage : (headerContent, content, timestamp) => {
         
         // I know the pre element looks ghetto lowe it tho
         const template = `<div class="terminal-instance-element">
                             <div class="message is-small">
-                                <span class="message-span">${headerContent} - ${timestamp}</span>
+                                <span class="message-span">${headerContent.replace(/[<>]/g, '')} - ${timestamp}</span>
                                 <pre class="message-body">
 ${content}                                                   
                                 </pre>
@@ -32,7 +38,7 @@ ${content}
     terminalMenuElement : (guid, alias) => {
 
         const template = `<li data-object-guid="${guid}" class="deletable-parent">
-                            <a>${alias}</a> 
+                            <a>${alias.replace(/[<>]/g, '')}</a> 
                             <button class="delete" aria-label="delete"> 
                           </li>`;
 
@@ -70,7 +76,7 @@ ${content}
         li.setAttribute('data-object-type', type);
         li.addEventListener('click',            cb.listElementClickCallback);
         
-        a.textContent = `${guid} :: ${alias}`
+        a.textContent = `${guid} :: ${alias.replace(/[<>]/g, '')}`
         a.setAttribute('draggable', 'true');
         a.addEventListener('dragstart',         cb.listElementDragStartCallback);
         a.addEventListener('dragend',           cb.listElementDragEndCallback);

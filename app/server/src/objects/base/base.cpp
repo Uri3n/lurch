@@ -31,9 +31,10 @@ lurch::object::generate_id() {
 
 lurch::object::~object() {
     if(!id.empty()) {
-        io::info("freeing object from memory: " + id); //can't log this
+        inst->db.delete_messages(id);
+        inst->log.write("freeing object from memory: " + id, log_type::INFO, log_noise::QUIET);
     } else {
-        io::failure("an object with no GUID is being freed. Something is wrong.");
+        inst->log.write("an object with no GUID is being freed. Something is wrong. " + id, log_type::ERROR_MINOR, log_noise::QUIET);
     }
 }
 

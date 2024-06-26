@@ -11,8 +11,7 @@
 #include <iomanip>
 #include <filesystem>
 #include <crow.h>
-#include "common.hpp"
-#include "../vendor/termcolor.hpp"
+#include <common.hpp>
 
 
 

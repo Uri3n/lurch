@@ -42,6 +42,7 @@ namespace lurch {
 
         result<bool> create_child(object_index index, object_type type, const std::string& alias);
         result<bool> delete_child(const std::string& guid);
+        result<bool> delete_all_children();
 
         virtual result<std::string>             receive(reciever_context& ctx) = 0;
         virtual result<std::filesystem::path>   upload(const std::string& file, const std::string& extension) = 0;

@@ -4,10 +4,12 @@
 
 #include <components.hpp>
 
+
 lurch::result<bool>
 lurch::instance::event_log::init(const std::string& file_name) {
 
     log_file = std::ofstream(file_name, std::ios::app);
+
     if(!log_file.is_open()) {
         return error("failed to open specified log file.");
     }
@@ -83,3 +85,4 @@ lurch::instance::event_log::~event_log() {
         log_file.close();
     }
 }
+

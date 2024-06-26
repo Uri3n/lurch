@@ -155,21 +155,17 @@ lurch::instance::router::start_listener_http(
 }
 
 
-bool
-lurch::instance::router::free_listeners(const std::string &guid) {
+void
+lurch::instance::router::free_listeners(const std::string guid) {
 
     std::lock_guard<std::mutex> lock(listeners.lock);
 
-    bool erased = false;
     for(auto it = listeners.list.begin(); it != listeners.list.end(); )  {
         if((*it)->object_guid == guid) {
             it = listeners.list.erase(it);
-            erased = true;
         } else {
             ++it;
         }
     }
-
-    return erased;
 }
 

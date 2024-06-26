@@ -31,7 +31,9 @@ lurch::object::generate_id() {
 
 lurch::object::~object() {
     if(!id.empty()) {
-        inst->db.delete_messages(id);
+        if(delete_from_database) {
+            inst->db.delete_messages(id);
+        }
         inst->log.write("freeing object from memory: " + id, log_type::INFO, log_noise::QUIET);
     } else {
         inst->log.write("an object with no GUID is being freed. Something is wrong. " + id, log_type::ERROR_MINOR, log_noise::QUIET);
@@ -47,15 +49,23 @@ lurch::owner::create_child(const object_index index, const object_type type, con
         return error("invalid object index.");
     }
 
+
     const auto store_res = inst->db.store_object(child_ptr->id, this->id, alias, type, index);
     if(!store_res) {
         return error(store_res.error());
     }
 
+
     inst->routing.send_ws_object_create_update(child_ptr->id, this->id, alias, type);
     children.emplace_back(child_ptr);
 
-    inst->log.write("created new child under " + this->id, log_type::SUCCESS, log_noise::REGULAR);
+
+    inst->log.write(
+        "A new object has been created with guid: " + child_ptr->id,
+        log_type::SUCCESS,
+        log_noise::NOISY
+    );
+
     return { true };
 }
 
@@ -80,7 +90,25 @@ lurch::owner::delete_child(const std::string &guid) {
 }
 
 
+lurch::result<bool>
+lurch::owner::delete_all_children() {
+
+    if(children.empty()) {
+        return error("object has no children.");
+    }
+
+    for(auto& child : children) {
+        child->delete_from_database = true;
+    }
+
+    children.clear();
+    children.shrink_to_fit();
+    return  { true };
+}
+
+
 lurch::owner::~owner() {
+
     if(delete_from_database) {
         for(auto& child : children) {
             child->delete_from_database = true;
@@ -95,6 +123,7 @@ lurch::owner::~owner() {
 }
 
 lurch::leaf::~leaf() {
+
     if(delete_from_database) {
         if(const auto delete_result = inst->db.delete_object(id)) {
             inst->log.write(io::format_str("object with GUID {} has been deleted.", id), log_type::INFO, log_noise::NOISY);

@@ -44,6 +44,7 @@ lurch::root::generate_token(reciever_context& ctx) const {
             .with<int64_t>("--expiration-hours", "-e")
             .done();
 
+
     if(*access > 2 || *access < 0) {
         return "invalid access level provided. Value must be 0 - 2.";
     }
@@ -52,13 +53,23 @@ lurch::root::generate_token(reciever_context& ctx) const {
         return "expiration in hours must be less than one year, and greater than zero.";
     }
 
+
     const std::string new_token = inst->db.generate_token();
     return inst->db.store_token(new_token, static_cast<access_level>(*access), *alias, expiration.value_or(12))
         .and_then([&](const bool _) {
+
+            const std::string access_as_string = io::access_to_str(static_cast<access_level>(*access));
+
+            inst->log.write(
+                io::format_str("User {} created an access token: {}, access level: {}", ctx.tok.alias, new_token, access_as_string),
+                log_type::INFO,
+                log_noise::REGULAR
+            );
+
             return result<std::string>(
                 io::format_str("Successfully created token {} with access level {}.",
                     new_token,
-                    io::access_to_str(static_cast<access_level>(*access))
+                    access_as_string
                 ));
         })
         .or_else([&](std::string err) {
@@ -70,15 +81,49 @@ lurch::root::generate_token(reciever_context& ctx) const {
 lurch::result<std::string>
 lurch::root::create(reciever_context &ctx) {
 
+    const auto [object] = ctx.cmd.get<std::string>("--object", "-o").done();
 
+    object_index index;
+    object_type  type;
+    std::string  alias;
+
+
+    if(*object == "baphomet" || *object == "Baphomet") {
+        index = object_index::BAPHOMET;
+        type  = object_type::AGENT;
+        alias = "Baphomet";
+    }
+    else if(*object == "generic group") {
+        index = object_index::GENERIC_GROUP;
+        type  = object_type::GROUP;
+        alias = "Generic Group";
+    }
+    else if(*object == "chatroom") {
+        index = object_index::GENERIC_CHATROOM;
+        type  = object_type::EXTERNAL;
+        alias = "TeamServer Chat";
+    }
+    else {
+        return error("Invalid object name.");
+    }
+
+
+    return create_child(index, type, alias)
+        .and_then([&](bool _) {
+            return result<std::string>("Successfully created child.");
+        })
+        .or_else([&](std::string err) {
+            return result<std::string>(error(err));
+        });
 }
 
 
 lurch::result<std::string>
 lurch::root::remove_child(reciever_context& ctx) {
 
-    const std::string guid = *std::get<0>(ctx.cmd.get<std::string>("--guid", "-g").done());
-    return delete_child(guid)
+    const auto [guid] = ctx.cmd.get<std::string>("--guid", "-g").done();
+
+    return delete_child(*guid)
         .and_then([&](const bool _) {
             return result<std::string>("successfully deleted child.");
         })
@@ -91,11 +136,12 @@ lurch::root::remove_child(reciever_context& ctx) {
 lurch::result<std::string>
 lurch::root::add_user(reciever_context& ctx) const {
 
-    const auto &[username, password, grant_admin] =
+    const auto [username, password, grant_admin] =
         ctx.cmd.get<std::string>("--username", "-u")
             .with<std::string>("--password", "-p")
             .with<bool>("--grant-admin", "-a")
             .done();
+
 
     return inst->db.store_user(*username, *password, (*grant_admin ? access_level::HIGH : access_level::MEDIUM))
         .and_then([&](const bool _) {
@@ -114,6 +160,13 @@ lurch::root::delete_token(reciever_context &ctx) const {
     const auto [token] = ctx.cmd.get<std::string>("--token", "-t").done();
 
     if(const auto res = inst->db.delete_token(*token)) {
+
+        inst->log.write(
+            io::format_str("User {} deleted access token {}", ctx.tok.alias, *token),
+            log_type::INFO,
+            log_noise::REGULAR
+        );
+
         return "Successfully deleted token " + *token;
     } else {
         return error(res.error());
@@ -128,7 +181,14 @@ lurch::root::remove_user(reciever_context& ctx) const {
 
     return inst->db.delete_user(user)
         .and_then([&](const bool _) {
-            return result<std::string>("success");
+
+            inst->log.write(
+                io::format_str("user {} has been removed by user {}.", user, ctx.tok.alias),
+                log_type::INFO,
+                log_noise::REGULAR
+            );
+
+            return result<std::string>("successfully removed user " + user);
         })
         .or_else([&](std::string err) {
             return result<std::string>(error(err));

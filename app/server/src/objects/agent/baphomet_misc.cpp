@@ -7,8 +7,9 @@
 
 lurch::baphomet::~baphomet() {
     if(delete_from_database) {
-        inst->routing.free_listeners(id);
         inst->db.delete_listeners(id);
+        std::thread t(std::bind(&instance::router::free_listeners, &inst->routing, this->id)); //prevent deadlock.
+        t.detach();
     }
 }
 

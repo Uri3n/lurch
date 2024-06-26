@@ -77,7 +77,7 @@ lurch::baphomet::receive(reciever_context& ctx) {
 
 
     //
-    // For commands with no arguments, simply push the name of the command.
+    // For commands with no arguments, simply push the name of the command to the task queue.
     //
 
     if(ctx.cmd.arguments.empty()) {

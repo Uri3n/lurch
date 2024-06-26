@@ -262,7 +262,7 @@ lurch::instance::router::run(
     }
     catch(const std::exception& e) {
 
-        std::cout << termcolor::red << "\n\n";
+        std::cout << "\n\n";
         std::cout << io::format_str("[!] encountered exception binding to {}:{}!", addr, port) << std::endl;
         std::cout << "[!] description: " << e.what() << std::endl;
 
@@ -270,7 +270,7 @@ lurch::instance::router::run(
                      "\n  or because the certificate or key you provided is incorrect, or otherwise corrupted."
                      "\n  please check the validity of these items, and create a new config.json file by deleting the old one." << std::endl;
 
-        std::cout << termcolor::reset << "\nexiting..." << std::endl;
+        std::cout << "\nexiting..." << std::endl;
         std::exit(EXIT_FAILURE);
     }
 }

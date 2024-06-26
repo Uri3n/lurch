@@ -35,8 +35,8 @@ tasking::init_config(const char* pmetadata, implant_context& ctx) {
     }
 
 
-    if(args.size() != 9) {
-        DEBUG_PRINT("[*] Invalid metadata size! Expected 9, got %llu.\n", args.size());
+    if(args.size() != 10) {
+        DEBUG_PRINT("[*] Invalid metadata size! Expected 10, got %llu.\n", args.size());
         return false;
     }
 
@@ -57,6 +57,7 @@ tasking::init_config(const char* pmetadata, implant_context& ctx) {
     ctx.jitter             = atoi(args[6].c_str()); // 0 is valid for jitter, though
     ctx.use_sleepmask      = args[7] == "true";
     ctx.prevent_debugging  = args[8] == "true";
+    ctx.is_https           = args[9] == "true";
 
     if(!ctx.port || !ctx.sleep_time) {
         DEBUG_PRINT("[!] Invalid metadata sent. Check port and sleep time values.\n");
@@ -78,7 +79,8 @@ tasking::init_config(const char* pmetadata, implant_context& ctx) {
         " - Sleep Time (ms): %llu\n"
         " - Jitter: %llu\n"
         " - Using Sleepmask: %s\n"
-        " - Debug Prevention: %s\n",
+        " - Debug Prevention: %s\n"
+        " - Using HTTPS: %s\n",
 
         ctx.server_addr.c_str(),
         ctx.port,
@@ -88,7 +90,8 @@ tasking::init_config(const char* pmetadata, implant_context& ctx) {
         ctx.sleep_time,
         ctx.jitter,
         args[7].c_str(),
-        args[8].c_str()
+        args[8].c_str(),
+        args[9].c_str()
     );
 
 

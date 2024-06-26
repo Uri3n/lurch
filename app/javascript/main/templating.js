@@ -71,15 +71,15 @@ ${content}
     listElement : (guid, alias, type) => {
 
         const li = document.createElement('li');
-        const a = document.createElement('a');
+        const a  = document.createElement('a');
     
         li.setAttribute('data-object-type', type);
-        li.addEventListener('click',            cb.listElementClickCallback);
+        li.addEventListener('click', cb.listElementClickCallback);
         
         a.textContent = `${guid} :: ${alias.replace(/[<>]/g, '')}`
         a.setAttribute('draggable', 'true');
-        a.addEventListener('dragstart',         cb.listElementDragStartCallback);
-        a.addEventListener('dragend',           cb.listElementDragEndCallback);
+        a.addEventListener('dragstart', cb.listElementDragStartCallback);
+        a.addEventListener('dragend', cb.listElementDragEndCallback);
     
         li.appendChild(a);
         return li;

@@ -129,25 +129,25 @@ lurch::io::curr_time() {
 void
 lurch::io::success(const std::string& str) {
     std::cout << '|' << std::setw(TEXT_WIDTH) << std::left << str << '|' << \
-                termcolor::bright_grey << std::setw(PERIOD_FILLER_WIDTH) << std::setfill('.') << " " << \
-                std::left << std::right << termcolor::reset << '[' << \
-                termcolor::green << "SUCCESS" << termcolor::reset << ']' << std::setfill(' ') << std::endl;
+                std::setw(PERIOD_FILLER_WIDTH) << std::setfill('.') << " " << \
+                std::left << std::right << '[' << \
+                "SUCCESS" << ']' << std::setfill(' ') << std::endl;
 }
 
 void
 lurch::io::failure(const std::string& str) {
     std::cout << '|' << std::setw(TEXT_WIDTH) << std::left << str << '|' << \
-                termcolor::bright_grey << std::setw(PERIOD_FILLER_WIDTH) << std::setfill('.') << " " << \
-                std::left << std::right << termcolor::reset << '[' << \
-                termcolor::red << "ERROR" << termcolor::reset << ']' << std::setfill(' ') << std::endl;
+                std::setw(PERIOD_FILLER_WIDTH) << std::setfill('.') << " " << \
+                std::left << std::right << '[' << \
+                 "ERROR" << ']' << std::setfill(' ') << std::endl;
 }
 
 void
 lurch::io::info(const std::string& str) {
     std::cout << '|' << std::setw(TEXT_WIDTH) << std::left << str << '|' << \
-                termcolor::bright_grey << std::setw(PERIOD_FILLER_WIDTH) << std::setfill('.') << " " << \
-                std::left << std::right << termcolor::reset << '[' << \
-                termcolor::bright_cyan << "INFO" << termcolor::reset << ']' << std::setfill(' ') << std::endl;
+                std::setw(PERIOD_FILLER_WIDTH) << std::setfill('.') << " " << \
+                std::left << std::right << '[' << \
+                 "INFO" <<  ']' << std::setfill(' ') << std::endl;
 }
 
 void
@@ -158,11 +158,11 @@ lurch::io::big_info(const std::string &str) {
 
     const std::vector<std::string> chunks = into_chunks(str);
     std::cout << std::endl;
-    std::cout << BLUE_TEXT(std::format("|{:^70}|", "INFO")) << std::endl;
+    std::cout << std::format("|{:^70}|", "INFO") << std::endl;
     std::cout << std::setw(72) << std::setfill('-') << std::left << '-' << std::setfill(' ') << std::endl;
 
     for(const std::string& chunk : chunks) {
-        std::cout << BLUE_TEXT('|') << std::setw(70) << std::left << chunk << BLUE_TEXT('|') << std::endl;
+        std::cout << '|' << std::setw(70) << std::left << chunk << '|' << std::endl;
     }
     std::cout << std::endl;
 }
@@ -175,11 +175,11 @@ lurch::io::big_failure(const std::string &str) {
 
     const std::vector<std::string> chunks = into_chunks(str);
     std::cout << std::endl;
-    std::cout << RED_TEXT(std::format("|{:^70}|", "ERROR")) << std::endl;
+    std::cout << std::format("|{:^70}|", "ERROR") << std::endl;
     std::cout << std::setw(72) << std::setfill('-') << std::left << '-' << std::setfill(' ') << std::endl;
 
     for(const std::string& chunk : chunks) {
-        std::cout << RED_TEXT('|') << std::setw(70) << std::left << chunk << RED_TEXT('|') << std::endl;
+        std::cout << '|' << std::setw(70) << std::left << chunk << '|' << std::endl;
     }
     std::cout << std::endl;
 }
@@ -192,11 +192,11 @@ lurch::io::big_success(const std::string &str) {
 
     const std::vector<std::string> chunks = into_chunks(str);
     std::cout << std::endl;
-    std::cout << GREEN_TEXT(std::format("|{:^70}|", "SUCCESS")) << std::endl;
+    std::cout << std::format("|{:^70}|", "SUCCESS") << std::endl;
     std::cout << std::setw(72) << std::setfill('-') << std::left << '-' << std::setfill(' ') << std::endl;
 
     for(const std::string& chunk : chunks) {
-        std::cout << GREEN_TEXT('|') << std::setw(70) << std::left << chunk << GREEN_TEXT('|') << std::endl;
+        std::cout << '|' << std::setw(70) << std::left << chunk << '|' << std::endl;
     }
     std::cout << std::endl;
 }
@@ -205,10 +205,10 @@ lurch::io::big_success(const std::string &str) {
 std::string
 lurch::io::prompt_for(const std::string prompt) {
     std::string input;
-    std::cout << "[!] " << prompt << termcolor::bright_cyan;
+    std::cout << "[!] " << prompt;
     std::getline(std::cin, input);
 
-    std::cout << termcolor::reset << std::flush;
+    std::cout << std::flush;
     return input;
 }
 
@@ -232,13 +232,12 @@ lurch::crow_custom_logger::~crow_custom_logger() {
 
 void
 lurch::io::print_banner() {
-    std::cout << termcolor::bright_cyan <<
+    std::cout <<
                  R"(___       ___  ___  ________  ________  ___  ___     )" << '\n' <<
                  R"(|\  \     |\  \|\  \|\   __  \|\   ____\|\  \|\  \)" << '\n' <<
                  R"(\ \  \    \ \  \\\  \ \  \|\  \ \  \___|\ \  \\\  \   )" << '\n' <<
                  R"( \ \  \    \ \  \\\  \ \   _  _\ \  \    \ \   __  \  )" << '\n' <<
                  R"(  \ \  \____\ \  \\\  \ \  \\  \\ \  \____\ \  \ \  \ )" << '\n' <<
                  R"(   \ \_______\ \_______\ \__\\ _\\ \_______\ \__\ \__\)" << '\n' <<
-                 R"(    \|_______|\|_______|\|__|\|__|\|_______|\|__|\|__|)" <<
-                 termcolor::reset << "\n\n";
+                 R"(    \|_______|\|_______|\|__|\|__|\|_______|\|__|\|__|)" << "\n\n";
 }

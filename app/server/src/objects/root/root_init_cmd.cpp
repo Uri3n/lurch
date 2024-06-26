@@ -57,19 +57,22 @@ lurch::root::init_commands() {
             .desc("The time, in hours, after which the token should be destroyed. 12 by default.");
 
 
-        commands.add_command("help", "display this help message.")
-            .arg<std::string>("--command", "-c", false)
-            .desc("If specified, shows information about a specific command.");
-
         commands.add_command("delete_token", "deletes a specified access token")
             .arg<std::string>("--token", "-t", true)
             .desc("The value specified by this flag should be a token to be deleted.");
+
 
         commands.add_command("create", "creates a child under the root object.")
             .arg<std::string>("--object", "-o", true)
             .desc("Specifies the type of object to create. Currently supported values are:<br>"
                   " - \"baphomet\"<br>"
-                  " - \"generic group\"<br>");
+                  " - \"generic group\"<br>"
+                  " - \"chatroom\"");
+
+
+        commands.add_command("help", "display this help message or information about a specific command.")
+            .arg<std::string>("--command", "-c", false)
+            .desc("If specified, shows information about a specific command.");
 
 
         commands.add_command("tokens", "displays existing session tokens and their context.");

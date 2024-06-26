@@ -9,14 +9,11 @@
 #include <string>
 
 #define LURCH_MAX_TOKEN_LENGTH 37
-#define TEXT_WIDTH 70
-#define PERIOD_FILLER_WIDTH 20
-#define BLUE_TEXT(str)  termcolor::bright_cyan << str << termcolor::reset
-#define RED_TEXT(str)   termcolor::red << str << termcolor::reset
-#define GREEN_TEXT(str) termcolor::green << str << termcolor::reset
-#define LURCH_RSA_KEYSIZE 2048
-#define LURCH_CONFIG_PATH "config.json"
-#define LURCH_DEFAULT_LOGFILE "logfile.txt"
+#define TEXT_WIDTH             70
+#define PERIOD_FILLER_WIDTH    20
+#define LURCH_RSA_KEYSIZE      2048
+#define LURCH_CONFIG_PATH      "config.json"
+#define LURCH_DEFAULT_LOGFILE  "logfile.txt"
 
 namespace lurch {
     template<typename T>

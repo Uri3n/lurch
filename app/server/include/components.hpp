@@ -59,6 +59,7 @@ using object_message    = std::tuple<std::string, std::string, std::string>;
 // - contains the database, routing, eventlog, and object tree
 //
 class instance {
+public:
 
     //
     // Database:
@@ -76,7 +77,7 @@ class instance {
 
 
             result<access_level> match_user(const std::string& username, const std::string& password);
-            bool                match_token(const std::string& token, access_level required_access);
+            bool                 match_token(const std::string& token, access_level required_access);
 
             static uint32_t     hash_password(const std::string &password);
             static std::string  generate_token(size_t length = 25);
@@ -124,8 +125,11 @@ class instance {
             result<bool> delete_object(const std::string& guid);
             result<bool> delete_user(const std::string& username);
             result<bool> delete_all_messages();
+            result<bool> delete_all_tokens();
+            result<bool> delete_token(const std::string& token);
             result<bool> delete_messages(const std::string& guid);
             void         delete_old_tokens();
+
 
 
             database() = default;
@@ -194,7 +198,7 @@ class instance {
             bool handler_objects_upload(std::string GUID, const std::string& user_alias, const std::string& file_type, const crow::request& req, crow::response& res, access_level user_access);
 
             result<bool> start_listener_http(const std::string& address, uint16_t port, const std::string& object_guid, std::optional<std::string> certfile, std::optional<std::string> keyfile);
-            bool free_listeners(const std::string& guid);
+            void free_listeners(std::string guid);
 
             void run(std::string addr, uint16_t port, const std::optional<std::string>& ssl_cert, const std::optional<std::string>& ssl_key);
 
@@ -237,13 +241,12 @@ class instance {
 
             result<bool>        init(const std::string& file_name);
             void                write(const std::string& message, log_type type, log_noise noise);
+
             static std::string  format_log_message(log_type type, const std::string& message);
 
             ~event_log();
             event_log() = default;
     };
-
-public:
 
     std::mutex mtx;
     std::condition_variable shutdown_condition;

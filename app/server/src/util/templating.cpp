@@ -128,3 +128,19 @@ lurch::templates::terminal_media(const std::string& uri_path, const std::string&
     .render_string(ctx);
 }
 
+
+std::string
+lurch::templates::generic_header_with_content(const std::string &header, const std::string &content) {
+
+    crow::mustache::context ctx;
+    ctx["header"]  = header;
+    ctx["content"] = content;
+
+    return crow::mustache::compile(
+        R"(<div class="content">
+                <h1>{{header}}</h1>
+                {{{content}}}
+              </div>)"
+    )
+    .render_string(ctx);
+}

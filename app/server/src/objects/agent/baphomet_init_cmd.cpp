@@ -35,7 +35,7 @@ lurch::baphomet::init_commands() {
         commands.add_command("stop_listener", "stops a listener for this object if one exists.");
 
 
-        commands.add_command("help", "display this help message, or use --command to learn about something in specific.")
+        commands.add_command("help", "display this help message or information about a specific command.")
             .arg<std::string>("--command", "-c", false)
             .desc("If specified, shows information about a specific command.");
 

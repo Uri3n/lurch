@@ -8,7 +8,6 @@ void
 lurch::instance::handle_uncaught_exception() {
 
     const std::exception_ptr exception = std::current_exception();
-    std::cout << termcolor::red;
 
     try {
         std::rethrow_exception(exception);
@@ -20,7 +19,6 @@ lurch::instance::handle_uncaught_exception() {
         std::cout << "[!] unknown fatal exception!" << std::endl;
     }
 
-    std::cout << termcolor::reset;
 
 #ifdef LURCH_USE_STACKTRACE
     const std::stacktrace st = std::stacktrace::current();

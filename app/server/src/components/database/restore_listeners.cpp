@@ -10,7 +10,7 @@ lurch::instance::database::restore_listeners() {
 
     const auto listeners = query_all_listeners();
     if(!listeners) {
-        io::info("No listeners to restore.");
+        io::info("No listeners to restore this time.");
         return;
     }
 

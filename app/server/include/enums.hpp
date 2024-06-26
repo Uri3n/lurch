@@ -46,6 +46,7 @@ namespace lurch {
         GENERIC_GROUP,
         GENERIC_CHATROOM,
         GENERIC_ROOT,
+        INDEX_LAST  // Used to determine the end of the enumeration.
     };
 
     enum class ws_notification_intent : uint16_t {

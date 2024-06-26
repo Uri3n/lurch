@@ -149,19 +149,20 @@ export function deleteButtonCallback(event){
 
 export function listElementDragEndCallback(event){                                          
     
+    console.log('listElementDragEndCallback().');
     event.stopPropagation();
 
     const dropX = event.clientX;
     const dropY = event.clientY;
     
-    const terminal = document.querySelector('.terminal-instance');                          
+    const terminal     = document.querySelector('.terminal-instance');                          
     const inputElement = document.getElementById('terminal-input');
     
     let splitContent;
     let guid;
     let alias;
 
-
+    
     try{
         splitContent = event.target.textContent.trim().split(' ').filter(str => str !== '::');
         guid = splitContent.splice(0, 1)[0];
@@ -173,11 +174,13 @@ export function listElementDragEndCallback(event){
 
 
     if (ui.isWithinBoundingRect(dropX, dropY, terminal)) {                                                  
+        console.log('drop within bounding rect - terminal');
         ui.startSession(guid, alias);
         inputElement.focus();
     }
 
     else if(ui.isWithinBoundingRect(dropX, dropY, inputElement)) {                                          
+        console.log('drop within bounding rect - input bar');
         if(inputElement.value.length > 0 && inputElement.value.charAt(inputElement.value.length - 1) !== ' ') {
             inputElement.value += ' ';
         }

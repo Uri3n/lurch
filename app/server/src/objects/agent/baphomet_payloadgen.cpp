@@ -41,7 +41,7 @@ lurch::baphomet::add_payload_metadata(std::vector<char>& payload, const baphomet
         return false;
     }
 
-    const auto packed_string = io::format_str("{}!{}!{}!{}!{}!{}!{}!{}!{}",
+    const auto packed_string = io::format_str("{}!{}!{}!{}!{}!{}!{}!{}!{}!{}",
         metadata.addr,
         metadata.port,
         metadata.user_agent,
@@ -50,7 +50,8 @@ lurch::baphomet::add_payload_metadata(std::vector<char>& payload, const baphomet
         metadata.sleep_time,
         metadata.jitter,
         metadata.use_sleepmask ? "true" : "false",
-        metadata.prevent_debugging ? "true" : "false"
+        metadata.prevent_debugging ? "true" : "false",
+        metadata.proto == listener_type::HTTPS ? "true" : "false"
     );
 
 

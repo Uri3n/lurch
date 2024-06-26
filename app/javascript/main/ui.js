@@ -8,8 +8,9 @@ import {
 
 
 export async function appendListChildren(element){
+    
     try {
-        const children = await fetchObjectChildren(element.querySelector('a').textContent.trim().split(" ")[0]);
+        const children  = await fetchObjectChildren(element.querySelector('a').textContent.trim().split(" ")[0]);
         const childList = document.createElement('ul');
 
         for(const child of children){
@@ -128,10 +129,10 @@ function deleteListElement_r(guid, element){
     for(const child of children){
         
         const anchorTag = child.querySelector('a');
-        const subList = child.querySelector('ul');
+        const subList   = child.querySelector('ul');
     
         if(anchorTag.textContent.trim().split(" ")[0] === guid) {
-            child.remove();
+            transitions.fadeOutElement(child, {remove: true});                                 // delete the list element
             break;
         }
 
@@ -152,12 +153,21 @@ async function appendListElement_r(guid, data, element){
     const children = element.children;
     for(const child of children){
         
-        const anchorTag = child.querySelector('a');
-        const subList = child.querySelector('ul');
+        let anchorTag = child.querySelector('a');
+        let subList   = child.querySelector('ul');
 
         if(anchorTag.textContent.trim().split(" ")[0] === data.parent && anchorTag.classList.contains('is-active')){
+            
             const newChild = templates.listElement(guid, data.alias, data.type);
-            subList.appendChild(newChild);
+            
+            if(subList !== null) {
+                subList.appendChild(newChild);
+            } else {
+                subList = document.createElement('ul');
+                subList.appendChild(newChild);
+                child.appendChild(subList);
+            }
+
             break; 
         }
 

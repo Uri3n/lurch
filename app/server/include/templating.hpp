@@ -15,6 +15,7 @@ namespace lurch {
         static std::string terminal_media(const std::string& uri_path, const std::string& base_name, const std::string& extension);
         static std::string command_list(const std::string& header, const std::vector<std::pair<std::string, std::string>>& commands);
         static std::string flag_list(const std::string& header, const std::vector<flag_descriptor>& flag_descriptors);
+        static std::string generic_header_with_content(const std::string& header, const std::string& content);
     };
 }
 

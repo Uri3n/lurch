@@ -22,7 +22,7 @@ lurch::instance::begin() {
         io::info("Existing database not found, one will be created.");
 
         if(!std::filesystem::exists("db/") && !std::filesystem::create_directory("db/")) {
-            throw std::runtime_error("failed to create database at directory \"/db\"");
+            throw std::runtime_error("failed to create database at \"db/\"");
         }
 
         initial_user        = io::prompt_for("Please specify an initial username:");

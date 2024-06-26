@@ -18,7 +18,7 @@ lurch::instance::generate_self_signed_cert(const std::string &certfile_path, con
     FILE*       key_fp  = nullptr;
     errno_t     err     = 0x00;
 
-    auto _ = lurch::defer([&] {
+    auto _ = defer([&] {
         if (cert_fp) fclose(cert_fp);
         if (key_fp) fclose(key_fp);
         if (name) X509_NAME_free(name);

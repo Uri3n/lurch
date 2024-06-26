@@ -151,14 +151,21 @@ lurch::baphomet::indicate_exit(reciever_context &ctx) {
 
 lurch::result<std::string>
 lurch::baphomet::checkin(reciever_context &ctx) {
-    /*
+
     if(!connected_agent_data.ip.empty() || !connected_agent_data.token.empty()) {
         return error("Checkin requested, but this object is already in use.");
     }
-    */
+
 
     connected_agent_data.ip     = ctx.address;
     connected_agent_data.token  = ctx.tok.token;
+
+
+    inst->log.write(
+        io::format_str("Initial agent check-in from {} ==> {}", ctx.address, id),
+        log_type::SUCCESS,
+        log_noise::REGULAR
+    );
 
     return { io::format_str("Baphomet agent checked in from: {}", ctx.address) };
 }

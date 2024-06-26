@@ -5,12 +5,14 @@
 #include <root.hpp>
 #include <components.hpp>
 
+
 lurch::result<std::string>
 lurch::root::shutdown(reciever_context& ctx) const {
 
-    const auto [wipe_files, wipe_messages] =
+    const auto [wipe_files, wipe_messages, wipe_tokens] =
         ctx.cmd.get<empty>("--wipe-files", "-wf")
             .with<empty>("--wipe-messages", "-wm")
+            .with<empty>("--wipe-tokens", "-wt")
             .done();
 
 
@@ -20,6 +22,10 @@ lurch::root::shutdown(reciever_context& ctx) const {
 
     if(wipe_messages) {
         inst->db.delete_all_messages();
+    }
+
+    if(wipe_tokens) {
+        inst->db.delete_all_tokens();
     }
 
 
@@ -62,15 +68,9 @@ lurch::root::generate_token(reciever_context& ctx) const {
 
 
 lurch::result<std::string>
-lurch::root::create_chatroom(reciever_context& ctx) {
+lurch::root::create(reciever_context &ctx) {
 
-    return create_child(object_index::GENERIC_CHATROOM, object_type::EXTERNAL, "Teamserver Chat")
-        .and_then([&](const bool _) {
-            return result<std::string>("successfully created chatroom object.");
-        })
-        .or_else([&](std::string err) {
-            return result<std::string>(error(err));
-        });
+
 }
 
 
@@ -105,6 +105,19 @@ lurch::root::add_user(reciever_context& ctx) const {
         .or_else([&](std::string err) {
            return result<std::string>(error(err));
         });
+}
+
+
+lurch::result<std::string>
+lurch::root::delete_token(reciever_context &ctx) const {
+
+    const auto [token] = ctx.cmd.get<std::string>("--token", "-t").done();
+
+    if(const auto res = inst->db.delete_token(*token)) {
+        return "Successfully deleted token " + *token;
+    } else {
+        return error(res.error());
+    }
 }
 
 

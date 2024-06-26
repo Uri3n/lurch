@@ -19,7 +19,10 @@ lurch::root::init_commands() {
             .desc("If this flag is specified, all staged, exfiltrated, and stored files are wiped.")
 
             .arg<empty>("--wipe-messages", "-wm", false)
-            .desc("If this flag is specified, all sent messages are wiped from the database.");
+            .desc("If this flag is specified, all sent messages are wiped from the database.")
+
+            .arg<empty>("--wipe-tokens", "-wt", false)
+            .desc("If this flag is specified, all access tokens are wiped from the database.");
 
 
         commands.add_command("add_user", "adds a new user to the database.")
@@ -58,8 +61,17 @@ lurch::root::init_commands() {
             .arg<std::string>("--command", "-c", false)
             .desc("If specified, shows information about a specific command.");
 
+        commands.add_command("delete_token", "deletes a specified access token")
+            .arg<std::string>("--token", "-t", true)
+            .desc("The value specified by this flag should be a token to be deleted.");
 
-        commands.add_command("create_chatroom", "creates a new chatroom object that operators can use to talk to one another.");
+        commands.add_command("create", "creates a child under the root object.")
+            .arg<std::string>("--object", "-o", true)
+            .desc("Specifies the type of object to create. Currently supported values are:<br>"
+                  " - \"baphomet\"<br>"
+                  " - \"generic group\"<br>");
+
+
         commands.add_command("tokens", "displays existing session tokens and their context.");
         commands.add_command("listeners", "displays all active listeners on the server.");
         commands.done();
@@ -71,11 +83,13 @@ lurch::root::init_commands() {
             {"add_user",         &root::add_user},
             {"remove_child",     &root::remove_child},
             {"remove_user",      &root::remove_user},
+            {"delete_token",     &root::delete_token},
             {"generate_token",   &root::generate_token},
-            {"create_chatroom",  &root::create_chatroom},
+            {"create",           &root::create},
             {"tokens",           [](root* ptr, reciever_context& ctx) { return ptr->get_tokens(); }},
             {"listeners",        [](root* ptr, reciever_context& ctx){ return ptr->get_listeners(); }},
             {"help",             [&](root* ptr, reciever_context& ctx) {
+
               const auto [command] = ctx.cmd.get<std::string>("--command","-c").done();
               if(command) {
                   return commands.command_help(*command);

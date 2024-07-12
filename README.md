@@ -1,6 +1,6 @@
 # lurch
 
-![logo-redesigned](https://github.com/Uri3n/lurch/assets/153572153/5ebb8220-c233-4f18-9a24-bf80f169937c)
+![experimental2](https://github.com/user-attachments/assets/3e124368-ff47-446b-88d3-6a27f661cd89)
 
 Unfinished C&C server, client (web-based), and implant.
 I will update this README once this project is finished (if ever).

@@ -20,6 +20,7 @@ namespace lurch {
     using result = std::expected<T, std::string>;
     using error = std::unexpected<std::string>;
     using argument_parameter = std::variant<int64_t, bool, std::string, std::monostate>;
+    using empty = std::monostate;
 }
 
 #endif //MACRO_HPP

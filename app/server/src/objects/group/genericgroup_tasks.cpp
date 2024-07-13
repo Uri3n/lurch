@@ -15,7 +15,7 @@ lurch::group::members(reciever_context &ctx) const {
         buffer += io::format_str("{:=<37} {:=<30} {:=<8} {:=<6}", "=", "=", "=", "=") + '\n';
 
         for(const auto &[guid, alias, type, index] : *children) {
-            buffer += io::format_str("{:<37} {:<30} {:<8} {:<6}", guid, alias, io::type_to_str(type), std::to_string(static_cast<int64_t>(index))) + '\n';
+            buffer += io::format_str("{:<37} {:<30} {:<8} {:<6}", guid, alias, type_to_str(type), std::to_string(static_cast<int64_t>(index))) + '\n';
         }
 
         if(buffer.back() == '\n') {

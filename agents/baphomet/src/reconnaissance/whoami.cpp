@@ -192,7 +192,7 @@ std::string recon::whoami() {
         }
 
         result += io::fmt_str(ansi_sid + ' ', i == 0 ? 45 : 14);
-        std::memset(us_sid.Buffer, 0, 72 * sizeof(wchar_t));
+        memset(us_sid.Buffer, 0, 72 * sizeof(wchar_t));
 
         if(i == 0) {                                                                        // In case of first iteration, continue.
             result += "\n\n";

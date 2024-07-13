@@ -16,7 +16,6 @@ lurch::baphomet::~baphomet() {
 
 bool
 lurch::baphomet::file_is_staged(const std::string &file_name) const {
-
     if(const auto file_list = inst->db.fileman_get_file_list(id)) {
         for(const auto& file : *file_list) {
             if(file_name == file) {

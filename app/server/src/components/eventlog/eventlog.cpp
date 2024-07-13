@@ -76,7 +76,7 @@ lurch::instance::event_log::format_log_message(const log_type type, const std::s
             break;
     }
 
-    return io::format_str("{:<11} {:<13} {}\n", log_type_str, "UTC " + io::curr_time(), message);
+    return io::format_str("{:<11} {:<13} {}\n", log_type_str, "UTC " + curr_time(), message);
 }
 
 

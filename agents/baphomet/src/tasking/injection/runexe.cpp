@@ -275,7 +275,7 @@ tasking::hollow(
         nullptr
     ) && bytes_read > 0) {
         console_output += pipe_output;
-        std::memset(pipe_output, '\0', 4096);
+        memset(pipe_output, '\0', 4096);
     }
 
     return true;

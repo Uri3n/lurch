@@ -29,9 +29,9 @@ lurch::instance::database::generate_token(const size_t length) {
 
 
 uint32_t
-lurch::instance::database::hash_password(const std::string &password) {
+lurch::instance::database::hash_password(const std::string &password) { // @Security: LOL this is a joke
 
-    static constexpr uint32_t initial_seed = 7; //can be altered if needed
+    static constexpr uint32_t initial_seed = 7;
     uint32_t hash = 0;
     size_t index = 0;
 

@@ -28,6 +28,10 @@ networking::http::upload_file(
 	std::wstring file_extension;
 
 
+	//
+	// ensure handles aren't leaked
+	//
+
 	auto _ = defer([&]() {
 		CLOSE_HANDLE(hFile);
 		if (hRequest != nullptr) {
@@ -308,7 +312,11 @@ networking::http::send_object_message(
 		&status_code,
 		(LPDWORD)&code_size,
 		nullptr
-	) || status_code != 200) {
+	)) {
+		return false;
+	}
+
+	if(status_code != 200) {
 		return false;
 	}
 

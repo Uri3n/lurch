@@ -53,7 +53,7 @@ io::fmt_str(const std::string& input, const size_t width) {
     std::string output;
     if(width) {
         output.resize(width);
-        std::memset(output.data(), ' ', output.size());
+        memset(output.data(), ' ', output.size());
     }
 
     if(input.size() >= width) {

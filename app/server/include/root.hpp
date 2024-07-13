@@ -19,6 +19,7 @@ public:
 
     result<std::string> get_tokens() const;
     result<std::string> get_listeners() const;
+    result<std::string> get_users() const;
 
     result<std::string> shutdown(reciever_context& ctx) const;
     result<std::string> remove_user(reciever_context& ctx) const;

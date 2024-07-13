@@ -121,7 +121,6 @@ lurch::instance::begin() {
 
     db.restore_listeners();
 
-
     //
     // await server shutdown
     //

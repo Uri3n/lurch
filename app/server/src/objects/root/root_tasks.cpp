@@ -58,7 +58,7 @@ lurch::root::generate_token(reciever_context& ctx) const {
     return inst->db.store_token(new_token, static_cast<access_level>(*access), *alias, expiration.value_or(12))
         .and_then([&](const bool _) {
 
-            const std::string access_as_string = io::access_to_str(static_cast<access_level>(*access));
+            const std::string access_as_string = access_to_str(static_cast<access_level>(*access));
 
             inst->log.write(
                 io::format_str("User {} created an access token: {}, access level: {}", ctx.tok.alias, new_token, access_as_string),
@@ -174,6 +174,9 @@ lurch::root::delete_token(reciever_context &ctx) const {
 }
 
 
+
+
+
 lurch::result<std::string>
 lurch::root::remove_user(reciever_context& ctx) const {
 
@@ -200,18 +203,17 @@ lurch::result<std::string>
 lurch::root::get_tokens() const {
 
     if(const auto tokens_res = inst->db.query_full_token_list()) {
-
         std::string buff;
         buff += io::format_str("{:<40} {:<23} {:<23} {:<6}", "Token", "Expiration", "Alias", "Access Level") + '\n';
         buff += io::format_str("{:=<40} {:=<23} {:=<23} {:=<6}", "=", "=", "=", "=") + '\n';
 
-        for(const auto&[token, expiration, alias, access] : *tokens_res) {
+        for(const auto &[token, expiration, alias, access] : *tokens_res) {
             buff += io::format_str(
                 "{:<40} {:<23} {:<23} {:<6}",
                 token,
                 expiration,
                 alias,
-                io::access_to_str(access)
+                access_to_str(access)
             ) + '\n';
         }
 
@@ -219,6 +221,26 @@ lurch::root::get_tokens() const {
     }
     else {
         return error(tokens_res.error());
+    }
+}
+
+
+lurch::result<std::string>
+lurch::root::get_users() const {
+
+    if(const auto users_res = inst->db.query_all_users()) {
+        std::string buff;
+        buff += io::format_str("{:<6} {:<40}", "Access", "Username") + '\n';
+        buff += io::format_str("{:=<6} {:=<40}", "=", "=") + '\n';
+
+        for(const auto &[username, access] : *users_res) {
+            buff += io::format_str("{:<6} {:<40}", access_to_str(access), username) + '\n';
+        }
+
+        return { buff };
+    }
+    else {
+        return error(users_res.error());
     }
 }
 
@@ -237,7 +259,7 @@ lurch::root::get_listeners() const {
                 "{:<17} {:<7} {:<7} {:<38}",
                 address,
                 port,
-                io::listener_type_to_str(type),
+                listener_type_to_str(type),
                 guid
             ) + '\n';
         }

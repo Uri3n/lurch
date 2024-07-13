@@ -81,7 +81,7 @@ lurch::baphomet::print_listeners() const {
                 "{:<17} {:<7} {:<7}",
                 address,
                 port,
-                io::listener_type_to_str(type)
+                listener_type_to_str(type)
             ) + '\n';
         }
 

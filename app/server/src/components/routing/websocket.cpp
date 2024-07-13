@@ -93,7 +93,7 @@ lurch::instance::router::send_ws_object_message_update(
     json["body"]        = body;
     json["sender"]      = sender;
     json["recipient"]   = recipient;
-    json["timestamp"]   = io::curr_time();
+    json["timestamp"]   = curr_time();
 
     send_ws_data(json.dump(), false, required_access);
 }
@@ -114,10 +114,10 @@ lurch::instance::router::send_ws_object_create_update(
 
     crow::json::wvalue json;
     json["update-type"] = "object-create";
-    json["guid"] = guid;
-    json["parent"] = parent;
-    json["alias"] = alias;
-    json["type"] = io::type_to_str(type);
+    json["guid"]        = guid;
+    json["parent"]      = parent;
+    json["alias"]       = alias;
+    json["type"]        = type_to_str(type);
 
     send_ws_data(json.dump(), false, std::nullopt);
 }
@@ -128,7 +128,7 @@ lurch::instance::router::send_ws_object_delete_update(const std::string &guid) {
 
     crow::json::wvalue json;
     json["update-type"] = "object-delete";
-    json["guid"] = guid;
+    json["guid"]        = guid;
 
     send_ws_data(json.dump(), false, std::nullopt);
 }
@@ -139,7 +139,7 @@ lurch::instance::router::send_ws_notification(const std::string &message, const 
 
     crow::json::wvalue json;
     json["update-type"] = "notification";
-    json["body"] = message;
+    json["body"]        = message;
 
     switch(intent) {
         case ws_notification_intent::GOOD:

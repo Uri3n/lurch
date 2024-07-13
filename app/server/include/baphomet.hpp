@@ -8,7 +8,6 @@
 #include <wintypes.hpp>
 #include <base.hpp>
 
-
 namespace lurch {
 class baphomet final : public leaf {
 private:

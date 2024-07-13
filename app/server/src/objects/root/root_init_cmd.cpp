@@ -77,6 +77,7 @@ lurch::root::init_commands() {
 
         commands.add_command("tokens", "displays existing session tokens and their context.");
         commands.add_command("listeners", "displays all active listeners on the server.");
+        commands.add_command("users", "displays all user accounts on the server.");
         commands.done();
 
 
@@ -91,6 +92,7 @@ lurch::root::init_commands() {
             {"create",           &root::create},
             {"tokens",           [](root* ptr, reciever_context& ctx) { return ptr->get_tokens(); }},
             {"listeners",        [](root* ptr, reciever_context& ctx){ return ptr->get_listeners(); }},
+            {"users",            [](root* ptr, reciever_context& ctx){ return ptr->get_users(); }},
             {"help",             [&](root* ptr, reciever_context& ctx) {
 
               const auto [command] = ctx.cmd.get<std::string>("--command","-c").done();

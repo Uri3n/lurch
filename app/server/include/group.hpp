@@ -23,10 +23,8 @@ public:
     result<std::string> groupfiles(reciever_context& ctx) const;
 
     result<std::filesystem::path> upload(const std::string &file, const std::string &extension) override;
-    result<std::string>           receive(reciever_context& ctx) override;
-
-    static void                   init_commands();
-
+    result<std::string> receive(reciever_context& ctx) override;
+    static void init_commands();
 
     explicit group(const std::optional<std::weak_ptr<owner>> &parent, instance* const root)
         : owner(parent, root) {

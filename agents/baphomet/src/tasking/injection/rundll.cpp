@@ -55,7 +55,7 @@ tasking::remap_dll_sections(dll_info* pdll_info) {
     }
 
     for(uint16_t i = 0; i < pdll_info->pImgNtHdrs->FileHeader.NumberOfSections; i++) {
-        std::memcpy(
+        memcpy(
             pdll_info->pMappedData + (pdll_info->pImgSecHdr[i].VirtualAddress),
             pdll_info->pFileBuffer + (pdll_info->pImgSecHdr[i].PointerToRawData),
             pdll_info->pImgSecHdr[i].SizeOfRawData

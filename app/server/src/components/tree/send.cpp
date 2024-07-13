@@ -4,6 +4,7 @@
 
 #include <components.hpp>
 
+
 lurch::search_ctx
 lurch::instance::object_tree::send_message_r(
         const std::shared_ptr<object>& current,
@@ -20,17 +21,11 @@ lurch::instance::object_tree::send_message_r(
         curr_ctx.keep_going = false;
         curr_ctx.obj_access = current->access;
 
-        if(reciever_ctx.tok.access < current->access) {
+        if(reciever_ctx.tok.access < current->access)
             curr_ctx.response = error("invalid access level.");
-        }
 
-        if(owner_ptr) {
-            curr_ctx.response = owner_ptr->receive(reciever_ctx);
-        }
-
-        if(leaf_ptr) {
-            curr_ctx.response = leaf_ptr->receive(reciever_ctx);
-        }
+        if(owner_ptr) curr_ctx.response = owner_ptr->receive(reciever_ctx);
+        if(leaf_ptr)  curr_ctx.response = leaf_ptr->receive(reciever_ctx);
 
         curr_ctx.log_if_error = reciever_ctx.log_if_error;
     }

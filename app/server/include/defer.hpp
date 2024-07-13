@@ -1,19 +1,12 @@
 //
-// Created by diago on 2024-05-24.
+// Created by diago on 2024-07-12.
 //
 
-#ifndef COMMON_HPP
-#define COMMON_HPP
-#include <string>
-#include <vector>
-#include <winternl.h>
-#include <cstdint>
-#include <macro.hpp>
+#ifndef DEFER_HPP
+#define DEFER_HPP
+#include <type_traits>
 
-constexpr uint32_t hash_ansi(const char* str);
-constexpr size_t comptime_strlen_ansi(const char* string);
-
-template<typename T>
+template<typename T> requires std::is_invocable_v<T>
 class defer_wrapper {
     T callable;
 public:
@@ -31,4 +24,4 @@ defer_wrapper<T> defer(T callable) {
     return defer_wrapper<T>(callable);
 }
 
-#endif //COMMON_HPP
+#endif //DEFER_HPP

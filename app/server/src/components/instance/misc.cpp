@@ -19,13 +19,6 @@ lurch::instance::handle_uncaught_exception() {
         std::cout << "[!] unknown fatal exception!" << std::endl;
     }
 
-
-#ifdef LURCH_USE_STACKTRACE
-    const std::stacktrace st = std::stacktrace::current();
-    std::cout << "BEGIN STACKTRACE:" << std::endl;
-    std::cout << st << std::endl;
-#endif
-
     std::cout << "[!] exception routine finished. terminating..." << std::endl;
     std::exit(EXIT_FAILURE);
 }

@@ -58,7 +58,7 @@ tasking::shell_command(std::string usr_arg_string, const bool powershell) {
         return io::win32_failure((powershell ? "ps" : "cmd"), "HeapAlloc");
     }
 
-    std::memcpy(non_const, usr_arg_string.c_str(), usr_arg_string.size());
+    memcpy(non_const, usr_arg_string.c_str(), usr_arg_string.size());
 
 
     //
@@ -115,7 +115,7 @@ tasking::shell_command(std::string usr_arg_string, const bool powershell) {
         nullptr
     ) && bytes_read > 0) {
         output += pipe_buffer;
-        std::memset(pipe_buffer, '\0', 4096);
+        memset(pipe_buffer, '\0', 4096);
     }
 
     if(output.empty()) {

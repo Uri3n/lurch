@@ -38,18 +38,11 @@
 #include <atomic>
 
 
-#if defined(_MSVC_STL_VERSION) && defined(_MSVC_LANG)
-    #if _MSVC_LANG > 202002L
-        #define LURCH_USE_STACKTRACE
-        #include <stacktrace>
-    #endif
-#endif
-
-
 namespace lurch {
 
 using object_data       = std::tuple<std::string, std::string, object_type, object_index>;
 using array_of_children = std::vector<std::tuple<std::string, std::string, object_type, object_index>>;
+using array_of_users    = std::vector<std::pair<std::string, access_level>>;
 using object_message    = std::tuple<std::string, std::string, std::string>;
 
 //
@@ -75,11 +68,10 @@ public:
         public:
             instance* inst = nullptr;
 
-
             result<access_level> match_user(const std::string& username, const std::string& password);
-            bool                 match_token(const std::string& token, access_level required_access);
+            bool match_token(const std::string& token, access_level required_access);
 
-            static uint32_t     hash_password(const std::string &password);
+            static uint32_t hash_password(const std::string &password);
             static std::string  generate_token(size_t length = 25);
 
 
@@ -88,12 +80,10 @@ public:
             void fileman_wipe(const std::string& guid);
             void fileman_wipe_all();
 
-
             result<std::filesystem::path>                   fileman_create(const std::string_view& raw_contents, const std::string& extension, const std::string& guid, bool is_binary);
             result<std::filesystem::path>                   fileman_get_by_extension(const std::string& guid, const std::string& extension);
             result<std::vector<char>>                       fileman_get_raw(const std::string& file_name);
             result<std::vector<std::filesystem::path>>      fileman_get_file_list(const std::string& guid);
-
 
             result<std::string>                             query_root_guid();
             result<std::pair<std::string, access_level>>    query_token_context(const std::string& token);
@@ -104,7 +94,7 @@ public:
             result<std::vector<full_token_data>>            query_full_token_list();
             result<std::vector<listener_data>>              query_all_listeners();
             result<std::vector<listener_data>>              query_listeners_by_object(const std::string& guid);
-
+            result<array_of_users>                          query_all_users();
 
             result<bool>                                    initialize(instance* inst, const std::optional<std::string >& initial_user, const std::optional<std::string>& initial_password);
             result<bool>                                    restore_objects();
@@ -112,13 +102,11 @@ public:
             void                                            restore_objects_r(std::shared_ptr<owner>, size_t& total_restored);
             size_t                                          object_count();
 
-
             result<bool> store_object(const std::string& guid, std::optional<std::string> parent, std::string alias, object_type type, object_index index);
             result<bool> store_user(const std::string& username, const std::string& password, access_level access);
             result<bool> store_message(const std::string& guid, const std::string& sender,  const std::string& body);
             result<bool> store_token(const std::string& token, access_level access, const std::optional<std::string>& alias = std::nullopt, uint64_t expiration_time = 12);
             result<bool> store_listener(const std::string& address, int64_t port, const std::string& object_guid, std::optional<std::string> certificate_path, std::optional<std::string> key_path, listener_type type);
-
 
             result<bool> delete_listeners(const std::string& guid);
             result<bool> delete_listener(const std::string& guid, const std::string& address, int64_t port);
@@ -129,7 +117,6 @@ public:
             result<bool> delete_token(const std::string& token);
             result<bool> delete_messages(const std::string& guid);
             void         delete_old_tokens();
-
 
 
             database() = default;
@@ -181,15 +168,12 @@ public:
             void remove_ws_connection(crow::websocket::connection* conn);
             bool verify_ws_user(crow::websocket::connection* conn, const std::string& data);
 
-
             void send_ws_data(const std::string& data, bool is_binary,std::optional<access_level> required_access);
             void send_ws_object_message_update(const std::string& body, const std::string& sender, std::string recipient, access_level required_access);
             void send_ws_object_create_update(const std::string& guid, std::string parent, const std::string& alias, object_type type);
             void send_ws_object_delete_update(const std::string& guid);
             void send_ws_notification(const std::string& message, ws_notification_intent intent);
 
-
-            /* handler functions should NOT call crow::response::end, or set the response code. */
             bool handler_verify(const crow::request& req, crow::response& res) const;
             bool handler_objects_send(std::string GUID, const crow::request& req, crow::response& res, const token_context& tok) const;
             bool handler_objects_getdata(std::string GUID, crow::response& res) const;
@@ -198,9 +182,10 @@ public:
             bool handler_objects_upload(std::string GUID, const std::string& user_alias, const std::string& file_type, const crow::request& req, crow::response& res, access_level user_access);
 
             result<bool> start_listener_http(const std::string& address, uint16_t port, const std::string& object_guid, std::optional<std::string> certfile, std::optional<std::string> keyfile);
-            void free_listeners(std::string guid);
+            void         free_listeners(std::string guid);
 
             void run(std::string addr, uint16_t port, const std::optional<std::string>& ssl_cert, const std::optional<std::string>& ssl_key);
+
 
             router() = default;
             ~router() = default;
@@ -214,7 +199,6 @@ public:
             static std::pair<result<access_level>, bool>            lookup_access_level_r(const std::shared_ptr<object>& current, const std::string& guid);
 
         public:
-
 
             instance*               inst = nullptr;
             std::recursive_mutex    tree_lock;
@@ -239,9 +223,8 @@ public:
 
             instance* inst = nullptr;
 
-            result<bool>        init(const std::string& file_name);
-            void                write(const std::string& message, log_type type, log_noise noise);
-
+            result<bool> init(const std::string& file_name);
+            void write(const std::string& message, log_type type, log_noise noise);
             static std::string  format_log_message(log_type type, const std::string& message);
 
             ~event_log();
@@ -259,10 +242,9 @@ public:
     event_log   log;
 
 
-    static void                 handle_uncaught_exception();
-    static bool                 generate_self_signed_cert(const std::string& certfile_path, const std::string& keyfile_path, long certificate_version);
+    static void handle_uncaught_exception();
+    static bool generate_self_signed_cert(const std::string& certfile_path, const std::string& keyfile_path, long certificate_version);
     static result<config_data>  init_config_data();
-
 
     void post_message_interaction(const std::string& sender, const std::string& object, const std::optional<std::string>& response, const std::string& message_content, access_level required_access);
     void begin();

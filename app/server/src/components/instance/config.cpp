@@ -28,11 +28,11 @@ lurch::instance::init_config_data() {
             return error("failed to load json");
         }
 
-        if(        !json.has("bindaddr")
-                || !json.has("port")
-                || !json.has("use_https")
-                || !json.has("cert_path")
-                || !json.has("key_path")    ) {
+        if(!json.has("bindaddr")
+            || !json.has("port")
+            || !json.has("use_https")
+            || !json.has("cert_path")
+            || !json.has("key_path")) {
 
             return error("invalid json keys. Corrupted?");
         }
@@ -87,13 +87,13 @@ lurch::instance::init_config_data() {
                     config.key_path = io::prompt_for("enter key path: ");
                 } while(!std::filesystem::exists(config.cert_path));
 
-                config.key_path = std::filesystem::path(config.key_path).string();      // convert to platform independant path, removing any backslash if on Windows.
+                config.key_path  = std::filesystem::path(config.key_path).string();      // convert to platform independant path, removing any backslash if on Windows.
                 config.cert_path = std::filesystem::path(config.cert_path).string();    // Otherwise, the JSON will not be formatted correctly (backslash must be double escaped).
             }
         }
         else {
-            config.cert_path = "null";
-            config.key_path = "null";
+            config.cert_path  = "null";
+            config.key_path   = "null";
         }
 
 
@@ -102,11 +102,11 @@ lurch::instance::init_config_data() {
         //
 
         crow::json::wvalue json;
-        json["bindaddr"] = config.bindaddr;
-        json["port"] = std::to_string(config.port);
-        json["use_https"] = config.use_https ? "true" : "false";
-        json["cert_path"] = config.cert_path;
-        json["key_path"] = config.key_path;
+        json["bindaddr"]   = config.bindaddr;
+        json["port"]       = std::to_string(config.port);
+        json["use_https"]  = config.use_https ? "true" : "false";
+        json["cert_path"]  = config.cert_path;
+        json["key_path"]   = config.key_path;
 
         std::ofstream file("config.json");
         if(!file.is_open()) {

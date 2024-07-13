@@ -127,7 +127,7 @@ networking::http::recieve_file(
         &bytes_read
     ) && bytes_read > 0) {
         file_buffer.insert(file_buffer.end(), temp_buffer, temp_buffer + bytes_read);
-        std::memset(temp_buffer, '\0', 4096);
+        memset(temp_buffer, '\0', 4096);
     }
 
     return true;

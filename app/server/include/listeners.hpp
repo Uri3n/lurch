@@ -14,8 +14,8 @@
 namespace lurch {
     class listener {
         public:
-            std::string     object_guid;
-            instance*       inst;
+            std::string object_guid;
+            instance*   inst;
 
             virtual ~listener() = default;
             explicit listener(const std::string& object_guid, instance* inst)
@@ -24,10 +24,10 @@ namespace lurch {
 
     class http_listener final : public listener {
         public:
-            std::future<void>   future;
-            crow::SimpleApp     app;
+            std::future<void> future;
+            crow::SimpleApp   app;
 
-            result<bool> start(const std::string address,
+            result<bool> start(std::string address,
                 uint16_t port,
                 const std::optional<std::string>& certfile,
                 const std::optional<std::string>& keyfile

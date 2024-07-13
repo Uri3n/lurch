@@ -76,11 +76,8 @@ lurch::instance::database::fileman_get_raw(const std::string &file_name) {
     std::ifstream       input(file_name, std::ios::binary);
     std::vector<char>   out;
 
-
-    auto _ = defer([&]() {
-       if(input.is_open()) {
-           input.close();
-       }
+    auto _ = defer([&] {
+       if(input.is_open()) { input.close(); }
     });
 
     if(!input.is_open()) {

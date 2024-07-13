@@ -160,7 +160,6 @@ lurch::baphomet::checkin(reciever_context &ctx) {
     connected_agent_data.ip     = ctx.address;
     connected_agent_data.token  = ctx.tok.token;
 
-
     inst->log.write(
         io::format_str("Initial agent check-in from {} ==> {}", ctx.address, id),
         log_type::SUCCESS,

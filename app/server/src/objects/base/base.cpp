@@ -13,7 +13,6 @@ lurch::object::generate_id() {
     std::random_device              device;
     std::mt19937                    generator(device());
     std::uniform_int_distribution   distribution(0, 15);
-
     static const char*              character_set = "0123456789abcdef";
     std::string                     guid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx";
 
@@ -49,16 +48,13 @@ lurch::owner::create_child(const object_index index, const object_type type, con
         return error("invalid object index.");
     }
 
-
     const auto store_res = inst->db.store_object(child_ptr->id, this->id, alias, type, index);
     if(!store_res) {
         return error(store_res.error());
     }
 
-
     inst->routing.send_ws_object_create_update(child_ptr->id, this->id, alias, type);
     children.emplace_back(child_ptr);
-
 
     inst->log.write(
         "A new object has been created with guid: " + child_ptr->id,
@@ -134,5 +130,8 @@ lurch::leaf::~leaf() {
 }
 
 
-lurch::owner::owner(std::optional<std::weak_ptr<owner>> parent, instance* inst) : object(inst), parent(std::move(parent)) {}
-lurch::leaf::leaf(std::optional<std::weak_ptr<owner>> parent, instance *inst) : object(inst), parent(std::move(parent)) {}
+lurch::owner::owner(std::optional<std::weak_ptr<owner>> parent, instance* inst)
+    : object(inst), parent(std::move(parent)) {}
+
+lurch::leaf::leaf(std::optional<std::weak_ptr<owner>> parent, instance *inst)
+    : object(inst), parent(std::move(parent)) {}

@@ -298,7 +298,7 @@ tasking::shellcode_self_inject(void const* payload, const uint32_t payload_size)
         return io::win32_failure("run_shellcode", "VirtualAlloc");
     }
 
-    std::memcpy(alloc_pages, payload, payload_size);
+    memcpy(alloc_pages, payload, payload_size);
     uint32_t old_protect = 0;
 
     if(!VirtualProtect(

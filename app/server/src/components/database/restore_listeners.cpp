@@ -24,12 +24,12 @@ lurch::instance::database::restore_listeners() {
         }
 
         if(const auto res = inst->routing.start_listener_http(address, port, guid, cert, key)) {
-            io::info(io::format_str("Restored listener :: {}:{} proto: {}", address, port, io::listener_type_to_str(type)));
+            io::info(io::format_str("Restored listener :: {}:{} proto: {}", address, port, listener_type_to_str(type)));
             ++restore_count;
         }
 
         else {
-            io::failure(io::format_str("Failed to restore listener :: {}:{} proto: {}", address, port, io::listener_type_to_str(type)));
+            io::failure(io::format_str("Failed to restore listener :: {}:{} proto: {}", address, port, listener_type_to_str(type)));
             io::failure("Error: " + res.error());
         }
     }

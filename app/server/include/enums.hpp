@@ -4,6 +4,7 @@
 
 #ifndef ENUMS_HPP
 #define ENUMS_HPP
+#include <cstdint>
 
 namespace lurch {
 

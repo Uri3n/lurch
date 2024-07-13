@@ -18,16 +18,14 @@ add_executable(server src/main.cpp
         src/util/argument_parser.cpp
         src/util/io.cpp
         src/util/templating.cpp
-
+        src/util/basic.cpp
         src/objects/root/root_init_cmd.cpp
         src/objects/root/root_receive.cpp
         src/objects/root/root_tasks.cpp
-
         src/objects/group/genericgroup_init_cmd.cpp
         src/objects/group/genericgroup_tasks.cpp
         src/objects/group/genericgroup_receive.cpp
         src/objects/external/chatroom.cpp
-
         src/components/database/restore_objects.cpp
         src/components/database/restore_listeners.cpp
         src/components/database/fileman.cpp
@@ -35,22 +33,18 @@ add_executable(server src/main.cpp
         src/components/database/queries_store.cpp
         src/components/database/queries_get.cpp
         src/components/database/queries_delete.cpp
-
         src/components/routing/endpoints.cpp
         src/components/routing/misc.cpp
         src/components/routing/websocket.cpp
         src/components/routing/handlers.cpp
         src/components/routing/listeners.cpp
-
         src/components/tree/send.cpp
         src/components/tree/misc.cpp
-
         src/components/instance/instance.cpp
         src/components/instance/misc.cpp
         src/components/instance/ssl.cpp
         src/components/instance/config.cpp
         src/components/eventlog/eventlog.cpp
-
         src/objects/agent/baphomet_receive.cpp
         src/objects/agent/baphomet_init_cmd.cpp
         src/objects/agent/baphomet_tasks_user.cpp
@@ -73,31 +67,22 @@ add_executable(server src/main.cpp
         include/wintypes.hpp
         include/listeners.hpp
         include/templating.hpp
-
-
+        include/basic.hpp
+        include/command_types.hpp
+        include/defer.hpp
 )
 
 
-# OpenSSL
 find_package(OpenSSL REQUIRED)
 target_link_libraries(server PRIVATE OpenSSL::SSL)
 target_link_libraries(server PRIVATE OpenSSL::Crypto)
 
 
-# CrowCPP
-#   - This will only work on Linux.
-#   - If on Windows, crow will need to be in Path via vcpkg or other.
-if(UNIX)
-    find_package(Crow REQUIRED)
-    target_link_libraries(server PRIVATE Crow::Crow)
-endif()
-
-
-target_compile_definitions(server PRIVATE CROW_ENABLE_SSL)
-target_include_directories(server PRIVATE ${MAIN_INCLUDE_DIR})
+target_compile_definitions(server PRIVATE CROW_ENABLE_SSL)        # Required for Crow OpenSSL integration
+target_include_directories(server PRIVATE ${MAIN_INCLUDE_DIR})    # Main include directory
 
 if(WIN32)
     target_compile_definitions(server PRIVATE WINDOWS)
-    target_link_libraries(server PRIVATE crypt32)       # required for OpenSSL
-    target_link_libraries(server PRIVATE ws2_32)        # required for OpenSSL
+    target_link_libraries(server PRIVATE crypt32)                 # required for OpenSSL
+    target_link_libraries(server PRIVATE ws2_32)                  # required for OpenSSL
 endif()

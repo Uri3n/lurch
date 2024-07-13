@@ -1,10 +1,13 @@
 import * as transitions from './transitions.js';
-import { templates } from "./templating.js";
+import * as util        from './util.js'
+import { templates }    from './templating.js';
 
 import { 
     fetchObjectChildren, 
     fetchObjectMessages, 
-} from "./fetch.js";  
+} from './fetch.js'; 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 export async function appendListChildren(element){
@@ -115,14 +118,6 @@ export function selectListElement(element){
 }
 
 
-export function isWithinBoundingRect(X, Y, element){
-
-    const boundingRect = element.getBoundingClientRect();
-    return (X >= boundingRect.left && X <= boundingRect.right &&
-           Y >= boundingRect.top && Y <= boundingRect.bottom);
-}
-
-
 function deleteListElement_r(guid, element){
 
     const children = element.children;
@@ -144,7 +139,7 @@ function deleteListElement_r(guid, element){
 
 
 export function deleteListElement(guid){
-    deleteListElement_r(guid, document.querySelector('#object-menu .menu-list'));
+    deleteListElement_r(guid, document.querySelector('#object-menu .menu-list'));              // recursively call until we find the element
 }
 
 
@@ -222,37 +217,6 @@ export function selectTerminalMenuElement(guid){
             anchorTag.classList.add('is-active');
         }
     });
-}
-
-
-export function sessionExists(guid){
-
-    let exists = false;
-
-    Array.from(document.querySelector('#terminal-menu .menu-list').children).forEach(element => {
-        if(element.getAttribute('data-object-guid') === guid) {
-            exists = true;
-        }
-    });
-
-    return exists;
-}
-
-
-export function currentSessionGuid() {
-
-    const sessions = document.querySelectorAll('.terminal-session');
-    
-    if(sessions !== null) {
-        for(const session of sessions) {           
-            const guid = session.getAttribute('data-object-guid');
-            if(session.style.display !== 'none' && guid !== null) {
-                return guid;
-            }
-        }
-    }
-
-    return null;
 }
 
 
@@ -338,7 +302,7 @@ export function shuffleNotifications(elementToRemove, sibling) {
 
 export async function startSession(guid, alias){
 
-    if(sessionExists(guid)){
+    if(util.sessionExists(guid)){
         selectTerminalMenuElement(guid);
         selectTerminalSession(guid);
     } 
@@ -430,29 +394,6 @@ export function forceEndSession(guid){
 }
 
 
-export function isInputSelected(){
-    const activeElement = document.activeElement;
-    return activeElement !== null && activeElement.getAttribute('id') === 'terminal-input'; 
-}
-
-export function currentInputContent(){
-    return document.getElementById('terminal-input').value.trim();
-}
-
-export function clearInputContent(){
-    document.getElementById('terminal-input').value = '';
-}
-
-export function focusInputElement() {
-    document.getElementById('terminal-input').focus();
-}
-
-
-export function isTerminalFullscreened() {
-    const fullscreen = document.getElementById('terminal-container').getAttribute('data-is-fullscreen');
-    return fullscreen !== null && fullscreen !== undefined && fullscreen === 'true';
-}
-
 export function fullscreenTerminalSession() {
 
     const terminalInstance  = document.querySelector('.terminal-instance');
@@ -461,7 +402,7 @@ export function fullscreenTerminalSession() {
     const objectContainer   = document.getElementById('object-container'); 
     const terminalInput     = document.getElementById('terminal-input');
 
-    if(isTerminalFullscreened() === true) {
+    if(util.isTerminalFullscreened() === true) {
         console.warn('Attempted to fullscreen terminal window while already fullscreened.');
         return;
     }
@@ -498,7 +439,7 @@ export function minimizeTerminalFullscreen() {
     const objectContainer   = document.getElementById('object-container'); 
     const terminalInput     = document.getElementById('terminal-input');
 
-    if(isTerminalFullscreened() === false) {
+    if(util.isTerminalFullscreened() === false) {
         console.warn('Attempted to minimize terminal window while not fullscreened.');
         return;
     }

@@ -373,3 +373,31 @@ lurch::instance::database::query_token_context(const std::string& token) {
         return error(e.what());
     }
 }
+
+
+lurch::result<lurch::array_of_users>
+lurch::instance::database::query_all_users() {
+
+    std::lock_guard<std::mutex> lock(this->mtx);
+    try {
+
+        array_of_users users;
+        for(auto&& row : *this->db << "select username,access_level from users;") {
+            std::string q_user;
+            int32_t     q_access = 0;
+
+            row >> q_user >> q_access;
+            users.emplace_back(std::make_pair(q_user, static_cast<access_level>(q_access)));
+        }
+
+        if(users.empty()) {
+            throw std::runtime_error("No users exist.");
+        }
+
+        return { users };
+    }
+    catch(const std::exception& e) {
+        return error(e.what());
+    }
+}
+

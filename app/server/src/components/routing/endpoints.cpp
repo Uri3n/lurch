@@ -239,7 +239,6 @@ lurch::instance::router::run(
     });
 
 
-
     app.loglevel(crow::LogLevel::Critical);
 
     try {

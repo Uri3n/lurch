@@ -3,8 +3,6 @@
 //
 
 #include <argument_parser.hpp>
-#include <typeindex>
-
 
 lurch::result<int64_t>
 lurch::argument_parser::safe_to_signed_integer(const std::string token) {
@@ -18,42 +16,38 @@ lurch::argument_parser::safe_to_signed_integer(const std::string token) {
 	int64_t i = 0;
 
 	try { i = std::stoll(token); }
-	catch (const std::exception& e) { return error("failed.");}
+	catch (const std::exception& _) { return error("failed.");}
 	return i;
 }
 
 lurch::result<bool>
 lurch::argument_parser::safe_to_boolean(const std::string token) {
 
-	if (token == "true") { return true; }
-	else if (token == "false") { return false;}
+	if (token == "true")  return true;
+	if (token == "false") return false;
 	return error("failed.");
 }
 
 lurch::argument_parameter
 lurch::argument_parser::infer_parameter_type(const std::string token) {
 
-	result<int64_t> param_i64		 =   argument_parser::safe_to_signed_integer(token);
-	result<bool>	param_bool       =   argument_parser::safe_to_boolean(token);
+	result<int64_t> param_i64   = safe_to_signed_integer(token);
+	result<bool>	param_bool  = safe_to_boolean(token);
 
-	if (param_bool) {
+	if (param_bool)
 		return param_bool.value();
-	}
 
-	if (param_i64) {
+	if (param_i64)
 		return param_i64.value();
-	}
 
 	return token; //default, return the string back
 }
 
-
 void
 lurch::argument_parser::strip_whitespace(std::string& str) {
 
-	if (str.empty()) {
+	if (str.empty())
 		return;
-	}
 
 	size_t first_non_space = str.find_first_not_of(" \t");
 	if (first_non_space != std::string::npos) {
@@ -62,7 +56,6 @@ lurch::argument_parser::strip_whitespace(std::string& str) {
 
 	if (str.empty())
 		return;
-
 
 	if (str.back() == ' ' || str.back() == '\t') {
 		size_t r_first_non_space = str.size() - 1;
@@ -73,7 +66,6 @@ lurch::argument_parser::strip_whitespace(std::string& str) {
 		str.erase(r_first_non_space);
 	}
 }
-
 
 std::pair<std::string, std::vector<std::string>>
 lurch::argument_parser::tokenize_input(std::string& str) {
@@ -187,7 +179,7 @@ lurch::argument_parser::parse(std::string raw) {
 	}
 
 	cmd.name = name;
-	return lurch::result<lurch::command>(cmd);
+	return lurch::result<command>(cmd);
 }
 
 
@@ -207,7 +199,6 @@ lurch::accepted_commands::done() {
 	}
 }
 
-
 std::string
 lurch::accepted_commands::help() const {
 
@@ -220,7 +211,6 @@ lurch::accepted_commands::help() const {
 	return templates::command_list("Commands", pairs);
 }
 
-
 std::string
 lurch::accepted_commands::command_help(const std::string& name) const {
 
@@ -231,17 +221,12 @@ lurch::accepted_commands::command_help(const std::string& name) const {
 			for(const auto &[long_form, short_form, type, required, description] : command.args) {
 
 				std::string type_str;
-				if(type == typeid(bool)) {
-					type_str = "flag type: boolean";
-				} else if(type == typeid(std::string)) {
-					type_str = "flag type: string";
-				} else if(type == typeid(int64_t)) {
-					type_str = "flag type: string";
-				} else if(type == typeid(empty)) {
-					type_str = "flag type: none/empty";
-				} else {
-					type_str = "flag type: unknown";
-				}
+				if(type == typeid(bool))              type_str = "flag type: boolean";
+				 else if(type == typeid(std::string)) type_str = "flag type: string";
+				 else if(type == typeid(int64_t))     type_str = "flag type: string";
+				 else if(type == typeid(empty))       type_str = "flag type: none/empty";
+				 else                                 type_str = "flag type: unknown";
+
 
 				descriptors.emplace_back(flag_descriptor{
 					(long_form + ' ') + short_form,
@@ -262,15 +247,13 @@ lurch::accepted_commands::command_help(const std::string& name) const {
 	return "That command doesn't exist.";
 }
 
-
 bool
 lurch::accepted_commands::ready() const {
 	return is_done;
 }
 
-
 bool
-lurch::accepted_commands::matches(const lurch::command& passed) {
+lurch::accepted_commands::matches(const command& passed) {
 	for(const auto& command : this->commands) {
 		if(command.name == passed.name) {
 			return match_flags(passed, command);
@@ -280,9 +263,8 @@ lurch::accepted_commands::matches(const lurch::command& passed) {
 	return false;
 }
 
-
 bool
-lurch::accepted_commands::match_flags(const lurch::command& passed, const formatted_command& to_compare) {
+lurch::accepted_commands::match_flags(const command& passed, const formatted_command& to_compare) {
 
 	std::map<std::string, std::optional<std::type_index>> arg_map;
 	for(const auto&[flag_name, parameter] : passed.arguments) {

@@ -1,7 +1,10 @@
 import * as ui          from './ui.js'
+import * as util        from './util.js'
 import * as req         from './fetch.js';
 import * as transitions from './transitions.js';
 import { templates }    from './templating.js';
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -12,7 +15,7 @@ export function dragoverCallback(event) {
     const terminal = document.querySelector('.terminal-instance');
     const filedrop = document.querySelector('.file-drop-icon');
 
-    if(ui.isWithinBoundingRect(X, Y, terminal) === true) {
+    if(util.isWithinBoundingRect(X, Y, terminal) === true) {
         terminal.style.opacity = 0.3;
         filedrop.style.opacity = 1;
     }
@@ -26,8 +29,8 @@ export function dragoverCallback(event) {
 export function terminalDropCallback(event) {
 
     event.preventDefault();    
-    ui.focusInputElement();
-    const sessionGuid = ui.currentSessionGuid();
+    util.focusInputElement();
+    const sessionGuid = util.currentSessionGuid();
 
     //
     // if a file was dropped, send it to /objects/upload
@@ -173,13 +176,13 @@ export function listElementDragEndCallback(event){
     }     
 
 
-    if (ui.isWithinBoundingRect(dropX, dropY, terminal)) {                                                  
+    if (util.isWithinBoundingRect(dropX, dropY, terminal)) {                                                  
         console.log('drop within bounding rect - terminal');
         ui.startSession(guid, alias);
         inputElement.focus();
     }
 
-    else if(ui.isWithinBoundingRect(dropX, dropY, inputElement)) {                                          
+    else if(util.isWithinBoundingRect(dropX, dropY, inputElement)) {                                          
         console.log('drop within bounding rect - input bar');
         if(inputElement.value.length > 0 && inputElement.value.charAt(inputElement.value.length - 1) !== ' ') {
             inputElement.value += ' ';
@@ -215,7 +218,7 @@ export async function keyDownCallback(event){
         event.key === 'Enter'   && 
         !event.shiftKey         &&
         !event.ctrlKey          &&
-        ui.isInputSelected());
+        util.isInputSelected());
 
     const inputFullscreen = 
         event.key === 'Enter'   &&
@@ -226,7 +229,7 @@ export async function keyDownCallback(event){
     if(inputSubmission){
         
         const sessions = document.querySelectorAll('.terminal-session');
-        const messageContent = ui.currentInputContent();
+        const messageContent = util.currentInputContent();
         
         if(sessions !== null && messageContent.length > 0){
             for(const session of sessions){
@@ -245,11 +248,11 @@ export async function keyDownCallback(event){
             }
         }
 
-        ui.clearInputContent();
+        util.clearInputContent();
     }
 
     else if(inputFullscreen) {
-        if(ui.isTerminalFullscreened()) {
+        if(util.isTerminalFullscreened()) {
             ui.minimizeTerminalFullscreen();
         } else {
             ui.fullscreenTerminalSession();

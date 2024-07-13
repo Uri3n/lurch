@@ -8,5 +8,7 @@
 #include <enums.hpp>
 #include <structs.hpp>
 #include <macro.hpp>
+#include <basic.hpp>
+#include <defer.hpp>
 
 #endif //COMMON_HPP

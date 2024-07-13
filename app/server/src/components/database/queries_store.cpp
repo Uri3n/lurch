@@ -15,12 +15,11 @@ lurch::instance::database::initialize(
         this->inst = inst;
         this->db   = std::make_unique<sqlite::database>("db/lurch_database.db");
 
-
         *this->db <<
             "create table if not exists users ("
             "   _id integer primary key autoincrement not null,"
             "   username text unique not null,"
-            "   password integer not null,"                                                   //hashed
+            "   password integer not null," //hashed
             "   access_level integer not null"
             ");";
 
@@ -123,7 +122,7 @@ lurch::instance::database::store_message(const std::string& guid, const std::str
             << guid
             << sender
             << body
-            << io::curr_time();
+            << curr_time();
     }
     catch(const std::exception& e) {
         return error(io::format_str("exception: {}", e.what()));

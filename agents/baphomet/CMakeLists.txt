@@ -4,10 +4,8 @@ project(baphomet)
 set(CMAKE_CXX_STANDARD 17)
 set(MAIN_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-
 option(BUILD_AS_DLL "Build as Windows x64 DLL" ON)
 option(DEBUG_BUILD "Compile with debug messages" ON)
-
 
 if(MSVC)
     add_compile_options(
@@ -15,6 +13,8 @@ if(MSVC)
             $<$<CONFIG:Debug>:/MTd>
             $<$<CONFIG:Release>:/MT>
     )
+else()
+    message(FATAL_ERROR "Build this agent with MSVC please.")
 endif()
 
 

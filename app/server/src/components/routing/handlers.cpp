@@ -46,9 +46,13 @@ lurch::instance::router::handler_objects_send(
     reciever_ctx.cmd            = argument_parser::parse(req.body).value_or(command{.name = "-"});
     reciever_ctx.message_raw    = req.body;
 
+    auto [response, obj_access, keep_going, log_if_error] = inst->tree.send_message(GUID, req.body, reciever_ctx);
 
-    const auto [response, obj_access, keep_going, log_if_error] = inst->tree.send_message(GUID, req.body, reciever_ctx);
-    if(response || log_if_error) {
+
+    if(keep_going)
+        response = error("Object does not exist.");
+
+    if((response || log_if_error) && !keep_going) {
         inst->post_message_interaction(
             tok.alias,
             GUID,
@@ -61,6 +65,7 @@ lurch::instance::router::handler_objects_send(
     res.body = response.value_or(std::string());
     return response.has_value();
 }
+
 
 
 bool
@@ -80,8 +85,8 @@ lurch::instance::router::handler_objects_getdata(std::string GUID, crow::respons
             crow::json::wvalue json;
 
             json["parent"] = parent;
-            json["alias"] = alias;
-            json["type"] = io::type_to_str(type);
+            json["alias"]  = alias;
+            json["type"]   = type_to_str(type);
 
             res.body = json.dump();
             return lurch::result<bool>(true);
@@ -103,11 +108,11 @@ lurch::instance::router::handler_objects_getchildren(std::string GUID, crow::res
         for(const auto &[guid, alias, type, index] : *children) {
             crow::json::wvalue json;
 
-            json["guid"] = guid;
+            json["guid"]  = guid;
             json["alias"] = alias;
-            json["type"] = io::type_to_str(type);
+            json["type"]  = type_to_str(type);
 
-            res.body += (json.dump() + ',');
+            res.body += json.dump() + ',';
         }
 
         if(res.body.back() == ',') {
@@ -139,7 +144,7 @@ lurch::instance::router::handler_objects_getmessages(std::string GUID, const int
             json["sender"]      = sender;
             json["body"]        = body;
             json["timestamp"]   = timestamp;
-            res.body += (json.dump() + ',');
+            res.body += json.dump() + ',';
         }
 
         if(res.body.back() == ',') {
